@@ -17,6 +17,10 @@ Route::group(["namespace" => "App\Controllers"], function(){
     // Route::get('/', [IndexController::class,'index']);
     Route::get("/", [BscController::class,'index']);
     Route::get("/bsc", [BscController::class,'index']);
+    Route::get('/bsc/dashboard-data', 'BscController@dashboardData');
+    Route::post('/bsc/filter/local', 'BscController@setLocalPeriod');
+    Route::post('/bsc/filter/local/clear', 'BscController@clearLocalPeriod');
+    Route::post('/bsc/filter/global', 'BscController@setGlobalPeriod');
     Route::get('/bsc/registros', 'BscController@records');
 
     Route::get('/bsc/create', 'BscController@create');

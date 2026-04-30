@@ -44,6 +44,58 @@ abstract class QueryBuilder
         return $this;
     }
 
+    public function aplicarFiltroPeriodo($query = null, ?string $dataInicio = null, ?string $dataFim = null, string $column = 'data_referencia'): self|string
+    {
+        $conditions = $this->buildPeriodConditions($dataInicio, $dataFim, $column);
+
+        if (is_string($query)) {
+            if (empty($conditions)) {
+                return $query;
+            }
+
+            return $query . (stripos($query, ' where ') === false ? ' WHERE ' : ' AND ') . implode(' AND ', $conditions);
+        }
+
+        foreach ($conditions as $condition) {
+            $this->where($condition);
+        }
+
+        return $this;
+    }
+
+    protected function buildPeriodConditions(?string $dataInicio = null, ?string $dataFim = null, string $column = 'data_referencia'): array
+    {
+        $dataInicio = $this->normalizeDate($dataInicio);
+        $dataFim = $this->normalizeDate($dataFim);
+
+        if ($dataInicio === null && $dataFim === null) {
+            return [];
+        }
+
+        if ($dataInicio !== null && $dataFim !== null) {
+            return ["{$column} BETWEEN '{$dataInicio}' AND '{$dataFim}'"];
+        }
+
+        if ($dataInicio !== null) {
+            return ["{$column} >= '{$dataInicio}'"];
+        }
+
+        return ["{$column} <= '{$dataFim}'"];
+    }
+
+    protected function normalizeDate(?string $date): ?string
+    {
+        $date = trim((string) $date);
+
+        if ($date === '') {
+            return null;
+        }
+
+        $parsed = \DateTime::createFromFormat('Y-m-d', $date);
+
+        return $parsed && $parsed->format('Y-m-d') === $date ? $date : null;
+    }
+
     public function groupBy(string $column): self {
         $this->groupBy = $column;
         return $this;

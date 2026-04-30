@@ -395,7 +395,7 @@
                             <div class="data-table-header">
                                 <div>
                                     <h6 class="data-table-title">Tabela de dados</h6>
-                                    <span class="data-table-subtitle">{{ dados.registros|length }} registros acompanhados</span>
+                                    <span class="data-table-subtitle" id="bscTableSubtitle">{{ dados.registros|length }} registros acompanhados</span>
                                 </div>
                                 <div class="data-table-page" id="bscTablePageInfo">1/1</div>
                             </div>
@@ -410,7 +410,7 @@
                                         <th scope="col">Data de referência</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="bscDashboardTableBody">
                                     {% for row in dados.registros %}
                                         {% set statusClasses = {
                                             'Concluído': 'status-toast-success',
@@ -497,112 +497,239 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const rows = Array.from(document.querySelectorAll('.bsc-data-row'));
-            const card = document.querySelector('.data-table-card');
-            const header = document.querySelector('.data-table-header');
-            const tableHead = document.querySelector('.data-table thead');
-            const pageInfo = document.getElementById('bscTablePageInfo');
-            const progress = document.getElementById('bscTableProgress');
-            const pagination = document.getElementById('bscTablePagination');
-            const prevButton = document.getElementById('bscTablePrev');
-            const nextButton = document.getElementById('bscTableNext');
-
-            if (!rows.length || !pageInfo || !progress || !pagination || !prevButton || !nextButton) {
-                if (pagination) {
-                    pagination.style.display = 'none';
-                }
-                if (pageInfo) {
-                    pageInfo.textContent = '0/0';
-                }
-                return;
-            }
-
-            const getRowsPerPage = function () {
-                if (card && header && tableHead && pagination) {
-                    const cardStyle = window.getComputedStyle(card);
-                    const cardPadding = parseFloat(cardStyle.paddingTop) + parseFloat(cardStyle.paddingBottom);
-                    const availableHeight = card.clientHeight - cardPadding - header.offsetHeight - tableHead.offsetHeight - pagination.offsetHeight - 38;
-                    const visibleRow = rows.find(function (row) {
-                        return !row.hidden;
-                    }) || rows[0];
-                    const rowHeight = visibleRow.offsetHeight || 72;
-                    const calculatedRows = Math.floor(availableHeight / rowHeight);
-
-                    return Math.max(4, Math.min(8, calculatedRows));
-                }
-
-                if (window.innerWidth < 992) {
-                    return 4;
-                }
-
-                return window.innerHeight >= 1000 ? 6 : 5;
-            };
-
-            let rowsPerPage = getRowsPerPage();
-            let totalPages = Math.ceil(rows.length / rowsPerPage);
-            let currentPage = 0;
+        (function () {
             let rotationTimer = null;
 
-            const renderPage = function () {
-                const start = currentPage * rowsPerPage;
-                const end = start + rowsPerPage;
-
-                rows.forEach(function (row, index) {
-                    row.hidden = index < start || index >= end;
+            const escapeHtml = function (value) {
+                return String(value ?? '').replace(/[&<>"']/g, function (char) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    }[char];
                 });
-
-                pageInfo.textContent = (currentPage + 1) + '/' + totalPages;
-                progress.style.width = (((currentPage + 1) / totalPages) * 100) + '%';
-                pagination.style.display = totalPages > 1 ? 'flex' : 'none';
             };
 
-            const goToPage = function (direction) {
-                currentPage = (currentPage + direction + totalPages) % totalPages;
-                renderPage();
+            const formatDate = function (value) {
+                if (!value) {
+                    return '-';
+                }
+
+                const parts = String(value).split('-');
+                return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : value;
             };
 
-            const startRotation = function () {
+            const statusClass = function (status) {
+                const classes = {
+                    'Concluído': 'status-toast-success',
+                    'Em andamento': 'status-toast-warning',
+                    'Não iniciado': 'status-toast-danger',
+                    'cancelado': 'status-toast-danger'
+                };
+
+                return classes[status] || '';
+            };
+
+            window.renderBscDashboardTable = function (registros) {
+                const tbody = document.getElementById('bscDashboardTableBody');
+                const subtitle = document.getElementById('bscTableSubtitle');
+
+                if (!tbody) {
+                    return;
+                }
+
+                if (subtitle) {
+                    subtitle.textContent = `${registros.length} registros acompanhados`;
+                }
+
+                if (!registros.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">Nenhum registro encontrado.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = registros.map(function (row) {
+                    return `<tr class="bsc-data-row">
+                        <td class="data-table-id">${escapeHtml(row.id)}</td>
+                        <td class="data-table-strategy">${escapeHtml(row.estrategia)}</td>
+                        <td class="data-table-axis">${escapeHtml(row.eixo)}</td>
+                        <td><span class="status-toast ${statusClass(row.situacao)}">${escapeHtml(row.situacao)}</span></td>
+                        <td class="data-table-date">${formatDate(row.data_referencia)}</td>
+                    </tr>`;
+                }).join('');
+            };
+
+            window.initBscTablePagination = function () {
                 window.clearInterval(rotationTimer);
+
+                const rows = Array.from(document.querySelectorAll('.bsc-data-row'));
+                const card = document.querySelector('.data-table-card');
+                const header = document.querySelector('.data-table-header');
+                const tableHead = document.querySelector('.data-table thead');
+                const pageInfo = document.getElementById('bscTablePageInfo');
+                const progress = document.getElementById('bscTableProgress');
+                const pagination = document.getElementById('bscTablePagination');
+                const prevButton = document.getElementById('bscTablePrev');
+                const nextButton = document.getElementById('bscTableNext');
+
+                if (!rows.length || !pageInfo || !progress || !pagination || !prevButton || !nextButton) {
+                    if (pagination) {
+                        pagination.style.display = 'none';
+                    }
+                    if (pageInfo) {
+                        pageInfo.textContent = '0/0';
+                    }
+                    return;
+                }
+
+                const getRowsPerPage = function () {
+                    if (card && header && tableHead && pagination) {
+                        const cardStyle = window.getComputedStyle(card);
+                        const cardPadding = parseFloat(cardStyle.paddingTop) + parseFloat(cardStyle.paddingBottom);
+                        const availableHeight = card.clientHeight - cardPadding - header.offsetHeight - tableHead.offsetHeight - pagination.offsetHeight - 38;
+                        const rowHeight = rows[0].offsetHeight || 72;
+
+                        return Math.max(4, Math.min(8, Math.floor(availableHeight / rowHeight)));
+                    }
+
+                    return window.innerWidth < 992 ? 4 : (window.innerHeight >= 1000 ? 6 : 5);
+                };
+
+                let rowsPerPage = getRowsPerPage();
+                let totalPages = Math.ceil(rows.length / rowsPerPage);
+                let currentPage = 0;
+
+                const renderPage = function () {
+                    const start = currentPage * rowsPerPage;
+                    const end = start + rowsPerPage;
+
+                    rows.forEach(function (row, index) {
+                        row.hidden = index < start || index >= end;
+                    });
+
+                    pageInfo.textContent = `${currentPage + 1}/${totalPages}`;
+                    progress.style.width = `${((currentPage + 1) / totalPages) * 100}%`;
+                    pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+                };
+
+                const goToPage = function (direction) {
+                    currentPage = (currentPage + direction + totalPages) % totalPages;
+                    renderPage();
+                };
+
+                prevButton.onclick = function () {
+                    goToPage(-1);
+                };
+
+                nextButton.onclick = function () {
+                    goToPage(1);
+                };
 
                 if (totalPages > 1) {
                     rotationTimer = window.setInterval(function () {
                         goToPage(1);
                     }, 8500);
                 }
+
+                renderPage();
             };
 
-            const resetRotation = function () {
-                startRotation();
+            window.updateBscDashboard = function (payload) {
+                const total = document.getElementById('dashboardTotalGeral');
+                const status = document.getElementById('dashboardPeriodStatus');
+                const inicio = document.getElementById('dashboardDataInicio');
+                const fim = document.getElementById('dashboardDataFim');
+
+                if (total) {
+                    total.textContent = payload.total_geral ?? 0;
+                }
+
+                document.querySelectorAll('[data-summary-card="situacao"]').forEach(function (card) {
+                    const statusName = card.getAttribute('data-status');
+                    const match = (payload.situacao || []).find(function (item) {
+                        return item.situacao === statusName;
+                    });
+                    const value = card.querySelector('.summary-value');
+
+                    if (value) {
+                        value.textContent = match ? match.total : 0;
+                    }
+                });
+
+                if (status && payload.periodo) {
+                    const label = payload.periodo.tipo === 'local' ? 'local' : (payload.periodo.tipo === 'global' ? 'global' : 'sem filtro');
+                    status.textContent = `Filtro ativo: ${label}`;
+                }
+
+                if (inicio && payload.periodo) {
+                    inicio.value = payload.periodo.data_inicio || '';
+                }
+
+                if (fim && payload.periodo) {
+                    fim.value = payload.periodo.data_fim || '';
+                }
+
+                createChart('graficoEixo', payload.situacao || [], 'situacao', 'pie', 'total', pieOptions);
+                createChart('graficoEixoBar', payload.eixo || [], 'eixo', 'bar', 'total', { showLegend: false });
+                createChart('graficoEixoBarHorizon', payload.eixo || [], 'eixo', 'horizontalBar', 'total', {
+                    showLegend: false,
+                    datalabelAlign: 'right'
+                });
+
+                window.renderBscDashboardTable(payload.registros || []);
+                window.initBscTablePagination();
             };
 
-            prevButton.addEventListener('click', function () {
-                goToPage(-1);
-                resetRotation();
-            });
+            document.addEventListener('DOMContentLoaded', function () {
+                window.initBscTablePagination();
 
-            nextButton.addEventListener('click', function () {
-                goToPage(1);
-                resetRotation();
-            });
-
-            window.addEventListener('resize', function () {
-                const nextRowsPerPage = getRowsPerPage();
-
-                if (nextRowsPerPage === rowsPerPage) {
+                const form = document.getElementById('dashboardPeriodForm');
+                if (!form) {
                     return;
                 }
 
-                rowsPerPage = nextRowsPerPage;
-                totalPages = Math.ceil(rows.length / rowsPerPage);
-                currentPage = Math.min(currentPage, totalPages - 1);
-                renderPage();
-                startRotation();
-            });
+                const requestPeriod = function (url) {
+                    const formData = new FormData(form);
 
-            renderPage();
-            startRotation();
-        });
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'fetch'
+                        }
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(window.updateBscDashboard)
+                        .catch(function () {
+                            const status = document.getElementById('dashboardPeriodStatus');
+                            if (status) {
+                                status.textContent = 'Não foi possível atualizar o filtro.';
+                            }
+                        });
+                };
+
+                document.getElementById('dashboardApplyLocal')?.addEventListener('click', function () {
+                    requestPeriod(form.dataset.localUrl);
+                });
+
+                document.getElementById('dashboardClearLocal')?.addEventListener('click', function () {
+                    requestPeriod(form.dataset.clearLocalUrl);
+                });
+
+                document.getElementById('dashboardApplyGlobal')?.addEventListener('click', function () {
+                    requestPeriod(form.dataset.globalUrl);
+                });
+
+                form.querySelectorAll('input[type="date"]').forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        requestPeriod(form.dataset.localUrl);
+                    });
+                });
+            });
+        })();
     </script>
     {% block js %}
         

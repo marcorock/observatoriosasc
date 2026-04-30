@@ -1,8 +1,8 @@
 
 <div class="col">
-    <div class="card-custom p-3 text-center summary-card">
+    <div class="card-custom p-3 text-center summary-card" data-summary-card="total">
         <small class="text-uppercase text-{{color ?? 'secondary'}} summary-label ">TOTAL </small>
-        <h2 class="fw-bold mb-0 summary-value">{{dados.total_geral ?? NULL}}</h2>
+        <h2 class="fw-bold mb-0 summary-value" id="dashboardTotalGeral">{{dados.total_geral ?? NULL}}</h2>
         <span class="summary-foot">{{mensagem ?? ""}}</span>
     </div>
 </div>

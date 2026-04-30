@@ -20,11 +20,15 @@ class BscModel extends QueryBuilder
      * Retorna todos os registros da tabela BSC ordenados por ID.
      * Returns all records from the BSC table ordered by ID.
      */
-    public function readAll(): array|string
+    public function readAll(?string $dataInicio = null, ?string $dataFim = null): array|string
     {
-        $sql = $this->select("*")
-                    ->from($this->table)
-                    ->orderBy("id")
+        $this->reset();
+        $query = $this->select("*")
+                    ->from($this->table);
+
+        $this->aplicarFiltroPeriodo($query, $dataInicio, $dataFim);
+
+        $sql = $this->orderBy("id")
                     ->getSelect();
 
         try {
@@ -128,13 +132,16 @@ class BscModel extends QueryBuilder
         }
     }
 
-    public function countColumn($colunm=null)
+    public function countColumn($colunm=null, ?string $dataInicio = null, ?string $dataFim = null)
     {
         // select :variável , count(id) as Total from bsc b group by :variável order by :variável
         $this->reset();
-        $sql = $this->select("{$colunm}, count(id) as total")
-                    ->from($this->table)
-                    ->groupBy($colunm)
+        $query = $this->select("{$colunm}, count(id) as total")
+                    ->from($this->table);
+
+        $this->aplicarFiltroPeriodo($query, $dataInicio, $dataFim);
+
+        $sql = $this->groupBy($colunm)
                     ->orderBy($colunm)
                     ->getSelect();
         /**  */
