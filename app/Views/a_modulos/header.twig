@@ -1,0 +1,47 @@
+<div class="dashboard-header container-fluid py-3 px-3 px-lg-4 border-bottom card-custom mb-3">
+    <div class="row align-items-center g-3 w-100">
+
+        <div class="col-12 col-lg">
+            <h1 class="brand-title mb-1">
+                📺 MODO TV: {{ name }}
+            </h1>
+            <p class="brand-subtitle mb-0">
+                {{ description }}
+            </p>
+        </div>
+
+        <div class="col-12 col-lg-auto ms-lg-auto">
+            <div class="header-meta d-flex flex-wrap gap-2 justify-content-start justify-content-lg-end justify-content-xl-end">
+                <button id="themeToggleBtn"
+                    class="meta-pill btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
+                    type="button"
+                    aria-label="Alternar tema">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-label d-none d-sm-inline">Modo Escuro</span>
+                </button>
+
+                <a href="{{ url('bsc/registros') }}"
+                    class="meta-pill btn btn-sm btn-outline-info d-flex align-items-center gap-1">
+                    Registros
+                </a>
+
+                <div class="meta-pill badge text-bg-light px-3 py-2">
+                    📅 {{ "now"|date("m/Y", "America/Sao_Paulo") }}
+                </div>
+
+                {% set cores = {
+                    'Concluído': 'success',
+                    'Em andamento': 'warning',
+                    'Não iniciado': 'danger'
+                } %}
+
+                {% set color = cores[status] ?? 'secondary' %}
+
+                <div class="meta-pill badge text-bg-{{ color }} px-3 py-2">
+                    Status: {{ status ?? 'Em Desenvolvimento' }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,198 @@
+/**
+ * ==========================================================
+ * THEME SYSTEM - DASHBOARD
+ * ==========================================================
+ *
+ * Responsável por:
+ * - Tema claro/escuro
+ * - Tokens visuais (CSS variables)
+ * - Layout base
+ * - Transições suaves
+ * - Estilo do botão de tema
+ *
+ * Compatível com:
+ * - Chart.js
+ * - Dashboard TV (Full HD)
+ * - Mobile
+ */
+
+/* ==========================================================
+   TOKENS PADRÃO (TEMA ESCURO DEFAULT)
+   ========================================================== */
+
+:root {
+    --app-bg: #0f172a;
+    --app-text: #f8fafc;
+
+    --card-bg: #1e293b;
+    --card-border: #334155;
+
+    --muted-text: #7f8aa3;
+
+    /* Tokens para gráficos */
+    --chart-axis-color: #7f8aa3;
+    --chart-legend-color: #cfd8e3;
+    --chart-grid-color: rgba(255,255,255,0.04);
+    --chart-label-color: #ffffff;
+}
+
+/* ==========================================================
+   BASE GLOBAL
+   ========================================================== */
+
+body {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ==========================================================
+   CARDS
+   ========================================================== */
+
+.card-custom {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    height: 100%;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* ==========================================================
+   TEXTOS AUXILIARES
+   ========================================================== */
+
+.brand-subtitle,
+.meta-pill,
+.text-muted-custom {
+    color: var(--muted-text);
+}
+
+/* ==========================================================
+   LAYOUT FULL HD (TV)
+   ========================================================== */
+
+@media (min-width: 1200px) {
+    .full-hd-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .row-flexible {
+        flex: 1;
+    }
+}
+
+/* ==========================================================
+   PREVENÇÃO DE CORTE DE GRÁFICOS
+   ========================================================== */
+
+.card-custom,
+.col,
+.row-flexible,
+canvas {
+    overflow: visible;
+}
+
+/* ==========================================================
+   TRANSIÇÃO GLOBAL DE TEMA
+   ========================================================== */
+
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        fill 0.25s ease,
+        stroke 0.25s ease !important;
+}
+
+/* ==========================================================
+   BOTÃO DE TEMA
+   ========================================================== */
+
+#themeToggleBtn {
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover leve */
+#themeToggleBtn:hover {
+    transform: translateY(-1px);
+}
+
+/* Clique */
+#themeToggleBtn:active {
+    transform: scale(0.97);
+}
+
+/* ==========================================================
+   ÍCONE DO BOTÃO
+   ========================================================== */
+
+.theme-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animação do ícone */
+.theme-icon.is-animating {
+    transform: rotate(180deg) scale(1.15);
+    opacity: 0.85;
+}
+
+/* ==========================================================
+   AJUSTES PARA MOBILE
+   ========================================================== */
+
+@media (max-width: 576px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    .card-custom {
+        border-radius: 6px;
+    }
+
+    #themeToggleBtn {
+        font-size: 12px;
+    }
+
+    .theme-icon {
+        font-size: 13px;
+    }
+}
+
+/* ==========================================================
+   TEMA CLARO (APLICADO VIA JS)
+   ========================================================== */
+
+html[data-theme='light'] {
+    --app-bg: #f8fafc;
+    --app-text: #0f172a;
+
+    --card-bg: #ffffff;
+    --card-border: #cbd5e1;
+
+    --muted-text: #475569;
+
+    --chart-axis-color: #475569;
+    --chart-legend-color: #334155;
+    --chart-grid-color: rgba(15, 23, 42, 0.08);
+    --chart-label-color: #0f172a;
+}

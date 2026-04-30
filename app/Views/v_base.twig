@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/../public/assets/main/css/style.css">
+
+    <style>
+        /* Ajuste para garantir preenchimento em telas 1080p */
+        @media (min-width: 1200px) {
+            .full-hd-container {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 20px;
+            }
+            .row-flexible { flex: 1; }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    
+    {% block css %}
+        
+    {% endblock css %}
+   
+    <title>{{system}}</title>
+</head>
+<body>
+    {# {% block main %} #}
+    {# full-hd-container #}
+    <div class="container-fluid">
+        <main class="dashboard-shell">
+            
+            {% block header %}
+                <div class="dashboard-header">
+                    <div>
+                        <h1 class="brand-title">📺 MODO TV: {{name}}</h1>
+                        <p class="brand-subtitle">{{description}} em tempo real (1920x1080)</p>
+                    </div>
+                    <div class="header-meta">
+                        <button id="themeToggleBtn" class="meta-pill">🌙 Modo Escuro</button>
+                        <div class="meta-pill">{{"now"|date("m/Y", "America/Sao_Paulo")}}</div>
+                        <div class="meta-pill" style="color:var(--accent-2)">Status: {{status ?? 'Em Desenvolvimento'}}</div>
+                    </div>
+                </div>
+            {% endblock header %}
+            
+
+            <!--CONTAGEM GERAL-->
+            {# border-start border-primary border-4 #}
+            <div class="row row-cols-1 row-cols-md-3 row-cols-xl-{{colFirstRow ?? 4}} g-3 mb-1">
+                {% block cards %}
+                    <div class="col">
+                        <div class="card-custom p-3 text-center summary-card">
+                            <small class="text-uppercase text-secondary summary-label ">TOTAL GERALs </small>
+                            <h2 class="fw-bold mb-0 summary-value">{{dados.total_geral ?? NULL}}</h2>
+                            <span class="summary-foot">{{mensagem ?? ""}}</span>
+                        </div>
+                    </div>
+                    {% for row in dados.situacao %}
+                        {% if row.situacao == 'Concluído' %}
+                            <div class="col">
+                                <div class="card-custom p-3 text-center summary-card">
+                                    <small class="text-uppercase text-secondary summary-label">{{row.situacao}}</small>
+                                    <h2 class="fw-bold mb-0 text-success summary-value">{{row.total}}</h2>
+                                    <span class="summary-foot">{{mensagem ?? ""}}</span>
+                                </div>
+                            </div>   
+                        {% endif %}   
+                        {% if row.situacao == 'Em andamento' %}      
+                            <div class="col">
+                                <div class="card-custom p-3 text-center summary-card">
+                                    <small class="text-uppercase text-secondary summary-label">{{row.situacao}}</small>
+                                    <h2 class="fw-bold mb-0 text-warning summary-value">{{row.total}}</h2>
+                                    <span class="summary-foot">{{mensagem ?? ""}}</span>
+                                </div>
+                            </div>
+                        {% endif %} 
+                        {# Não iniciado #}
+                        {% if row.situacao == 'Não iniciado' %} 
+                            <div class="col">
+                                <div class="card-custom p-3 text-center summary-card">
+                                    <small class="text-uppercase text-secondary summary-label ">{{row.situacao}}</small>
+                                    <h2 class="fw-bold mb-0 text-danger summary-value">{{row.total}}</h2>
+                                    <span class="summary-foot">{{mensagem ?? ""}}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}  
+                {% endblock cards %}
+            </div>
+            
+            <style>
+                /* REMOVER APÓS OS TESTES*/ 
+                .debug-col {
+                    background: rgba(0, 123, 255, 0.1);
+                    border: 2px dashed rgba(0, 123, 255, 0.5);
+                    min-height: 150px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    color: #0d6efd;
+                }
+                .row > [class*="col"] {
+                    outline: 1px dashed red;
+                }
+            </style>
+
+            <div class="row row-cols-1 row-cols-lg-3 g-3 mb-3">
+
+                {% block graphics %}
+
+                <div class="col">
+                    <div class="debug-col">
+                        COLUNA 1
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="debug-col">
+                        COLUNA 2
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="debug-col">
+                        COLUNA 3
+                    </div>
+                </div>
+
+                {% endblock graphics %}
+
+            </div>
+        </main>
+    </div>
+    {# {% endblock main %}  #}
+    <!--END MAIN-->
+
+    {% block js %}
+        <script>
+            Chart.register(ChartDataLabels);
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.borderColor = '#334155';
+            Chart.defaults.layout.padding = 0; 
+
+            const formatNum = (value) => value.toLocaleString('pt-BR');
+            const formatPercent = (value, total) => ((value / total) * 100).toFixed(1).replace('.', ',') + '%';
+
+            const baseTooltip = { 
+            backgroundColor: '#0f172a', borderColor: '#334155', borderWidth: 1, padding: 12, titleFont: { size: 13 }, bodyFont: { size: 12 },
+            titleColor: '#f8fafc', bodyColor: '#f8fafc',
+            callbacks: {
+                label(context) {
+                const value = context.parsed;
+                const total = context.dataset.totalBase || context.dataset.data.reduce((sum, item) => sum + item, 0);
+                return `${context.label}: ${formatNum(value)} (${formatPercent(value, total)})`;
+                }
+            }
+            };
+
+            // PLUGIN DO TEXTO CENTRAL (Dinâmico para Claro/Escuro)
+            const centerTextPlugin = {
+            id: 'centerTextPlugin',
+            afterDraw(chart, args, pluginOptions) {
+                if (chart.config.type !== 'doughnut') return;
+                const meta = chart.getDatasetMeta(0);
+                if (!meta || !meta.data || !meta.data.length) return;
+
+                const { ctx } = chart;
+                const x = meta.data[0].x;
+                const y = meta.data[0].y;
+                
+                // Verifica o tema atual
+                const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+
+                ctx.save();
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                
+                // Cor do título (Label)
+                ctx.fillStyle = isDarkTheme ? '#94a3b8' : '#475569'; 
+                ctx.font = '600 12px Inter, sans-serif';
+                ctx.fillText(pluginOptions.label || 'Total', x, y - 12);
+                
+                // Cor do número
+                ctx.fillStyle = isDarkTheme ? '#f8fafc' : '#0f172a';
+                ctx.font = '800 24px Inter, sans-serif';
+                ctx.fillText(formatNum(pluginOptions.total || 0), x, y + 10);
+                
+                ctx.restore();
+            }
+            };
+            Chart.register(centerTextPlugin);
+
+            // ===================================================================
+            // GRÁFICOS FIXOS
+            // ===================================================================
+            
+            const rendaChart = new Chart(document.getElementById('rendaChart'), {
+            type: 'bar',
+            data: { 
+                labels: ['Renda 0.00', 'Até 1/4 SM', '>1/4 até 1/2', '>1/2 até 1 SM', '>1 até 2 SM', '> 2 SM'], 
+                datasets: [{ data: [27538, 16252, 13994, 27127, 13402, 5483], totalBase: 103796, backgroundColor: '#fbbf24', borderRadius: 4 }] 
+            },
+            options: { 
+                indexAxis: 'y', 
+                responsive: true, maintainAspectRatio: false, 
+                layout: { padding: { right: 50, top: 10 } },
+                plugins: { 
+                    tooltip: Object.assign({}, baseTooltip), legend: { display: false }, 
+                    datalabels: { color: '#ffffff', font: { weight: '800', size: 11 }, textStrokeColor: 'rgba(15, 23, 42, 0.85)', textStrokeWidth: 4, anchor: 'end', align: 'right', offset: 4, formatter: (value) => formatNum(value) } 
+                }, 
+                scales: { x: { display: false }, y: { grid: { display: false }, ticks: { font: { size: 11 } } } } 
+            }
+            });
+
+            const faixaEtariaChart = new Chart(document.getElementById('faixaEtariaChart'), {
+            type: 'bar',
+            data: { 
+                labels: ['0-6', '7-11', '12-17', '18-59', '60+'], 
+                datasets: [{ data: [25570, 22597, 24466, 115288, 43243], totalBase: 231164, backgroundColor: '#38bdf8', borderRadius: 4 }] 
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                layout: { padding: { top: 25 } }, 
+                plugins: { tooltip: Object.assign({}, baseTooltip), legend: { display: false }, datalabels: { color: '#ffffff', font: { weight: '800', size: 11 }, textStrokeColor: 'rgba(15, 23, 42, 0.85)', textStrokeWidth: 3, anchor: 'end', align: 'end', offset: 2, formatter: (value) => formatNum(value) } }, 
+                scales: { x: { grid: { display: false }, ticks: { font: { size: 11 } } }, y: { beginAtZero: true, display: false } } 
+            }
+            });
+
+            // ===================================================================
+            // ANIMAÇÕES
+            // ===================================================================
+            const CYCLE_TIME = 10000;
+
+            const slides = document.querySelectorAll('#crasCarousel .carousel-slide');
+            let currentSlide = 0;
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, CYCLE_TIME);
+
+            const regioesChart = new Chart(document.getElementById('regioesChart'), {
+            type: 'bar',
+            data: {
+                labels: ['SUL', 'LESTE', 'NORTE', 'SUDESTE', 'CENTRO', 'OESTE'],
+                datasets: [{ label: 'Pessoas', data: [77459, 73252, 35803, 24377, 15242, 5031], totalBase: 231164, backgroundColor: ['#38bdf8','#38bdf8','#38bdf8','#38bdf8','#38bdf8','#38bdf8'], borderRadius: 4 }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                layout: { padding: { top: 35 } }, 
+                plugins: { tooltip: Object.assign({}, baseTooltip), legend: { display: false }, datalabels: { color: '#ffffff', font: { weight: '800', size: 12 }, textStrokeColor: 'rgba(15, 23, 42, 0.85)', textStrokeWidth: 4, anchor: 'end', align: 'end', offset: 2, formatter: (value, context) => `${formatNum(value)}\n${formatPercent(value, context.dataset.totalBase)}` } }, 
+                scales: { x: { grid: { display: false }, ticks: { font: { size: 11 } } }, y: { beginAtZero: true, display: false } } 
+            }
+            });
+
+            let regioesMode = 'pessoas';
+            setInterval(() => {
+            if(regioesMode === 'pessoas') {
+                regioesChart.data.datasets[0].data = [34820, 31754, 16530, 10274, 8130, 2288];
+                regioesChart.data.datasets[0].totalBase = 103796;
+                regioesChart.data.datasets[0].backgroundColor = Array(6).fill('#fbbf24');
+                document.getElementById('regioesSubtitle').innerText = "Exibindo: Total de Famílias (Muda em 10s)";
+                regioesMode = 'familias';
+            } else {
+                regioesChart.data.datasets[0].data = [77459, 73252, 35803, 24377, 15242, 5031];
+                regioesChart.data.datasets[0].totalBase = 231164;
+                regioesChart.data.datasets[0].backgroundColor = Array(6).fill('#38bdf8');
+                document.getElementById('regioesSubtitle').innerText = "Exibindo: Total de Pessoas (Muda em 10s)";
+                regioesMode = 'pessoas';
+            }
+            regioesChart.update();
+            }, CYCLE_TIME);
+
+            const indChart = new Chart(document.getElementById('indicadoresChart'), {
+            type: 'doughnut',
+            data: { labels: ['Recebem PBF', 'Não Recebem'], datasets: [{ data: [32376, 71420], totalBase: 103796, backgroundColor: ['#34d399', '#334155'], borderWidth: 0, hoverOffset: 4 }] },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                cutout: '70%', 
+                layout: { padding: { bottom: 10 } },
+                plugins: { 
+                tooltip: Object.assign({}, baseTooltip),
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15, color: '#94a3b8', font: { size: 12 } } },
+                centerTextPlugin: { total: 103796, label: 'Famílias' }, 
+                datalabels: { color: '#ffffff', font: { weight: '800', size: 13 }, textStrokeColor: 'rgba(15, 23, 42, 0.85)', textStrokeWidth: 4, anchor: 'center', align: 'center', formatter: (value, ctx) => formatPercent(value, ctx.dataset.totalBase) } 
+                } 
+            } 
+            });
+
+            let indMode = 0;
+            const indTitle = document.getElementById('indTitle');
+            setInterval(() => {
+            indMode = (indMode + 1) % 4;
+            let ds = indChart.data.datasets[0];
+            let opts = indChart.options.plugins.centerTextPlugin;
+
+            if(indMode === 0) {
+                indChart.data.labels = ['Recebem PBF', 'Não Recebem'];
+                ds.data = [32376, 71420]; ds.totalBase = 103796; ds.backgroundColor = ['#34d399', '#334155'];
+                opts.total = 103796; opts.label = 'Famílias'; indTitle.innerText = 'Benefício: Bolsa Família (PBF)';
+            } else if(indMode === 1) {
+                indChart.data.labels = ['BPC Idoso', 'BPC PCD'];
+                ds.data = [7868, 6954]; ds.totalBase = 14822; ds.backgroundColor = ['#a78bfa', '#f43f5e'];
+                opts.total = 14822; opts.label = 'Beneficiários'; indTitle.innerText = 'Benefício de Prestação Continuada';
+            } else if(indMode === 2) {
+                indChart.data.labels = ['Cadastrados', 'Restante Pop.'];
+                ds.data = [231164, 465890]; ds.totalBase = 697054; ds.backgroundColor = ['#38bdf8', '#334155'];
+                opts.total = 697054; opts.label = 'Habitantes'; indTitle.innerText = 'Cobertura IBGE (População)';
+            } else if(indMode === 3) {
+                indChart.data.labels = ['Menores (0-17)', 'Adultos (18+)'];
+                ds.data = [72633, 158531]; ds.totalBase = 231164; ds.backgroundColor = ['#fbbf24', '#38bdf8'];
+                opts.total = 231164; opts.label = 'Pessoas'; indTitle.innerText = 'Público por Maioridade';
+            }
+            indChart.update();
+            }, CYCLE_TIME);
+
+            document.getElementById('regioesSubtitle').innerText = "Exibindo: Total de Pessoas (Muda em 10s)";
+            indTitle.innerText = 'Benefício: Bolsa Família (PBF)';
+
+            // ===================================================================
+            // LÓGICA DO TEMA (CLARO / ESCURO)
+            // ===================================================================
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            themeToggleBtn.addEventListener('click', () => {
+            const htmlEl = document.documentElement;
+            const currentTheme = htmlEl.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Muda o atributo no HTML
+            htmlEl.setAttribute('data-theme', newTheme);
+            themeToggleBtn.innerHTML = newTheme === 'dark' ? '🌙 Modo Escuro' : '☀️ Modo Claro';
+
+            // Define as cores baseadas no novo tema
+            const isDark = newTheme === 'dark';
+            const axisTextColor = isDark ? '#94a3b8' : '#1e293b'; 
+            const gridBorderColor = isDark ? '#334155' : '#cbd5e1';
+
+            Chart.defaults.color = axisTextColor;
+            Chart.defaults.borderColor = gridBorderColor;
+
+            // Atualiza as instâncias dos gráficos ativas
+            Object.values(Chart.instances).forEach(chart => {
+                
+                // Tooltips
+                if (chart.options.plugins.tooltip) {
+                chart.options.plugins.tooltip.backgroundColor = isDark ? '#0f172a' : '#ffffff';
+                chart.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#cbd5e1';
+                chart.options.plugins.tooltip.titleColor = isDark ? '#f8fafc' : '#0f172a';
+                chart.options.plugins.tooltip.bodyColor = isDark ? '#f8fafc' : '#0f172a';
+                }
+                
+                // DataLabels (Os números em cima das barras)
+                if (chart.options.plugins.datalabels) {
+                chart.options.plugins.datalabels.color = isDark ? '#ffffff' : '#1e293b';
+                chart.options.plugins.datalabels.textStrokeColor = isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.9)';
+                }
+                
+                // Legendas (Roscas)
+                if (chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+                chart.options.plugins.legend.labels.color = axisTextColor;
+                }
+                
+                // Eixos (Textos laterais e linhas de grade)
+                if (chart.options.scales) {
+                Object.keys(chart.options.scales).forEach(axis => {
+                    if (chart.options.scales[axis].ticks) chart.options.scales[axis].ticks.color = axisTextColor;
+                    if (chart.options.scales[axis].grid) chart.options.scales[axis].grid.color = gridBorderColor;
+                });
+                }
+                
+                chart.update();
+            });
+            });
+
+        </script>
+    {% endblock js %}
+    
+</body>
+</html>

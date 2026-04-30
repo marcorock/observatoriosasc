@@ -1,0 +1,33 @@
+{% extends "base.twig" %}
+
+
+{% block header %}
+    {# {{ parent() }} #}
+    {% include "a_modulos/header.twig" %}
+{% endblock header %}
+
+{% block cards %}
+
+    {% if dados.total_geral is defined %}
+        {% include "a_modulos/cardTotal.twig" %}
+    {% endif %}
+        
+    {% for row in dados.situacao %}
+        {% set cores = {
+            'Concluído': 'success',
+            'Em andamento': 'warning',
+            'Não iniciado': 'danger'
+        } %}
+
+        {% set color = cores[row.situacao] ?? 'secondary' %}
+        {% include "a_modulos/card.twig" %}
+    {% endfor %}
+
+{% endblock cards %}
+
+
+
+{% block js %}
+    
+    
+{% endblock js %}
