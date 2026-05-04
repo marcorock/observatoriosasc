@@ -119,7 +119,9 @@ function getAutoPaddingByType(dataArray, totalGeral, chartType, showLegend) {
     if (['pie', 'doughnut', 'polarArea'].includes(chartType)) {
         // Reserva espaço proporcional ao maior texto do datalabel
         // para evitar corte nas bordas do canvas.
-        const espacamentoBase = Math.max(40, Math.ceil(maiorTexto * 0.55));
+        const espacamentoBase = window.innerWidth >= 1200
+            ? Math.max(22, Math.min(48, Math.ceil(maiorTexto * 0.32)))
+            : Math.max(40, Math.ceil(maiorTexto * 0.55));
 
         return {
             top: espacamentoBase,
@@ -174,7 +176,21 @@ function buildChartConfig(chartType, options = {}) {
 function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel, options = {}) {
     const canvas = document.getElementById(canvasId);
 
-    if (!canvas || !Array.isArray(dataArray) || dataArray.length === 0) {
+    if (!canvas) {
+        return;
+    }
+
+    if (window.myCharts[canvasId]) {
+        window.myCharts[canvasId].destroy();
+        delete window.myCharts[canvasId];
+    }
+
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+
+    if (!Array.isArray(dataArray) || dataArray.length === 0) {
+        const emptyCtx = canvas.getContext('2d');
+        emptyCtx.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
@@ -197,10 +213,6 @@ function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel
         : (isHorizontalBar ? 6 : 4);
 
     const ctx = canvas.getContext('2d');
-
-    if (window.myCharts[canvasId]) {
-        window.myCharts[canvasId].destroy();
-    }
 
     window.myCharts[canvasId] = new Chart(ctx, {
         type: chartType,
@@ -226,9 +238,9 @@ function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel
                 position: config.legendPosition,
                 labels: {
                     fontColor: config.legendFontColor,
-                    fontSize: 12,
-                    boxWidth: 14,
-                    padding: 14,
+                    fontSize: window.innerWidth >= 1200 ? 14 : 12,
+                    boxWidth: window.innerWidth >= 1200 ? 16 : 14,
+                    padding: window.innerWidth >= 1200 ? 16 : 14,
                     generateLabels: function(chart) {
                         const data = chart.data;
 
@@ -303,7 +315,7 @@ function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel
                     color: config.dataLabelColor,
                     font: {
                         weight: config.dataLabelFontWeight,
-                        size: window.innerWidth <= 576 && isPieLike ? 11 : config.dataLabelFontSize
+                        size: isPieLike && window.innerWidth >= 1200 ? 13 : (window.innerWidth <= 576 && isPieLike ? 11 : config.dataLabelFontSize)
                     },
 
                     // Para pizza, deixa o rótulo um pouco menos "agressivo"
@@ -311,7 +323,7 @@ function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel
                     align: config.datalabelAlign || defaultAlign,
                     offset: config.datalabelOffset ?? defaultOffset,
 
-                    clamp: false,
+                    clamp: isPieLike,
                     clip: false
                 }
             }

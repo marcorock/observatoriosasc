@@ -12,14 +12,23 @@
         {% include "a_modulos/cardTotal.twig" %}
     {% endif %}
         
-    {% for row in dados.situacao %}
-        {% set cores = {
-            'Concluído': 'success',
-            'Em andamento': 'warning',
-            'Não iniciado': 'danger'
-        } %}
+    {% set statusCards = ['Concluído', 'Em andamento', 'Não iniciado'] %}
+    {% set cores = {
+        'Concluído': 'success',
+        'Em andamento': 'warning',
+        'Não iniciado': 'danger'
+    } %}
 
-        {% set color = cores[row.situacao] ?? 'secondary' %}
+    {% for statusName in statusCards %}
+        {% set row = { situacao: statusName, total: 0 } %}
+
+        {% for statusRow in dados.situacao %}
+            {% if statusRow.situacao == statusName %}
+                {% set row = statusRow %}
+            {% endif %}
+        {% endfor %}
+
+        {% set color = cores[statusName] ?? 'secondary' %}
         {% include "a_modulos/card.twig" %}
     {% endfor %}
 
