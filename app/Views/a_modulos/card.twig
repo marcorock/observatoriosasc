@@ -1,0 +1,8 @@
+
+<div class="col">
+    <div class="card-custom p-3 text-center summary-card" data-summary-card="situacao" data-status="{{ row.situacao }}">
+        <small class="text-uppercase text-{{color ?? 'secondary'}} summary-label ">{{row.situacao}} </small>
+        <h2 class="fw-bold mb-0 summary-value">{{row.total?? NULL}}</h2>
+        <span class="summary-foot">{{mensagem ?? NULL}}</span>
+    </div>
+</div>

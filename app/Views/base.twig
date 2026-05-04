@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{system}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/../public/assets/main/css/style.css">
+
+    {# <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script> #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <style>
+        
+    </style>
+</head>
+<body>
+
+<div class="container-fluid full-hd-container">
+    {# {% block main %} #}
+        <!--FIRST-LINE-HEADER-APPLICATION-->
+        {% block header %}    
+            <header class="row mb-3 g-2">
+                <div class="col-12">
+                    <div class="card-custom p-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h4 class="mb-0">MODO TV: {{title}}</h4>
+                                <small class="text-secondary">{{description}}</small>
+                            </div>
+                            <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                                <div class="row g-2 justify-content-md-end">
+                                    <div class="col-auto"><span class="badge bg-primary">Mês: Setembro</span></div>
+                                    <div class="col-auto"><span class="badge bg-success">Status: Ativo</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        {% endblock header %}
+
+        <!--SECOND-LINE-CARDS-TOTAL-->
+        <div class="row row-cols-1 row-cols-md-3 row-cols-xl-4 g-3 mb-3">
+        {% block cards %}
+                <div class="col">
+                    <div class="card-custom p-3 text-center">
+                        <small class="text-uppercase text-secondary">TOTAL </small>
+                        <h2 class="fw-bold mb-0">{{dados.total_geral ?? NULL}}</h2>
+                    </div>
+                </div>
+                {% for row in dados.situacao %}
+                    {% if row.situacao == 'Concluído' %}  
+                        <div class="col">
+                            <div class="card-custom p-3 text-center border-start border-primary border-4">
+                                <small class="text-uppercase text-secondary">{{row.situacao}}</small>
+                                <h2 class="fw-bold mb-0 text-success">{{row.total}}</h2>
+                            </div>
+                        </div>
+                    {% endif %}   
+                    {% if row.situacao == 'Em andamento' %}      
+                        <div class="col">
+                            <div class="card-custom p-3 text-center">
+                                <small class="text-uppercase text-secondary">{{row.situacao}}</small>
+                                <h2 class="fw-bold mb-0 text-warning">{{row.total}}</h2>
+                            </div>
+                        </div>
+                    {% endif %} 
+                    {# Não iniciado #}
+                    {% if row.situacao == 'Não iniciado' %} 
+                        <div class="col">
+                            <div class="card-custom p-3 text-center">
+                                <small class="text-uppercase text-secondary">{{row.situacao}}</small>
+                                <h2 class="fw-bold mb-0 text-danger">{{row.total}}</h2>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endblock cards %}
+        </div>  
+        
+
+        <!-- LINE-MAPS-GRAPHICS -->
+        <div class="row row-cols-1 row-cols-lg-2 g-3 mb-3 row-flexible">
+            {% block graphics %}   
+                <div class="col">
+
+                    <div class="col">
+                        <div class="card-custom chart-card p-3">
+                            <h6>Distribuição Por Status</h6>
+                            <div class="chart-viewport">
+                                <canvas id="graficoEixo"></canvas>
+                                {# graficoEixoBar #}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mt-3">
+                        <div class="card-custom chart-card p-3">
+                            <h6>Distribuição Por eixo</h6>
+                            <div class="chart-viewport">
+                                <canvas id="graficoEixoBar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> 
+
+                <div class="col">
+                    <div class="card-custom data-table-card p-3">
+                        <div class="w-100">
+                            <div class="data-table-header">
+                                <div>
+                                    <h6 class="data-table-title">Tabela de dados</h6>
+                                    <span class="data-table-subtitle" id="bscTableSubtitle">{{ dados.registros|length }} registros acompanhados</span>
+                                </div>
+                                <div class="data-table-page" id="bscTablePageInfo">1/1</div>
+                            </div>
+                            <div class="table-responsive data-table-shell">
+                            <table class="table data-table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Estratégia</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Data de referência</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bscDashboardTableBody">
+                                    {% for row in dados.registros %}
+                                        {% set statusClasses = {
+                                            'Concluído': 'status-toast-success',
+                                            'Em andamento': 'status-toast-warning',
+                                            'Não iniciado': 'status-toast-danger',
+                                            'cancelado': 'status-toast-danger'
+                                        } %}
+                                        <tr class="bsc-data-row">
+                                            <td class="data-table-id">{{ row.id }}</td>
+                                            <td class="data-table-strategy">{{ row.estrategia }}</td>
+                                            <td>
+                                                <span class="status-toast {{ statusClasses[row.situacao] ?? '' }}">
+                                                    {{ row.situacao }}
+                                                </span>
+                                            </td>
+                                            <td class="data-table-date">{{ row.data_referencia ? row.data_referencia|date('d/m/Y') : '-' }}</td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center text-secondary py-4">
+                                                Nenhum registro encontrado.
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                            <div class="data-table-pagination" id="bscTablePagination">
+                                <div class="data-table-progress" aria-hidden="true">
+                                    <div class="data-table-progress-bar" id="bscTableProgress"></div>
+                                </div>
+                                <div class="data-table-actions">
+                                    <button class="data-table-btn" type="button" id="bscTablePrev" aria-label="Página anterior">&lsaquo;</button>
+                                    <button class="data-table-btn" type="button" id="bscTableNext" aria-label="Próxima página">&rsaquo;</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% endblock graphics %}
+        </div>
+</div>   
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <script src="/public/assets/other/js/graficos.js"></script> <!--script para renderização de gráficos-->
+    <script src="/public/assets/other/js/theme-manager.js"></script>
+
+    <script>
+        // Dados vindos do backend/Twig para montar o gráfico de pizza por situação.
+        const grafico_eixo = {{ dados.situacao|json_encode|raw }};
+
+        // Verifica se a tela é pequena para adaptar legenda e rótulos do gráfico.
+        const isMobile = window.innerWidth <= 576;
+
+        // Opções visuais do gráfico de pizza. Em mobile, reduz elementos para caber melhor.
+        const pieOptions = isMobile
+            ? {
+                showLegend: false,
+                datalabelOffset: 6
+            }
+            : {
+                showLegend: true,
+                legendPosition: 'right',
+                datalabelAnchor: 'center',
+                datalabelAlign: 'center',
+                datalabelOffset: 0,
+                dataLabelFontSize: 15
+            };
+
+        // Cria o gráfico de distribuição por status usando a função global definida em graficos.js.
+        createChart('graficoEixo', grafico_eixo, 'situacao', 'pie', 'total', pieOptions);
+    </script>
+
+    <script>
+        // Dados agrupados por eixo para montar o gráfico de barras vertical.
+        const grafico_eixoBar = {{ dados.eixo|json_encode|raw }};
+
+        // Cria o gráfico de distribuição por eixo, sem legenda para economizar espaço.
+        createChart('graficoEixoBar', grafico_eixoBar, 'eixo', 'bar', 'total', {
+            showLegend: false
+        });
+    </script>
+
+    <script>
+        // Dados agrupados por eixo para um gráfico horizontal, caso exista o canvas na página filha.
+        const grafico_eixoBarHorizon = {{ dados.eixo|json_encode|raw }};
+
+        // Cria o gráfico horizontal e alinha os rótulos à direita das barras.
+        createChart('graficoEixoBarHorizon', grafico_eixoBarHorizon, 'eixo', 'horizontalBar', 'total', {
+            showLegend: false,
+            datalabelAlign: 'right',
+        });
+    </script>
+
+    
+    <!--SCRIPT PRINCIPAL DA DASHBOARD-->
+    <script src="/public/assets/main/js/script.js"></script>
+    {% block js %}
+        
+    {% endblock js %}
+</body>
+</html>
