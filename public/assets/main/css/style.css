@@ -33,21 +33,7 @@
             color: var(--muted-text);
         }
 
-        @media (min-width: 1200px) {
-            .full-hd-container {
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                padding: 20px;
-                overflow: hidden;
-            }
-
-            .row-flexible {
-                flex: 1;
-                min-height: 0;
-                overflow: hidden;
-            }
-        }
+        
 
         .card-custom,
         .col,
@@ -317,10 +303,50 @@
             }
         }
 
+
+        /*Para celular e telas menores*/
+        @media (max-width: 1199.98px) {
+            .chart-viewport {
+                min-height: 350px !important; 
+            }
+            
+            .dashboard-shell,
+            .full-hd-container {
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+        }
+
         @media (min-width: 1200px) {
-            .row-flexible > .col {
-                min-height: 0;
+            body {
                 overflow: hidden;
+            }
+
+            .full-hd-container {
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 16px 20px;
+            }
+
+            .row-flexible {
+                flex: 1 1 auto;
+                min-height: 0;
+            }
+
+            .row-flexible > .col {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                overflow: visible;
+            }
+
+            .card-custom {
+                flex: 1 1 auto;
+                display: flex;
+                flex-direction: column;
+                min-height: 0; 
             }
 
             .full-hd-container > .row:nth-of-type(2) {
@@ -331,6 +357,7 @@
                 min-height: 78px;
                 padding-top: 12px !important;
                 padding-bottom: 12px !important;
+                justify-content: center;
             }
 
             .summary-value {
@@ -343,33 +370,25 @@
                 font-size: 0.78rem;
             }
 
-            .row-flexible > .col:first-child {
-                display: grid;
-                grid-template-rows: minmax(0, 0.98fr) minmax(0, 0.82fr);
-                gap: 16px;
-            }
-
-            .row-flexible > .col:first-child > .col {
-                min-height: 0;
-                margin-top: 0 !important;
-                overflow: hidden;
-            }
-
-            .row-flexible > .col:first-child .chart-card > h6 {
+            .chart-card > h6 {
                 flex: 0 0 auto;
                 margin-bottom: 8px;
             }
 
-            #graficoEixo {
-                display: block;
-                width: 100% !important;
-                height: 100% !important;
+            .chart-viewport {
+                position: relative;
+                flex: 1 1 auto;
+                min-height: 0 !important; 
+                width: 100%;
             }
 
-            #graficoEixoBar {
-                display: block;
+            .chart-viewport canvas {
+                position: absolute !important;
+                top: 0;
+                left: 0;
                 width: 100% !important;
                 height: 100% !important;
+                display: block;
             }
 
             .dashboard-header {
