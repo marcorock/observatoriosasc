@@ -289,7 +289,10 @@
                 axisColor: '#475569',
                 legendColor: '#334155',
                 gridColor: 'rgba(15, 23, 42, 0.08)',
-                dataLabelColor: '#0f172a'
+                dataLabelColor: '#0f172a',
+
+                //Muda a cor de acordo com o tema 
+                dataLabelStrokeColor: 'rgba(255, 255, 255, 0.9)'
             };
         }
 
@@ -297,7 +300,10 @@
             axisColor: '#7f8aa3',
             legendColor: '#cfd8e3',
             gridColor: 'rgba(255,255,255,0.04)',
-            dataLabelColor: '#ffffff'
+            dataLabelColor: '#ffffff',
+
+            //Muda a cor de acordo com o tema 
+            dataLabelStrokeColor: 'rgba(15, 23, 42, 0.85)'
         };
     }
 
@@ -334,6 +340,9 @@
                 chart.options.plugins.datalabels
             ) {
                 chart.options.plugins.datalabels.color = chartTheme.dataLabelColor;
+
+                //Atualiza a bordinha dos textos
+                chart.options.plugins.datalabels.textStrokeColor = chartTheme.dataLabelStrokeColor;
             }
 
             /**

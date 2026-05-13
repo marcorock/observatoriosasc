@@ -35,7 +35,11 @@ const chartDefaults = {
     axisFontColor: '#7f8aa3',
     dataLabelColor: '#ffffff',
     dataLabelFontSize: 13,
-    dataLabelFontWeight: 'bold'
+    dataLabelFontWeight: 'bold',
+
+    //Bordinha no texto dos graficos
+    dataLabelTextStrokeColor: 'rgba(15, 23, 42, 0.85)',
+    dataLabelTextStrokeWidth: 4
 };
 
 /**
@@ -159,7 +163,11 @@ function buildChartConfig(chartType, options = {}) {
         axisFontColor: options.axisFontColor || chartDefaults.axisFontColor,
         dataLabelColor: options.dataLabelColor || chartDefaults.dataLabelColor,
         dataLabelFontSize: options.dataLabelFontSize || chartDefaults.dataLabelFontSize,
-        dataLabelFontWeight: options.dataLabelFontWeight || chartDefaults.dataLabelFontWeight
+        dataLabelFontWeight: options.dataLabelFontWeight || chartDefaults.dataLabelFontWeight,
+
+        //Bordinha no texto dos graficos
+        dataLabelTextStrokeColor: options.dataLabelTextStrokeColor || chartDefaults.dataLabelTextStrokeColor,
+        dataLabelTextStrokeWidth: options.dataLabelTextStrokeWidth || chartDefaults.dataLabelTextStrokeWidth
     };
 }
 
@@ -313,6 +321,12 @@ function createChart(canvasId, dataArray, labelProperty, chartType, datasetLabel
                         return getLabelTexto(dataArray[index], totalGeral);
                     },
                     color: config.dataLabelColor,
+
+                    //Bordinha no texto dos graficos
+                    textStrokeColor: config.dataLabelTextStrokeColor,
+                    textStrokeWidth: config.dataLabelTextStrokeWidth,
+
+
                     font: {
                         weight: config.dataLabelFontWeight,
                         size: isPieLike && window.innerWidth >= 1200 ? 13 : (window.innerWidth <= 576 && isPieLike ? 11 : config.dataLabelFontSize)
