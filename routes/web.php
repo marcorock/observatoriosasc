@@ -4,6 +4,7 @@ use Pecee\SimpleRouter\SimpleRouter as Route;
 use App\Controllers\{
     IndexController,
     BscController,
+    CadunicoController,
     };
 
 // sascsa
@@ -14,8 +15,7 @@ use App\Controllers\{
 // Namespace principal 
 Route::group(["namespace" => "App\Controllers"], function(){
     /**BSC */
-    // Route::get('/', [IndexController::class,'index']);
-    Route::get("/", [BscController::class,'index']);
+    Route::get('/', [IndexController::class,'index']);
     Route::get("/bsc", [BscController::class,'index']);
     Route::get('/bsc/dashboard-data', 'BscController@dashboardData');
     Route::post('/bsc/filter/local', 'BscController@setLocalPeriod');
@@ -31,4 +31,7 @@ Route::group(["namespace" => "App\Controllers"], function(){
     Route::post('/bsc/update/{id}', 'BscController@update');
 
     Route::post('/bsc/delete/{id}', 'BscController@delete');
+
+    /** CADUNICO */
+    Route::get('/cadunico', [CadunicoController::class, 'index']);
 });

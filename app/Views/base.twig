@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - {{system}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/assets/main/css/style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -49,31 +50,7 @@
     
         <!--FIRST-LINE-HEADER-APPLICATION-->
         {% block header %}    
-            <header class="row mb-3 g-2">
-                <div class="col-12">
-                    <div class="card-custom p-3">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <h4 class="mb-0">MODO TV: {{title}}</h4>
-                                <small class="text-secondary">{{description}}</small>
-                            </div>
-                            <div class="col-md-6 text-md-end mt-2 mt-md-0">
-                                <div class="row g-2 justify-content-md-end align-items-center">
-                                    <div class="col-auto"><span class="badge bg-primary">Mês: Setembro</span></div>
-                                    <div class="col-auto"><span class="badge bg-success">Status: Ativo</span></div>
-                                    
-                                    <!-- BOTÃO PARA ALTERNAR AS TELAS -->
-                                    <div class="col-12 mt-2">
-                                        <button id="viewToggleBtn" class="btn btn-outline-info btn-sm fw-bold w-100" type="button">
-                                            Alternar para Tabela
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            {% include "a_modulos/app_header.twig" %}
         {% endblock header %}
 
         <!--SECOND-LINE-CARDS-TOTAL-->
@@ -231,17 +208,27 @@
             
             let estadoAtual = 'graficos';
 
+            const updateToggleLabel = function(label) {
+                if (!btnToggle) {
+                    return;
+                }
+
+                btnToggle.innerHTML = `<i class="bi bi-table" aria-hidden="true"></i><span>${label}</span>`;
+            };
+
             if(btnToggle) {
+                updateToggleLabel('Alternar para Tabela');
+
                 btnToggle.addEventListener('click', function() {
                     if(estadoAtual === 'graficos') {
                         viewGraficos.classList.add('d-none');
                         viewTabela.classList.remove('d-none');
-                        btnToggle.innerHTML = 'Alternar para Gráficos';
+                        updateToggleLabel('Alternar para Gráficos');
                         estadoAtual = 'tabela';
                     } else {
                         viewTabela.classList.add('d-none');
                         viewGraficos.classList.remove('d-none');
-                        btnToggle.innerHTML = 'Alternar para Tabela';
+                        updateToggleLabel('Alternar para Tabela');
                         estadoAtual = 'graficos';
                     }
                 });

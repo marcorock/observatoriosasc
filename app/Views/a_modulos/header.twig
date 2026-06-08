@@ -1,43 +1,4 @@
 <style>
-    .dashboard-header.card-custom {
-        height: auto;
-        min-height: 0;
-    }
-
-    .dashboard-header-layout {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        width: 100%;
-    }
-
-    .dashboard-header-main {
-        flex: 0 0 calc(70% - 12px);
-        max-width: calc(70% - 12px);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-width: 0;
-        min-height: 0;
-    }
-
-    .dashboard-header-controls {
-        flex: 0 0 calc(30% - 12px);
-        max-width: calc(30% - 12px);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 8px;
-        min-width: 360px;
-        min-height: 0;
-    }
-
-    .dashboard-header .brand-title {
-        max-width: 980px;
-        font-size: clamp(1.7rem, 2.2vw, 2.9rem);
-        line-height: 1.14;
-    }
-
     .dashboard-filter-modal {
         position: fixed;
         inset: 0;
@@ -89,40 +50,13 @@
         grid-column: 1 / -1;
     }
 
-    .dashboard-period-actions,
-    .header-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
     .dashboard-period-actions .btn {
         flex: 1 1 120px;
     }
 
-    .dashboard-header-controls .form-label,
+    .dashboard-filter-dialog .form-label,
     .dashboard-period-status {
         color: var(--muted-text);
-    }
-
-    .dashboard-period-pill {
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    @media (max-width: 1199.98px) {
-        .dashboard-header-layout {
-            flex-direction: column;
-        }
-
-        .dashboard-header-main,
-        .dashboard-header-controls {
-            flex-basis: auto;
-            max-width: 100%;
-            min-width: 0;
-        }
     }
 
     @media (max-width: 575.98px) {
@@ -132,80 +66,40 @@
     }
 </style>
 
-<div class="dashboard-header container-fluid py-3 px-3 px-lg-4 border-bottom card-custom mb-3">
-    <div class="dashboard-header-layout">
+{% set cores = {
+    'Concluído': 'app-header-meta-pill-dark',
+    'Em andamento': 'app-header-meta-pill-dark',
+    'Não iniciado': 'app-header-meta-pill-dark'
+} %}
+{% set header_menu_items = [
+    { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+    { kind: 'button', label: 'Filtro de período', icon: 'bi-funnel', id: 'dashboardFilterToggle', class: 'text-primary', aria_controls: 'dashboardPeriodForm', aria_expanded: 'false', title: 'Mostrar filtro de período' },
+    { kind: 'theme' },
+    { kind: 'button', label: 'Alternar para Tabela', icon: 'bi-table', id: 'viewToggleBtn', class: 'text-body' },
+    { kind: 'link', label: 'Registros', icon: 'bi-table', url: url('bsc/registros'), class: 'text-info-emphasis' }
+] %}
+{% set header_meta_items = [
+    {
+        icon: 'bi-calendar3',
+        text: periodo.data_inicio and periodo.data_fim
+            ? (periodo.data_inicio|date('d/m/Y') ~ ' à ' ~ periodo.data_fim|date('d/m/Y'))
+            : (periodo.data_inicio
+                ? ('A partir de ' ~ periodo.data_inicio|date('d/m/Y'))
+                : (periodo.data_fim ? ('Até ' ~ periodo.data_fim|date('d/m/Y')) : 'Sem filtro')),
+        class: ''
+    },
+    {
+        text: 'Status: ' ~ (status ?? 'Em Desenvolvimento'),
+        class: cores[status] ?? 'app-header-meta-pill-dark'
+    }
+] %}
 
-        <div class="dashboard-header-main">
-            <h1 class="brand-title mb-1">
-                📺 MODO TV: {{ name }}
-            </h1>
-            <p class="brand-subtitle mb-0">
-                {{ description }} - {{saudacao()}}
-            </p>
-        </div>
-
-        <div class="dashboard-header-controls">
-            <div class="header-meta justify-content-start justify-content-xl-end">
-                <button id="dashboardFilterToggle"
-                    class="meta-pill btn btn-sm btn-outline-primary d-flex align-items-center gap-1"
-                    type="button"
-                    aria-expanded="false"
-                    aria-controls="dashboardPeriodForm"
-                    title="Mostrar filtro de período">
-                    <span aria-hidden="true">⚙</span>
-                </button>
-
-                <button id="themeToggleBtn"
-                    class="meta-pill btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                    type="button"
-                    aria-label="Alternar tema">
-                    <span class="theme-icon">🌙</span>
-                    <span class="theme-label d-none d-sm-inline">Modo Escuro</span>
-                </button>
-
-                <!--Botão para trocar entre tabela e graficos -->
-                <button id="viewToggleBtn" 
-                class="meta-pill btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                type="button">
-                    <i class="bi bi-table"></i> Alternar para Tabela
-                </button>
-
-
-
-                <a href="{{ url('bsc/registros') }}"
-                    class="meta-pill btn btn-sm btn-outline-info d-flex align-items-center gap-1">
-                    Registros
-                </a>
-
-                <div class="meta-pill badge text-bg-light px-3 py-2 dashboard-period-pill" id="dashboardPeriodPill">
-                    📅
-                    {% if periodo.data_inicio and periodo.data_fim %}
-                        {{ periodo.data_inicio|date('d/m/Y') }} à {{ periodo.data_fim|date('d/m/Y') }}
-                    {% elseif periodo.data_inicio %}
-                        A partir de {{ periodo.data_inicio|date('d/m/Y') }}
-                    {% elseif periodo.data_fim %}
-                        Até {{ periodo.data_fim|date('d/m/Y') }}
-                    {% else %}
-                        Sem filtro
-                    {% endif %}
-                </div>
-
-                {% set cores = {
-                    'Concluído': 'success',
-                    'Em andamento': 'warning',
-                    'Não iniciado': 'danger'
-                } %}
-
-                {% set color = cores[status] ?? 'secondary' %}
-
-                <div class="meta-pill badge text-bg-{{ color }} px-3 py-2">
-                    Status: {{ status ?? 'Em Desenvolvimento' }}
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
+{% include "a_modulos/app_header.twig" with {
+    header_title: name,
+    header_subtitle: description ~ ' - ' ~ saudacao(),
+    header_menu_items: header_menu_items,
+    header_meta_items: header_meta_items
+} %}
 
 <div class="dashboard-filter-modal" id="dashboardFilterModal" aria-hidden="true">
     <div class="dashboard-filter-dialog">

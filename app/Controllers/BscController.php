@@ -11,7 +11,7 @@ class BscController extends Views
     public function index()
     {
         $all = $this->dashboardPayload();
-
+        
         // https://www.youtube.com/watch?v=oIFzqCZ53cg
         // https://www.youtube.com/watch?v=s9aJMZiRZXQ
 
@@ -67,11 +67,11 @@ class BscController extends Views
 
     public function create()
     {
-        return $this->render("bsc/create.html", [
+        return $this->render("bsc/create.html", array_merge([
             'name' => "Novo Registro BSC",
             'description' => "Cadastrar novo acompanhamento",
             'dados' => []
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function records()
@@ -79,12 +79,12 @@ class BscController extends Views
         $model = new BscModel();
         $dados = $model->readAll();
 
-        return $this->render("bsc/list.html", [
+        return $this->render("bsc/list.html", array_merge([
             'name' => "Registros BSC",
             'description' => "Tabela completa com exportação e responsividade",
             'erro' => is_string($dados) ? $dados : null,
             'dados' => is_array($dados) ? $dados : []
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function show($id)
@@ -97,11 +97,11 @@ class BscController extends Views
             exit;
         }
 
-        return $this->render("bsc/show.html", [
+        return $this->render("bsc/show.html", array_merge([
             'name' => "Visualizar Registro BSC",
             'description' => "Detalhes do acompanhamento",
             'dados' => $dados
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function store()
@@ -120,12 +120,12 @@ class BscController extends Views
             exit;
         }
 
-        return $this->render("bsc/create.html", [
+        return $this->render("bsc/create.html", array_merge([
             'name' => "Novo Registro BSC",
             'description' => "Cadastrar novo acompanhamento",
             'erro' => $result,
             'dados' => $_POST
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function edit($id)
@@ -139,11 +139,11 @@ class BscController extends Views
             exit;
         }
 
-        return $this->render("bsc/edit.html", [
+        return $this->render("bsc/edit.html", array_merge([
             'name' => "Editar Registro BSC",
             'description' => "Editar acompanhamento",
             'dados' => $dados
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function update($id)
@@ -166,12 +166,12 @@ class BscController extends Views
             'id' => (int) $id
         ]);
 
-        return $this->render("bsc/edit.html", [
+        return $this->render("bsc/edit.html", array_merge([
             'name' => "Editar Registro BSC",
             'description' => "Editar acompanhamento",
             'erro' => $result,
             'dados' => $dados
-        ]);
+        ], $this->bscPageDefaults()));
     }
 
     public function delete($id)
@@ -253,6 +253,45 @@ class BscController extends Views
     private function isDashboardAdmin(): bool
     {
         return strtolower((string) ($_ENV['DASHBOARD_USER_PROFILE'] ?? 'user')) === 'admin';
+    }
+
+    private function bscPageDefaults(): array
+    {
+        return [
+            'header_menu_items' => [
+                [
+                    'kind' => 'link',
+                    'label' => 'Home',
+                    'icon' => 'bi-house-door',
+                    'url' => url(''),
+                    'class' => 'text-body',
+                ],
+                [
+                    'kind' => 'theme',
+                ],
+                [
+                    'kind' => 'link',
+                    'label' => 'Dashboard BSC',
+                    'icon' => 'bi-speedometer2',
+                    'url' => url('bsc'),
+                    'class' => 'text-primary',
+                ],
+                [
+                    'kind' => 'link',
+                    'label' => 'Registros',
+                    'icon' => 'bi-table',
+                    'url' => url('bsc/registros'),
+                    'class' => 'text-info',
+                ],
+                [
+                    'kind' => 'link',
+                    'label' => 'Novo Registro',
+                    'icon' => 'bi-plus-lg',
+                    'url' => url('bsc/create'),
+                    'class' => 'text-success',
+                ],
+            ],
+        ];
     }
 
     private function json(array $payload): void
