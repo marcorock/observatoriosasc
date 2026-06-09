@@ -44,6 +44,12 @@ abstract class Template
                 }, ['is_safe' => ['html']])
             );
 
+            $this->template->addFunction(
+                new TwigFunction('admin_is_authenticated', function () {
+                    return function_exists('adminIsAuthenticated') ? adminIsAuthenticated() : false;
+                })
+            );
+
         } catch (Error $th) {
            die("Este diretório não existe ou não foi implementado");
         }

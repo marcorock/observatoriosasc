@@ -76,6 +76,8 @@ class BscController extends Views
 
     public function records()
     {
+        adminRequireAuth('admin');
+
         $model = new BscModel();
         $dados = $model->readAll();
 

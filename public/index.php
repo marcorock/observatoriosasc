@@ -6,6 +6,7 @@ require_once __DIR__."/../vendor/autoload.php";
 // Funções auxiliares globais
 require_once __DIR__."/../app/Utils/Helpers.php";
 require_once __DIR__."/../app/Utils/FormToken.php";
+require_once __DIR__."/../app/Utils/AdminAuth.php";
 
 //
 require_once __DIR__."/../app/Core/Router.php";
