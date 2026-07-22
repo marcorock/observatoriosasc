@@ -42,12 +42,9 @@ class ExternalDatabaseRuntime
         try {
             $pdo = self::connect($source);
             $sql = self::normalizeSql((string) $query->sql_query);
+            $sql = self::applyLimit($sql, $limit);
             $stmt = $pdo->query($sql);
             $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
-
-            if (count($rows) > $limit) {
-                $rows = array_slice($rows, 0, $limit);
-            }
 
             return [
                 'success' => true,
@@ -93,6 +90,24 @@ class ExternalDatabaseRuntime
     public static function normalizeSql(string $sql): string
     {
         return trim(preg_replace('/;+\s*$/', '', $sql) ?? '');
+    }
+
+    private static function applyLimit(string $sql, int $limit): string
+    {
+        $safeLimit = max(1, $limit);
+
+        if (preg_match('/\s+LIMIT\s+(?:(\d+)\s*,\s*(\d+)|(\d+)(?:\s+OFFSET\s+(\d+))?)\s*$/i', $sql, $matches)) {
+            $offset = $matches[1] !== '' ? (int) $matches[1] : (int) ($matches[4] ?? 0);
+            $currentLimit = $matches[2] !== '' ? (int) $matches[2] : (int) $matches[3];
+            $effectiveLimit = min($safeLimit, $currentLimit);
+            $sqlWithoutLimit = substr($sql, 0, -strlen($matches[0]));
+
+            return $offset > 0
+                ? "{$sqlWithoutLimit}\nLIMIT {$effectiveLimit} OFFSET {$offset}"
+                : "{$sqlWithoutLimit}\nLIMIT {$effectiveLimit}";
+        }
+
+        return "{$sql}\nLIMIT {$safeLimit}";
     }
 
     private static function connect(object $source): PDO
