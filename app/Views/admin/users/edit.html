@@ -1,0 +1,114 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-7">
+            {% if erro %}
+                <div class="alert alert-danger">{{ erro }}</div>
+            {% endif %}
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <h1 class="h4 mb-1">Editar usuário administrativo</h1>
+                        <p class="text-body-secondary mb-0">Atualize os dados do acesso e informe nova senha apenas se quiser alterá-la.</p>
+                    </div>
+
+                    <form action="{{ url('admin/usuarios/update/' ~ dados.id) }}" method="POST" class="needs-validation" novalidate>
+                        {{ form_token_input('admin_user_edit_' ~ dados.id) }}
+
+                        <div class="mb-4">
+                            <label for="nome" class="form-label fw-semibold">Nome</label>
+                            <input type="text"
+                                class="form-control"
+                                id="nome"
+                                name="nome"
+                                maxlength="150"
+                                value="{{ dados.nome ?? '' }}"
+                                required>
+                            <div class="invalid-feedback">Informe o nome do usuário.</div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-7">
+                                <label for="cpf" class="form-label fw-semibold">CPF</label>
+                                <input type="text"
+                                    class="form-control"
+                                    id="cpf"
+                                    name="cpf"
+                                    inputmode="numeric"
+                                    maxlength="14"
+                                    placeholder="000.000.000-00"
+                                    value="{{ dados.cpf_formatado ?? dados.cpf ?? '' }}"
+                                    required>
+                                <div class="invalid-feedback">Informe um CPF válido.</div>
+                            </div>
+                            <div class="col-12 col-md-5">
+                                <label for="ativo" class="form-label fw-semibold">Status</label>
+                                <select class="form-select" id="ativo" name="ativo" required>
+                                    <option value="1" {{ (dados.ativo ?? 1) == 1 ? 'selected' : '' }}>Ativo</option>
+                                    <option value="0" {{ (dados.ativo ?? 1) == 0 ? 'selected' : '' }}>Inativo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="senha" class="form-label fw-semibold">Nova senha</label>
+                            <input type="password"
+                                class="form-control"
+                                id="senha"
+                                name="senha"
+                                minlength="6"
+                                placeholder="Deixe em branco para manter a senha atual">
+                            <div class="form-text">Preencha apenas se quiser alterar a senha atual.</div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2">
+                            <a href="{{ url('admin/usuarios') }}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}
+
+{% block js %}
+<script>
+(() => {
+    const cpfInput = document.getElementById('cpf');
+    const form = document.querySelector('.needs-validation');
+
+    if (cpfInput) {
+        cpfInput.addEventListener('input', function () {
+            let value = cpfInput.value.replace(/\D+/g, '').slice(0, 11);
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            cpfInput.value = value;
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            const digits = (cpfInput?.value || '').replace(/\D+/g, '');
+            const senhaInput = document.getElementById('senha');
+            const senha = senhaInput ? senhaInput.value.trim() : '';
+            const senhaValida = senha === '' || senha.length >= 6;
+
+            if (!form.checkValidity() || digits.length !== 11 || !senhaValida) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    }
+})();
+</script>
+{% endblock js %}

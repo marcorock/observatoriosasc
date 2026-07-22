@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Administrativo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top center, rgba(28, 90, 165, 0.14), transparent 28%),
+                linear-gradient(180deg, #edf3fb 0%, #dfe8f5 100%);
+        }
+
+        .admin-auth-card {
+            max-width: 440px;
+            border: 1px solid rgba(28, 90, 165, 0.12);
+            border-radius: 1.25rem;
+            box-shadow: 0 24px 42px rgba(15, 37, 76, 0.12);
+        }
+
+        .admin-auth-logo {
+            width: auto;
+            height: 74px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center p-3">
+    <main class="card admin-auth-card w-100 bg-white">
+        <div class="card-body p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <img src="/assets/img/2cm-Brasão.png" class="admin-auth-logo mb-3" alt="Brasão da Prefeitura de São José dos Campos">
+                <h1 class="h3 mb-1">Acesso Administrativo</h1>
+                <p class="text-secondary mb-0">Entre com seu CPF e senha.</p>
+            </div>
+
+            {% if erro %}
+                <div class="alert alert-danger" role="alert">
+                    {{ erro }}
+                </div>
+            {% endif %}
+
+            <form action="{{ url('admin/login') }}" method="POST" class="needs-validation" novalidate>
+                {{ form_token_input('admin_login') }}
+
+                <div class="mb-3">
+                    <label for="cpf" class="form-label">CPF</label>
+                    <input type="text"
+                        class="form-control form-control-lg"
+                        id="cpf"
+                        name="cpf"
+                        inputmode="numeric"
+                        maxlength="14"
+                        placeholder="000.000.000-00"
+                        value="{{ cpf }}"
+                        required>
+                    <div class="invalid-feedback">Informe o CPF com 11 dígitos.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password"
+                        class="form-control form-control-lg"
+                        id="senha"
+                        name="senha"
+                        placeholder="Digite sua senha"
+                        required>
+                    <div class="invalid-feedback">Informe sua senha.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100">Entrar</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cpfInput = document.getElementById('cpf');
+
+            if (cpfInput) {
+                cpfInput.addEventListener('input', function () {
+                    let value = cpfInput.value.replace(/\D+/g, '').slice(0, 11);
+
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+                    cpfInput.value = value;
+                });
+            }
+
+            document.querySelectorAll('.needs-validation').forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    const digits = (cpfInput?.value || '').replace(/\D+/g, '');
+
+                    if (!form.checkValidity() || digits.length !== 11) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

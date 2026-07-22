@@ -1,0 +1,12 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+{% include "admin/ppa/indicadores/_form.html" with {
+    form_action: url('admin/ppa/indicadores/store'),
+    form_token_key: 'ppa_indicator_create',
+    page_title: 'Novo indicador PPA',
+    page_subtitle: 'Cadastro generico de indicador para reaproveitamento em dashboards futuros',
+    submit_label: 'Salvar indicador',
+    cancel_url: url('admin/ppa/indicadores')
+} %}
+{% endblock main %}

@@ -1,0 +1,155 @@
+<style>
+    .app-header-topbar {
+        background: linear-gradient(90deg, #1c5aa5 0%, #286cc0 100%);
+    }
+
+    .app-header-logo {
+        height: 68px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .app-header-title {
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .app-header-menu-btn.dropdown-toggle::after {
+        display: none;
+    }
+
+    .app-header-menu-panel {
+        min-width: min(320px, calc(100vw - 2rem));
+    }
+
+    .app-header-meta-pill-dark {
+        background-color: rgba(30, 41, 59, 0.92) !important;
+        color: #ffffff !important;
+    }
+
+    @media (max-width: 991.98px) {
+        .app-header-logo {
+            height: 58px;
+        }
+    }
+</style>
+
+{% set resolved_header_title = header_title|default(name|default(title|default('Observatório'))) %}
+{% set resolved_header_subtitle = header_subtitle is defined ? header_subtitle : description|default('') %}
+{% set resolved_header_menu_items = header_menu_items|default([]) %}
+{% set resolved_header_meta_items = header_meta_items|default([]) %}
+{% set is_admin_authenticated = admin_is_authenticated() %}
+
+<header class="mb-3">
+    <div class="app-header-topbar rounded-4 shadow px-3 px-lg-4 py-3">
+        <div class="row align-items-center g-3">
+            <div class="col-12 col-lg-2 text-center text-lg-start">
+                <span class="d-inline-flex align-items-center justify-content-center p-2 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <img class="app-header-logo" src="/assets/img/2cm-Brasão.png" alt="Brasão da Prefeitura de São José dos Campos">
+                </span>
+            </div>
+
+            <div class="col-12 col-lg-7 text-center">
+                <h1 class="app-header-title text-white fw-light fs-2 mb-0">{{ resolved_header_title }}</h1>
+                {% if resolved_header_subtitle %}
+                    <p class="text-white-50 small mb-0 mt-1">{{ resolved_header_subtitle }}</p>
+                {% endif %}
+            </div>
+
+            <div class="col-12 col-lg-3">
+                <div class="d-flex flex-column align-items-center align-items-lg-end gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-light rounded-4 shadow-sm px-3 py-2 app-header-menu-btn dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false"
+                        aria-label="Abrir menu da página">
+                        <i class="bi bi-list" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="dropdown-menu dropdown-menu-end border-0 rounded-4 shadow-lg p-2 app-header-menu-panel">
+                        <nav class="app-header-menu-nav" aria-label="Menu da página">
+                            <ul class="list-unstyled d-flex flex-column gap-1 mb-0">
+                                {% for item in resolved_header_menu_items %}
+                                    {% if loop.index == 2 %}
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                    {% endif %}
+                                    <li>
+                                        {% if item.kind == 'theme' %}
+                                            <button id="themeToggleBtn"
+                                                class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2"
+                                                type="button"
+                                                aria-label="Alternar tema">
+                                                <span class="theme-icon">🌙</span>
+                                                <span class="theme-label">Modo Escuro</span>
+                                            </button>
+                                        {% elseif item.kind == 'button' %}
+                                            <button {% if item.id is defined %}id="{{ item.id }}"{% endif %}
+                                                class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2 {{ item.class|default('') }}"
+                                                type="button"
+                                                {% if item.aria_controls is defined %}aria-controls="{{ item.aria_controls }}"{% endif %}
+                                                {% if item.aria_expanded is defined %}aria-expanded="{{ item.aria_expanded }}"{% endif %}
+                                                {% if item.title is defined %}title="{{ item.title }}"{% endif %}>
+                                                {% if item.icon is defined %}<i class="bi {{ item.icon }}" aria-hidden="true"></i>{% endif %}
+                                                <span>{{ item.label }}</span>
+                                            </button>
+                                        {% else %}
+                                            <a href="{{ item.url }}"
+                                                class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2 {{ item.class|default('') }}{% if loop.first %} fw-semibold text-primary bg-primary-subtle{% endif %}{% if item.disabled|default(false) %} disabled opacity-50{% endif %}"
+                                                {% if item.disabled|default(false) %}aria-disabled="true"{% endif %}>
+                                                {% if item.icon is defined %}<i class="bi {{ item.icon }}" aria-hidden="true"></i>{% endif %}
+                                                <span>{{ item.label }}</span>
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+
+                                <li><hr class="dropdown-divider my-1"></li>
+
+                                {% if is_admin_authenticated %}
+                                    <li>
+                                        <a href="{{ url('admin/painel') }}"
+                                            class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2 text-body">
+                                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                                            <span>Painel Administrativo</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form action="{{ url('admin/logout') }}" method="POST" class="m-0">
+                                            {{ form_token_input('admin_logout') }}
+                                            <button type="submit"
+                                                class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2 text-danger">
+                                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                                                <span>Sair</span>
+                                            </button>
+                                        </form>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a href="{{ url('admin') }}"
+                                            class="dropdown-item d-flex align-items-center gap-2 rounded-3 px-3 py-2 text-body">
+                                            <i class="bi bi-person-lock" aria-hidden="true"></i>
+                                            <span>Login</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                {% if resolved_header_meta_items %}
+                    <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-2">
+                        {% for item in resolved_header_meta_items %}
+                            <span class="badge text-bg-light rounded-pill px-3 py-2 fw-semibold shadow-sm {{ item.class|default('') }}">
+                                {% if item.icon is defined %}<i class="bi {{ item.icon }}" aria-hidden="true"></i>{% endif %}
+                                <span>{{ item.text }}</span>
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>

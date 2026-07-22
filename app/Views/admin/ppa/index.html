@@ -1,0 +1,80 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+<div class="container py-4">
+    <div class="row g-4">
+        <div class="col-12 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <div class="text-secondary small text-uppercase fw-semibold mb-2">Modulo PPA</div>
+                    <h1 class="h4 mb-2">Cadastro inicial</h1>
+                    <p class="text-body-secondary mb-4">
+                        Estrutura simplificada para manter indicadores e vinculos com consultas externas, pronta para crescer com o modulo.
+                    </p>
+
+                    <div class="d-grid gap-2">
+                        <a href="{{ url('admin/ppa/indicadores') }}" class="btn btn-primary">
+                            <i class="bi bi-list-task" aria-hidden="true"></i>
+                            Gerenciar indicadores
+                        </a>
+                        <a href="{{ url('admin/ppa/vinculos') }}" class="btn btn-outline-warning">
+                            <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                            Gerenciar vinculos
+                        </a>
+                        <a href="{{ url('admin/bases-externas/consultas') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-braces-asterisk" aria-hidden="true"></i>
+                            Revisar consultas externas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-8">
+            <div class="row g-4 h-100">
+                <div class="col-12 col-md-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body p-4">
+                            <div class="text-secondary small text-uppercase fw-semibold mb-2">Indicadores</div>
+                            <div class="display-6 fw-semibold mb-2">{{ indicadores_total }}</div>
+                            <p class="text-body-secondary mb-0">Cadastros base do PPA disponíveis para dashboards futuros.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body p-4">
+                            <div class="text-secondary small text-uppercase fw-semibold mb-2">Vinculos</div>
+                            <div class="display-6 fw-semibold mb-2">{{ vinculos_total }}</div>
+                            <p class="text-body-secondary mb-0">Relacionamentos ativos entre indicadores e consultas externas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if feedback %}
+                    <div class="col-12">
+                        <div class="alert alert-{{ feedback.type == 'success' ? 'success' : 'danger' }} mb-0">
+                            {{ feedback.message }}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body p-4">
+                            <h2 class="h5 mb-3">Escopo desta fase</h2>
+                            <ul class="mb-0 text-body-secondary">
+                                <li>Cadastro generico de indicadores do PPA</li>
+                                <li>Vinculo de cada indicador com uma ou mais consultas externas</li>
+                                <li>Definicao do campo de resultado esperado em cada consulta</li>
+                                <li>Base preparada para futuras telas, apuracoes e sincronizacoes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}

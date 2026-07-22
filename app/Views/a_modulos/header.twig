@@ -1,0 +1,157 @@
+<style>
+    .dashboard-filter-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(2, 6, 23, 0.72);
+    }
+
+    .dashboard-filter-modal.is-visible {
+        display: flex;
+    }
+
+    .dashboard-filter-dialog {
+        width: min(560px, 100%);
+        padding: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        border-radius: 8px;
+        background: var(--card-bg);
+        box-shadow: 0 22px 64px rgba(0, 0, 0, 0.38);
+    }
+
+    .dashboard-filter-titlebar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+        padding: 4px 4px 0;
+    }
+
+    .dashboard-filter-titlebar h2 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .dashboard-period-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .dashboard-period-actions,
+    .dashboard-global-action,
+    .dashboard-period-status {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-period-actions .btn {
+        flex: 1 1 120px;
+    }
+
+    .dashboard-filter-dialog .form-label,
+    .dashboard-period-status {
+        color: var(--muted-text);
+    }
+
+    @media (max-width: 575.98px) {
+        .dashboard-period-form {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% set cores = {
+    'Concluído': 'app-header-meta-pill-dark',
+    'Em andamento': 'app-header-meta-pill-dark',
+    'Não iniciado': 'app-header-meta-pill-dark'
+} %}
+{% set header_menu_items = [
+    { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+    { kind: 'button', label: 'Filtro de período', icon: 'bi-funnel', id: 'dashboardFilterToggle', class: 'text-primary', aria_controls: 'dashboardPeriodForm', aria_expanded: 'false', title: 'Mostrar filtro de período' },
+    { kind: 'theme' },
+    { kind: 'button', label: 'Alternar para Tabela', icon: 'bi-table', id: 'viewToggleBtn', class: 'text-body' },
+    { kind: 'link', label: 'Registros', icon: 'bi-table', url: url('bsc/registros'), class: 'text-info-emphasis' }
+] %}
+{% set header_meta_items = [
+    {
+        icon: 'bi-calendar3',
+        text: periodo.data_inicio and periodo.data_fim
+            ? (periodo.data_inicio|date('d/m/Y') ~ ' à ' ~ periodo.data_fim|date('d/m/Y'))
+            : (periodo.data_inicio
+                ? ('A partir de ' ~ periodo.data_inicio|date('d/m/Y'))
+                : (periodo.data_fim ? ('Até ' ~ periodo.data_fim|date('d/m/Y')) : 'Sem filtro')),
+        class: ''
+    },
+    {
+        text: 'Status: ' ~ (status ?? 'Em Desenvolvimento'),
+        class: cores[status] ?? 'app-header-meta-pill-dark'
+    }
+] %}
+
+{% include "a_modulos/app_header.twig" with {
+    header_title: name,
+    header_subtitle: description ~ ' - ' ~ saudacao(),
+    header_menu_items: header_menu_items,
+    header_meta_items: header_meta_items
+} %}
+
+<div class="dashboard-filter-modal" id="dashboardFilterModal" aria-hidden="true">
+    <div class="dashboard-filter-dialog">
+        <div class="dashboard-filter-titlebar">
+            <h2>Filtro de período</h2>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="dashboardFilterClose" aria-label="Fechar filtro">
+                ×
+            </button>
+        </div>
+        <form id="dashboardPeriodForm"
+            class="dashboard-period-form"
+            data-local-url="{{ url('bsc/filter/local') }}"
+            data-clear-local-url="{{ url('bsc/filter/local/clear') }}"
+            data-global-url="{{ url('bsc/filter/global') }}"
+            data-data-url="{{ url('bsc/dashboard-data') }}"
+            data-is-admin="{{ is_admin ? '1' : '0' }}">
+            <div>
+                <label for="dashboardDataInicio" class="form-label small mb-1">Data início</label>
+                <input type="date"
+                    class="form-control form-control-sm"
+                    id="dashboardDataInicio"
+                    name="data_inicio"
+                    value="{{ periodo.data_inicio ?? '' }}">
+            </div>
+            <div>
+                <label for="dashboardDataFim" class="form-label small mb-1">Data fim</label>
+                <input type="date"
+                    class="form-control form-control-sm"
+                    id="dashboardDataFim"
+                    name="data_fim"
+                    value="{{ periodo.data_fim ?? '' }}">
+            </div>
+            <div class="dashboard-period-actions">
+                <button type="button" class="btn btn-sm btn-primary flex-fill" id="dashboardApplyLocal">
+                    Aplicar
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" id="dashboardClearLocal">
+                    Limpar
+                </button>
+            </div>
+            {% if is_admin %}
+                <div class="dashboard-global-action">
+                    <button type="button" class="btn btn-sm btn-outline-warning w-100" id="dashboardApplyGlobal">
+                        Salvar período global
+                    </button>
+                </div>
+            {% endif %}
+            <div class="dashboard-period-status">
+                <small id="dashboardPeriodStatus">
+                    Filtro ativo: {{ periodo.tipo == 'local' ? 'local' : (periodo.tipo == 'global' ? 'global' : 'sem filtro') }}
+                </small>
+            </div>
+        </form>
+    </div>
+</div>

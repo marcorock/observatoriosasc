@@ -1,0 +1,80 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h4 mb-1">Usuários administrativos</h1>
+            <p class="text-body-secondary mb-0">{{ usuarios|length }} usuário(s) cadastrado(s)</p>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <a href="{{ url('admin/painel') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                Painel
+            </a>
+            <a href="{{ url('admin/usuarios/novo') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus" aria-hidden="true"></i>
+                Novo usuário
+            </a>
+        </div>
+    </div>
+
+    {% if erro %}
+        <div class="alert alert-danger">{{ erro }}</div>
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Status</th>
+                        <th>Cadastrado em</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr>
+                            <td class="fw-semibold">{{ usuario.nome }}</td>
+                            <td>{{ usuario.cpf|slice(0,3) }}.{{ usuario.cpf|slice(3,3) }}.{{ usuario.cpf|slice(6,3) }}-{{ usuario.cpf|slice(9,2) }}</td>
+                            <td>
+                                <span class="badge {{ usuario.ativo ? 'text-bg-success' : 'text-bg-secondary' }}">
+                                    {{ usuario.ativo ? 'Ativo' : 'Inativo' }}
+                                </span>
+                            </td>
+                            <td>{{ usuario.created_at ? usuario.created_at|date('d/m/Y H:i') : '-' }}</td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{{ url('admin/usuarios/editar/' ~ usuario.id) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                    </a>
+                                    {% if admin.id == usuario.id %}
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="O usuário da sessão atual não pode ser excluído">
+                                            <i class="bi bi-lock" aria-hidden="true"></i>
+                                        </button>
+                                    {% else %}
+                                        <form action="{{ url('admin/usuarios/delete/' ~ usuario.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Deseja realmente excluir este usuário administrativo?');">
+                                            {{ form_token_input('admin_user_delete_' ~ usuario.id) }}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-body-secondary py-4">Nenhum usuário administrativo encontrado.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock main %}

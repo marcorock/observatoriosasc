@@ -1,0 +1,12 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+{% include "admin/ppa/vinculos/_form.html" with {
+    form_action: url('admin/ppa/vinculos/update/' ~ dados.id),
+    form_token_key: 'ppa_link_edit_' ~ dados.id,
+    page_title: 'Editar vinculo PPA',
+    page_subtitle: 'Atualize o relacionamento entre indicador e consulta externa',
+    submit_label: 'Salvar alteracoes',
+    cancel_url: url('admin/ppa/vinculos')
+} %}
+{% endblock main %}

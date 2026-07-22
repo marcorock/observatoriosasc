@@ -1,0 +1,389 @@
+{% extends "base.twig" %}
+
+{% block header %}
+    {% set header_menu_items = [
+        { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+        { kind: 'link', label: 'Indicadores PPA', icon: 'bi-grid', url: url('ppa'), class: 'text-warning' },
+        { kind: 'button', label: 'Alternar para Tabela', icon: 'bi-table', id: 'viewToggleBtn', class: 'text-body' },
+        { kind: 'theme' }
+    ] %}
+    {% set header_meta_items = [
+        {
+            icon: 'bi-calendar3',
+            text: dados.referencia ? ('Base CECAD: ' ~ dados.referencia|date('d/m/Y')) : 'Base CECAD sem referencia definida',
+            class: ''
+        },
+        {
+            icon: 'bi-clock-history',
+            text: dados.ano_apuracao ? ((dashboard_ui.year_badge_label ?? 'RMA') ~ ': ' ~ dados.ano_apuracao) : ((dashboard_ui.year_badge_label ?? 'RMA') ~ ' sem ano identificado'),
+            class: ''
+        },
+        {
+            icon: 'bi-info-circle',
+            text: 'Status: ' ~ status,
+            class: 'app-header-meta-pill-dark'
+        }
+    ] %}
+
+    {% include "a_modulos/app_header.twig" with {
+        header_title: name,
+        header_subtitle: description ~ ' - ' ~ saudacao(),
+        header_menu_items: header_menu_items,
+        header_meta_items: header_meta_items
+    } %}
+{% endblock header %}
+
+{% block cards %}
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardBaseFamilias">
+            <small class="text-uppercase text-secondary summary-label">{{ dashboard_ui.base_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value" id="ppaCardBaseFamiliasValue">{{ dados.total_geral|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot" id="ppaCardBaseFamiliasFoot">{{ mensagem }}</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardMeta">
+            <small class="text-uppercase text-warning summary-label">{{ dashboard_ui.meta_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaValue">{{ dados.meta_familias|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot">{{ dashboard_ui.meta_foot }}</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardAcompanhadas">
+            <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.acompanhadas_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaCardAcompanhadasValue">{{ dados.familias_acompanhadas_total|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot" id="ppaCardAcompanhadasFoot">{{ dashboard_ui.acompanhadas_foot }}</span>
+        </div>
+    </div>
+    <div class="col">
+        {% if dashboard_ui.show_period_progress %}
+            {% set percentual_ok = (dados.percentual_alcancado_total|default(0)) >= (dados.percentual_periodo|default(0)) %}
+            <div class="card-custom summary-card h-100 overflow-hidden" id="ppaCardPercentual">
+                <div class="row g-0 h-100">
+                    <div class="col-6 p-3 text-center border-end">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                        <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
+                    </div>
+                    <div class="col-6 p-3 text-center">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.period_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-primary' }}" id="ppaCardPeriodoValue">{{ dados.percentual_periodo|default(0)|number_format(2, ',', '.') }}%</h2>
+                        <span class="summary-foot">{{ dashboard_ui.period_foot }}</span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card-custom p-3 text-center summary-card" id="ppaCardPercentual">
+                <small class="text-uppercase text-info summary-label">{{ dashboard_ui.percentual_label }}</small>
+                <h2 class="fw-bold mb-0 summary-value text-info" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
+            </div>
+        {% endif %}
+    </div>
+{% endblock cards %}
+
+{% block graphics %}
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #ppaInteractivePanel {
+            display: block !important;
+            flex: none !important;
+            height: auto;
+            min-height: auto !important;
+        }
+
+        #ppaClearFiltersBtn {
+            --bs-btn-padding-y: 0.18rem;
+            --bs-btn-padding-x: 0.65rem;
+            --bs-btn-font-size: 0.84rem;
+            line-height: 1;
+        }
+
+        #ppaInteractiveStatus {
+            font-size: 0.84rem !important;
+            line-height: 1.1;
+        }
+
+        .ppa-filter-pill {
+            font-size: 0.82rem;
+            line-height: 1;
+        }
+
+        .ppa-filter-pill span {
+            color: #7dd3fc;
+        }
+
+        .ppa-progress-table-shell .data-table {
+            table-layout: auto;
+            min-width: 100%;
+        }
+
+        .ppa-progress-table-shell .data-table th,
+        .ppa-progress-table-shell .data-table td {
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            vertical-align: middle;
+        }
+
+        .ppa-progress-table-shell .data-table thead th {
+            padding: 10px 12px !important;
+            font-size: 0.96rem !important;
+            white-space: nowrap !important;
+        }
+
+        .ppa-progress-table-shell .data-table tbody td {
+            padding: 10px 12px !important;
+            font-size: 1.12rem !important;
+            line-height: 1.15;
+        }
+
+        .ppa-progress-table-shell .data-table-axis {
+            font-weight: 700;
+        }
+
+        #ppaMensalTableMount .data-table th,
+        #ppaMensalTableMount .data-table td {
+            white-space: nowrap !important;
+        }
+
+        #ppaMensalTableMount .data-table th:nth-child(1),
+        #ppaMensalTableMount .data-table td:nth-child(1) {
+            width: 20%;
+        }
+
+        #ppaMensalTableMount .data-table th:nth-child(2),
+        #ppaMensalTableMount .data-table td:nth-child(2),
+        #ppaMensalTableMount .data-table th:nth-child(3),
+        #ppaMensalTableMount .data-table td:nth-child(3) {
+            width: 23%;
+        }
+
+        #ppaMensalTableMount .data-table th:nth-child(4),
+        #ppaMensalTableMount .data-table td:nth-child(4),
+        #ppaMensalTableMount .data-table th:nth-child(5),
+        #ppaMensalTableMount .data-table td:nth-child(5) {
+            width: 17%;
+        }
+
+        #ppaCrasTableMount .data-table th {
+            white-space: nowrap !important;
+        }
+
+        #ppaCrasTableMount .data-table td:not(.data-table-axis) {
+            white-space: nowrap !important;
+        }
+
+        #ppaCrasTableMount .data-table td.data-table-axis {
+            white-space: normal !important;
+        }
+
+        #ppaCrasTableMount .data-table th:nth-child(1),
+        #ppaCrasTableMount .data-table td:nth-child(1) {
+            width: 34%;
+        }
+
+        #ppaCrasTableMount .data-table th:nth-child(2),
+        #ppaCrasTableMount .data-table td:nth-child(2),
+        #ppaCrasTableMount .data-table th:nth-child(3),
+        #ppaCrasTableMount .data-table td:nth-child(3),
+        #ppaCrasTableMount .data-table th:nth-child(4),
+        #ppaCrasTableMount .data-table td:nth-child(4),
+        #ppaCrasTableMount .data-table th:nth-child(5),
+        #ppaCrasTableMount .data-table td:nth-child(5) {
+            width: 16.5%;
+        }
+
+        #view-graficos .chart-viewport {
+            min-height: 250px !important;
+        }
+
+        @media (max-width: 1199.98px) {
+            .ppa-progress-table-shell .data-table {
+                min-width: 760px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            #ppaInteractiveStatus {
+                width: 100%;
+            }
+        }
+    </style>
+
+    {# <div class="card-custom py-2 px-3 mb-3" id="ppaInteractivePanel" data-endpoint="{{ interactive_endpoint }}">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="fw-bold fs-5 lh-1 flex-shrink-0">Filtros ativos:</div>
+            <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1" id="ppaActiveFilters">
+                    {% if interactive_filters.cras %}
+                        <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">CRAS <span>{{ interactive_filters.cras }}</span></span>
+                    {% endif %}
+                    {% if interactive_filters.mes_referencia %}
+                        <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">Mês <span>{{ interactive_filters.mes_referencia|date('m/Y') }}</span></span>
+                    {% endif %}
+                    {% if not interactive_filters.cras and not interactive_filters.mes_referencia %}
+                        <span class="text-secondary small fw-semibold">Nenhum filtro cruzado aplicado.</span>
+                    {% endif %}
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-lg-auto flex-shrink-0" id="ppaClearFiltersBtn" disabled>Limpar filtros</button>
+            <span class="text-secondary small fw-semibold flex-shrink-0" id="ppaInteractiveStatus">{{ dashboard_ui.filter_hint ?? 'Clique em um CRAS ou mês para filtrar.' }}</span>
+        </div>
+    </div> #}
+
+    <div id="view-graficos" class="row row-cols-1 row-cols-lg-2 g-3 mb-0 row-flexible fade-in">
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">{{ dashboard_ui.mensal_title }}</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaGraficoMensal"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">{{ dashboard_ui.cras_title }}</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaGraficoCrasAcompanhamento"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-tabela" class="row row-flexible g-3 mb-3 d-none fade-in">
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">{{ dashboard_ui.mensal_table_title }}</h6>
+                            <span class="data-table-subtitle text-secondary">{{ dashboard_ui.mensal_table_subtitle }}</span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaMensalCountBadge">{{ dados.tabela_mensal|length }} meses</span>
+                    </div>
+
+                    <div id="ppaMensalTableMount">
+                        <div id="ppaTabelaMensalCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_mensal|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-progress-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Mês</th>
+                                                        <th scope="col" class="text-end">Acompanhadas</th>
+                                                        <th scope="col" class="text-end">Acumulado</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.mensal_percent_label }}</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.mensal_accum_label }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-axis">{{ row.mes_label }}</td>
+                                                            <td class="text-end">{{ row.familias_acompanhadas|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.acumulado|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.percentual_mes|number_format(2, ',', '.') }}%</td>
+                                                            <td class="text-end">{{ row.percentual_acumulado|number_format(2, ',', '.') }}%</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado mensal encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">{{ dashboard_ui.cras_table_title }}</h6>
+                            <span class="data-table-subtitle text-secondary">{{ dashboard_ui.cras_table_subtitle }}</span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaCrasCountBadge">{{ dados.tabela_cras|length }} CRAS</span>
+                    </div>
+
+                    <div id="ppaCrasTableMount">
+                        <div id="ppaTabelaCrasProgressCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_cras|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-progress-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">CRAS</th>
+                                                        <th scope="col" class="text-end">Base PBF</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.cras_meta_label }}</th>
+                                                        <th scope="col" class="text-end">Acomp.</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.cras_progress_label }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-axis">{{ row.cras }}</td>
+                                                            <td class="text-end">{{ row.base_familias_pbf|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.meta_familias|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.familias_acompanhadas|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.percentual_alcancado|number_format(2, ',', '.') }}%</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado territorial encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock graphics %}
+
+{% block js %}
+<script>
+    window.ppaInitialInteractiveState = {{ {
+        endpoint: interactive_endpoint,
+        filters: interactive_filters,
+        payload: dados,
+        ui: dashboard_ui
+    }|json_encode|raw }};
+</script>
+<script src="/assets/main/js/ppa-dashboard-interactive.js"></script>
+<script>
+    (() => {
+        const acompanhamentoMensal = {{ dados.grafico_mensal|json_encode|raw }};
+        const acompanhamentoCras = {{ dados.grafico_cras|json_encode|raw }};
+
+        createChart('ppaGraficoMensal', acompanhamentoMensal, 'mes', 'bar', 'total', { showLegend: false });
+        createChart('ppaGraficoCrasAcompanhamento', acompanhamentoCras, 'cras', 'bar', 'total', { showLegend: false });
+    })();
+</script>
+{% endblock js %}

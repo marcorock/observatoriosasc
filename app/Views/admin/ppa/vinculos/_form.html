@@ -1,0 +1,80 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-9">
+            {% if erro %}
+                <div class="alert alert-danger">{{ erro }}</div>
+            {% endif %}
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <h1 class="h4 mb-1">{{ page_title }}</h1>
+                        <p class="text-body-secondary mb-0">{{ page_subtitle }}</p>
+                    </div>
+
+                    <form action="{{ form_action }}" method="POST" class="row g-3">
+                        {{ form_token_input(form_token_key) }}
+
+                        <div class="col-12 col-md-6">
+                            <label for="indicador_id" class="form-label fw-semibold">Indicador</label>
+                            <select class="form-select" id="indicador_id" name="indicador_id" required>
+                                <option value="">Selecione</option>
+                                {% for indicator in indicators %}
+                                    <option value="{{ indicator.id }}" {{ (dados.indicador_id ?? '') == indicator.id ? 'selected' : '' }}>
+                                        {{ indicator.codigo_indicador }} - {{ indicator.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="external_query_id" class="form-label fw-semibold">Consulta externa</label>
+                            <select class="form-select" id="external_query_id" name="external_query_id" required>
+                                <option value="">Selecione</option>
+                                {% for query in queries %}
+                                    <option value="{{ query.id }}" {{ (dados.external_query_id ?? '') == query.id ? 'selected' : '' }}>
+                                        {{ query.nome }}{% if query.source_nome is defined %} - {{ query.source_nome }}{% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="papel" class="form-label fw-semibold">Papel</label>
+                            <select class="form-select" id="papel" name="papel" required>
+                                <option value="principal" {{ (dados.papel ?? 'principal') == 'principal' ? 'selected' : '' }}>principal</option>
+                                <option value="base" {{ (dados.papel ?? 'principal') == 'base' ? 'selected' : '' }}>base</option>
+                                <option value="apoio" {{ (dados.papel ?? 'principal') == 'apoio' ? 'selected' : '' }}>apoio</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="campo_resultado" class="form-label fw-semibold">Campo de resultado</label>
+                            <input type="text" class="form-control" id="campo_resultado" name="campo_resultado" maxlength="120" value="{{ dados.campo_resultado ?? '' }}" placeholder="Ex.: total_familias">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="ativo" class="form-label fw-semibold">Status</label>
+                            <select class="form-select" id="ativo" name="ativo" required>
+                                <option value="1" {{ (dados.ativo ?? 1) == 1 ? 'selected' : '' }}>Ativo</option>
+                                <option value="0" {{ (dados.ativo ?? 1) == 0 ? 'selected' : '' }}>Inativo</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="observacao" class="form-label fw-semibold">Observacao</label>
+                            <textarea class="form-control" id="observacao" name="observacao" rows="4">{{ dados.observacao ?? '' }}</textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="col-12 d-flex flex-column flex-sm-row justify-content-end gap-2">
+                            <a href="{{ cancel_url }}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,389 @@
+{% extends "base.twig" %}
+
+{% block header %}
+    {% set header_menu_items = [
+        { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+        { kind: 'link', label: 'Indicadores PPA', icon: 'bi-grid', url: url('ppa'), class: 'text-warning' },
+        { kind: 'button', label: 'Alternar para Tabela', icon: 'bi-table', id: 'viewToggleBtn', class: 'text-body' },
+        { kind: 'theme' }
+    ] %}
+    {% set header_meta_items = [
+        {
+            icon: 'bi-bullseye',
+            text: dashboard_ui.meta_label ~ ': ' ~ dados.meta_anual|number_format(0, ',', '.'),
+            class: ''
+        },
+        {
+            icon: 'bi-clock-history',
+            text: dados.ano_apuracao ? (dashboard_ui.year_badge_label ~ ': ' ~ dados.ano_apuracao) : (dashboard_ui.year_badge_label ~ ' sem ano identificado'),
+            class: ''
+        },
+        {
+            icon: 'bi-info-circle',
+            text: 'Status: ' ~ status,
+            class: 'app-header-meta-pill-dark'
+        }
+    ] %}
+
+    {% include "a_modulos/app_header.twig" with {
+        header_title: name,
+        header_subtitle: description ~ ' - ' ~ saudacao(),
+        header_menu_items: header_menu_items,
+        header_meta_items: header_meta_items
+    } %}
+{% endblock header %}
+
+{% block cards %}
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardTotal">
+            <small class="text-uppercase text-secondary summary-label">{{ dashboard_ui.total_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value" id="ppaUnitCardTotalValue">{{ dados.total_unidades|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot" id="ppaUnitCardTotalFoot">{{ dashboard_ui.total_foot }}</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardMeta">
+            <small class="text-uppercase text-warning summary-label">{{ dashboard_ui.meta_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaUnitCardMetaValue">{{ dados.meta_anual|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot">{{ dashboard_ui.meta_foot }}</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardAcompanhadas">
+            <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.acompanhadas_label }}</small>
+            <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardAcompanhadasValue">{{ dados.total_inseridos|number_format(0, ',', '.') }}</h2>
+            <span class="summary-foot" id="ppaUnitCardAcompanhadasFoot">{{ dashboard_ui.acompanhadas_foot }}</span>
+        </div>
+    </div>
+    <div class="col">
+        {% if dashboard_ui.show_period_progress %}
+            {% set percentual_ok = (dados.percentual_alcancado_total|default(0)) >= (dados.percentual_periodo|default(0)) %}
+            <div class="card-custom summary-card h-100 overflow-hidden" id="ppaUnitCardPercentual">
+                <div class="row g-0 h-100">
+                    <div class="col-6 p-3 text-center border-end">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.period_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-primary' }}" id="ppaUnitCardPeriodoValue">{{ dados.percentual_periodo|default(0)|number_format(2, ',', '.') }}%</h2>
+                        <span class="summary-foot">{{ dashboard_ui.period_foot }}</span>
+                    </div>
+                    <div class="col-6 p-3 text-center">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaUnitCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                        <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardPercentual">
+                <small class="text-uppercase text-info summary-label">{{ dashboard_ui.percentual_label }}</small>
+                <h2 class="fw-bold mb-0 summary-value text-info" id="ppaUnitCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
+            </div>
+        {% endif %}
+    </div>
+{% endblock cards %}
+
+{% block graphics %}
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #ppaUnitInteractivePanel {
+            display: block !important;
+            flex: none !important;
+            height: auto;
+            min-height: auto !important;
+        }
+
+        #ppaUnitClearFiltersBtn {
+            --bs-btn-padding-y: 0.18rem;
+            --bs-btn-padding-x: 0.65rem;
+            --bs-btn-font-size: 0.84rem;
+            line-height: 1;
+        }
+
+        #ppaUnitInteractiveStatus {
+            font-size: 0.84rem !important;
+            line-height: 1.1;
+        }
+
+        .ppa-filter-pill {
+            font-size: 0.82rem;
+            line-height: 1;
+        }
+
+        .ppa-filter-pill span {
+            color: #7dd3fc;
+        }
+
+        .ppa-progress-table-shell .data-table {
+            table-layout: auto;
+            min-width: 100%;
+        }
+
+        .ppa-progress-table-shell .data-table th,
+        .ppa-progress-table-shell .data-table td {
+            word-break: normal !important;
+            overflow-wrap: normal !important;
+            vertical-align: middle;
+        }
+
+        .ppa-progress-table-shell .data-table thead th {
+            padding: 10px 12px !important;
+            font-size: 0.96rem !important;
+            white-space: nowrap !important;
+        }
+
+        .ppa-progress-table-shell .data-table tbody td {
+            padding: 10px 12px !important;
+            font-size: 1.12rem !important;
+            line-height: 1.15;
+        }
+
+        .ppa-progress-table-shell .data-table-axis {
+            font-weight: 700;
+        }
+
+        #ppaUnitMensalTableMount .data-table th,
+        #ppaUnitMensalTableMount .data-table td {
+            white-space: nowrap !important;
+        }
+
+        #ppaUnitMensalTableMount .data-table th:nth-child(1),
+        #ppaUnitMensalTableMount .data-table td:nth-child(1) {
+            width: 20%;
+        }
+
+        #ppaUnitMensalTableMount .data-table th:nth-child(2),
+        #ppaUnitMensalTableMount .data-table td:nth-child(2),
+        #ppaUnitMensalTableMount .data-table th:nth-child(3),
+        #ppaUnitMensalTableMount .data-table td:nth-child(3) {
+            width: 23%;
+        }
+
+        #ppaUnitMensalTableMount .data-table th:nth-child(4),
+        #ppaUnitMensalTableMount .data-table td:nth-child(4),
+        #ppaUnitMensalTableMount .data-table th:nth-child(5),
+        #ppaUnitMensalTableMount .data-table td:nth-child(5) {
+            width: 17%;
+        }
+
+        #ppaUnitTableMount .data-table th {
+            white-space: nowrap !important;
+        }
+
+        #ppaUnitTableMount .data-table td:not(.data-table-axis) {
+            white-space: nowrap !important;
+        }
+
+        #ppaUnitTableMount .data-table td.data-table-axis {
+            white-space: normal !important;
+        }
+
+        #ppaUnitTableMount .data-table th:nth-child(1),
+        #ppaUnitTableMount .data-table td:nth-child(1) {
+            width: 34%;
+        }
+
+        #ppaUnitTableMount .data-table th:nth-child(2),
+        #ppaUnitTableMount .data-table td:nth-child(2),
+        #ppaUnitTableMount .data-table th:nth-child(3),
+        #ppaUnitTableMount .data-table td:nth-child(3),
+        #ppaUnitTableMount .data-table th:nth-child(4),
+        #ppaUnitTableMount .data-table td:nth-child(4),
+        #ppaUnitTableMount .data-table th:nth-child(5),
+        #ppaUnitTableMount .data-table td:nth-child(5) {
+            width: 16.5%;
+        }
+
+        #view-graficos .chart-viewport {
+            min-height: 250px !important;
+        }
+
+        @media (max-width: 1199.98px) {
+            .ppa-progress-table-shell .data-table {
+                min-width: 760px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            #ppaUnitInteractiveStatus {
+                width: 100%;
+            }
+        }
+    </style>
+
+    {# <div class="card-custom py-2 px-3 mb-3" id="ppaUnitInteractivePanel" data-endpoint="{{ interactive_endpoint }}">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="fw-bold fs-5 lh-1 flex-shrink-0">Filtros ativos:</div>
+            <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1" id="ppaUnitActiveFilters">
+                {% if interactive_filters.unidade %}
+                    <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">{{ dashboard_ui.filter_unit_label }} <span>{{ interactive_filters.unidade }}</span></span>
+                {% endif %}
+                {% if interactive_filters.mes_referencia %}
+                    <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">Mês <span>{{ interactive_filters.mes_referencia|date('m/Y') }}</span></span>
+                {% endif %}
+                {% if not interactive_filters.unidade and not interactive_filters.mes_referencia %}
+                    <span class="text-secondary small fw-semibold">Nenhum filtro cruzado aplicado.</span>
+                {% endif %}
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-lg-auto flex-shrink-0" id="ppaUnitClearFiltersBtn" disabled>Limpar filtros</button>
+            <span class="text-secondary small fw-semibold flex-shrink-0" id="ppaUnitInteractiveStatus">{{ dashboard_ui.filter_hint }}</span>
+        </div>
+    </div> #}
+
+    <div id="view-graficos" class="row row-cols-1 row-cols-lg-2 g-3 mb-0 row-flexible fade-in">
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">{{ dashboard_ui.mensal_title }}</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaUnitGraficoMensal"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">{{ dashboard_ui.unidade_title }}</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaUnitGraficoUnidades"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-tabela" class="row row-flexible g-3 mb-3 d-none fade-in">
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">{{ dashboard_ui.mensal_table_title }}</h6>
+                            <span class="data-table-subtitle text-secondary">{{ dashboard_ui.mensal_table_subtitle }}</span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaUnitMensalCountBadge">{{ dados.tabela_mensal|length }} meses</span>
+                    </div>
+
+                    <div id="ppaUnitMensalTableMount">
+                        <div id="ppaUnitTabelaMensalCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_mensal|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-progress-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Mês</th>
+                                                        <th scope="col" class="text-end">Inseridos</th>
+                                                        <th scope="col" class="text-end">Acumulado</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.mensal_percent_label }}</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.mensal_accum_label }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-axis">{{ row.mes_label }}</td>
+                                                            <td class="text-end">{{ row.total_inseridos|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.acumulado|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.percentual_mes|number_format(2, ',', '.') }}%</td>
+                                                            <td class="text-end">{{ row.percentual_acumulado|number_format(2, ',', '.') }}%</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado mensal encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">{{ dashboard_ui.unidade_table_title }}</h6>
+                            <span class="data-table-subtitle text-secondary">{{ dashboard_ui.unidade_table_subtitle }}</span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaUnitCountBadge">{{ dados.tabela_unidades|length }} {{ dashboard_ui.filter_unit_label }}</span>
+                    </div>
+
+                    <div id="ppaUnitTableMount">
+                        <div id="ppaUnitTabelaCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_unidades|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-progress-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">{{ dashboard_ui.filter_unit_label }}</th>
+                                                        <th scope="col" class="text-end">Inseridos</th>
+                                                        <th scope="col" class="text-end">Part. %</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.unit_meta_label }}</th>
+                                                        <th scope="col" class="text-end">{{ dashboard_ui.unit_progress_label }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-axis">{{ row.unidade }}</td>
+                                                            <td class="text-end">{{ row.total_inseridos|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.participacao|number_format(2, ',', '.') }}%</td>
+                                                            <td class="text-end">{{ row.meta_anual|number_format(0, ',', '.') }}</td>
+                                                            <td class="text-end">{{ row.percentual_meta|number_format(2, ',', '.') }}%</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado territorial encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock graphics %}
+
+{% block js %}
+<script>
+    window.ppaUnitInitialInteractiveState = {{ {
+        endpoint: interactive_endpoint,
+        filters: interactive_filters,
+        payload: dados,
+        ui: dashboard_ui
+    }|json_encode|raw }};
+</script>
+<script src="/assets/main/js/ppa-unit-dashboard-interactive.js"></script>
+<script>
+    (() => {
+        const acompanhamentoMensal = {{ dados.grafico_mensal|json_encode|raw }};
+        const acompanhamentoUnidades = {{ dados.grafico_unidades|json_encode|raw }};
+
+        createChart('ppaUnitGraficoMensal', acompanhamentoMensal, 'mes', 'bar', 'total', { showLegend: false });
+        createChart('ppaUnitGraficoUnidades', acompanhamentoUnidades, 'unidade', 'bar', 'total', { showLegend: false });
+    })();
+</script>
+{% endblock js %}

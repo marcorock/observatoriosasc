@@ -1,0 +1,241 @@
+{% extends "base_form.twig" %}
+
+{% block head_assets %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+{% endblock head_assets %}
+
+{% block main %}
+<style>
+    .records-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .records-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 8px;
+    }
+
+    .records-title {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .records-subtitle {
+        color: var(--muted-text);
+    }
+
+    .table-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .table-actions .btn {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        min-width: 112px;
+        justify-content: center;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+    .dt-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    table.dataTable > tbody > tr.child ul.dtr-details {
+        width: 100%;
+    }
+
+    @media (max-width: 767.98px) {
+        .records-toolbar {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .records-toolbar .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="records-toolbar">
+        <div>
+            <h1 class="records-title">Registros BSC</h1>
+            <div class="records-subtitle">{{ dados|length }} registros encontrados</div>
+        </div>
+
+        <div class="d-flex flex-column flex-sm-row gap-2">
+            <a href="{{ url('bsc') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                Dashboard
+            </a>
+            <a href="{{ url('bsc/create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                Novo registro
+            </a>
+        </div>
+    </div>
+
+    {% if erro %}
+        <div class="alert alert-danger">{{ erro }}</div>
+    {% endif %}
+
+    <div class="records-card p-3 p-md-4">
+        <table id="bscRecordsTable" class="table table-dark table-striped table-hover align-middle nowrap w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Estratégia</th>
+                    <th>Eixo</th>
+                    <th>Situação</th>
+                    <th>Status detalhado</th>
+                    <th>Data de referência</th>
+                    <th class="no-export text-center">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in dados %}
+                    {% set statusClasses = {
+                        'Concluído': 'text-bg-success',
+                        'Em andamento': 'text-bg-warning',
+                        'Não iniciado': 'text-bg-danger',
+                        'cancelado': 'text-bg-secondary'
+                    } %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.estrategia }}</td>
+                        <td>{{ row.eixo }}</td>
+                        <td>
+                            <span class="badge status-badge {{ statusClasses[row.situacao] ?? 'text-bg-secondary' }}">
+                                {{ row.situacao }}
+                            </span>
+                        </td>
+                        <td>{{ row.status_detalhado ?? '-' }}</td>
+                        <td data-order="{{ row.data_referencia ?? '' }}">
+                            {{ row.data_referencia ? row.data_referencia|date('d/m/Y') : '-' }}
+                        </td>
+                        <td class="text-center">
+                            <div class="table-actions">
+                                <a href="{{ url('bsc/show/' ~ row.id) }}" class="btn btn-sm btn-outline-info" title="Visualizar" aria-label="Visualizar registro {{ row.id }}">
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                </a>
+                                <a href="{{ url('bsc/edit/' ~ row.id) }}" class="btn btn-sm btn-outline-warning" title="Editar" aria-label="Editar registro {{ row.id }}">
+                                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                </a>
+                                <form action="{{ url('bsc/delete/' ~ row.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Deseja excluir este registro?');">
+                                    {{ form_token_input('bsc_delete_' ~ row.id) }}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir" aria-label="Excluir registro {{ row.id }}">
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock main %}
+
+{% block js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+<script>
+$(function () {
+    $('#bscRecordsTable').DataTable({
+        responsive: true,
+        scrollX: true,
+        autoWidth: false,
+        pageLength: 10,
+        lengthMenu: [10, 25, 50, 100],
+        order: [[0, 'asc']],
+        dom: "<'row g-3 align-items-center mb-3'<'col-12 col-lg-5'B><'col-12 col-lg-3'l><'col-12 col-lg-4'f>>" +
+            "<'row'<'col-12'tr>>" +
+            "<'row g-3 align-items-center mt-3'<'col-12 col-lg-5'i><'col-12 col-lg-7'p>>",
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                text: '<i class="bi bi-file-earmark-excel" aria-hidden="true"></i> Excel',
+                className: 'btn btn-success',
+                title: 'Registros BSC',
+                exportOptions: {
+                    columns: ':not(.no-export)'
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                text: '<i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> PDF',
+                className: 'btn btn-danger',
+                title: 'Registros BSC',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                exportOptions: {
+                    columns: ':not(.no-export)'
+                }
+            }
+        ],
+        columnDefs: [
+            { targets: 0, responsivePriority: 1 },
+            { targets: 1, responsivePriority: 2 },
+            { targets: 6, responsivePriority: 3, orderable: false, searchable: false },
+            { targets: [4], responsivePriority: 100 }
+        ],
+        language: {
+            decimal: ',',
+            thousands: '.',
+            emptyTable: 'Nenhum registro encontrado',
+            info: 'Mostrando _START_ até _END_ de _TOTAL_ registros',
+            infoEmpty: 'Mostrando 0 até 0 de 0 registros',
+            infoFiltered: '(filtrado de _MAX_ registros no total)',
+            lengthMenu: 'Mostrar _MENU_ registros',
+            loadingRecords: 'Carregando...',
+            processing: 'Processando...',
+            search: 'Buscar:',
+            zeroRecords: 'Nenhum registro correspondente encontrado',
+            paginate: {
+                first: 'Primeiro',
+                last: 'Último',
+                next: 'Próximo',
+                previous: 'Anterior'
+            },
+            buttons: {
+                excel: 'Excel',
+                pdf: 'PDF'
+            }
+        }
+    });
+});
+</script>
+{% endblock js %}

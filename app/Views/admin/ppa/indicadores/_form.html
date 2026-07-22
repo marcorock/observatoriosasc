@@ -1,0 +1,144 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            {% if erro %}
+                <div class="alert alert-danger">{{ erro }}</div>
+            {% endif %}
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <h1 class="h4 mb-1">{{ page_title }}</h1>
+                        <p class="text-body-secondary mb-0">{{ page_subtitle }}</p>
+                    </div>
+
+                    <form action="{{ form_action }}" method="POST" class="row g-3">
+                        {{ form_token_input(form_token_key) }}
+
+                        <div class="col-12 col-md-4">
+                            <label for="codigo_indicador" class="form-label fw-semibold">Codigo interno</label>
+                            <input type="text" class="form-control" id="codigo_indicador" name="codigo_indicador" maxlength="50" value="{{ dados.codigo_indicador ?? '' }}" placeholder="Ex.: PPA-ERRADICAR-POBREZA" required>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <label for="numero_programa" class="form-label fw-semibold">Numero do programa</label>
+                            <input type="number" class="form-control" id="numero_programa" name="numero_programa" min="0" value="{{ dados.numero_programa ?? '' }}">
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                            <label for="nome" class="form-label fw-semibold">Nome do indicador</label>
+                            <input type="text" class="form-control" id="nome" name="nome" maxlength="255" value="{{ dados.nome ?? '' }}" required>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="unidade_medida" class="form-label fw-semibold">Unidade de medida</label>
+                            <input type="text" class="form-control" id="unidade_medida" name="unidade_medida" maxlength="100" value="{{ dados.unidade_medida ?? '' }}">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="indice_recente" class="form-label fw-semibold">Indice recente</label>
+                            <input type="text" class="form-control" id="indice_recente" name="indice_recente" value="{{ dados.indice_recente ?? '' }}">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="indice_futuro" class="form-label fw-semibold">Indice futuro</label>
+                            <input type="text" class="form-control" id="indice_futuro" name="indice_futuro" value="{{ dados.indice_futuro ?? '' }}">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="tipo_apuracao" class="form-label fw-semibold">Tipo de apuracao</label>
+                            <select class="form-select" id="tipo_apuracao" name="tipo_apuracao" required>
+                                <option value="manual" {{ (dados.tipo_apuracao ?? 'manual') == 'manual' ? 'selected' : '' }}>Manual</option>
+                                <option value="automatico" {{ (dados.tipo_apuracao ?? 'manual') == 'automatico' ? 'selected' : '' }}>Consulta externa</option>
+                                <option value="hibrido" {{ (dados.tipo_apuracao ?? 'manual') == 'hibrido' ? 'selected' : '' }}>Mista</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="periodicidade" class="form-label fw-semibold">Periodicidade</label>
+                            <select class="form-select" id="periodicidade" name="periodicidade" required>
+                                {% set periodicidade_atual = dados.periodicidade ?? 'anual' %}
+                                <option value="mensal" {{ periodicidade_atual == 'mensal' ? 'selected' : '' }}>Mensal</option>
+                                <option value="bimestral" {{ periodicidade_atual == 'bimestral' ? 'selected' : '' }}>Bimestral</option>
+                                <option value="trimestral" {{ periodicidade_atual == 'trimestral' ? 'selected' : '' }}>Trimestral</option>
+                                <option value="quadrimestral" {{ periodicidade_atual == 'quadrimestral' ? 'selected' : '' }}>Quadrimestral</option>
+                                <option value="semestral" {{ periodicidade_atual == 'semestral' ? 'selected' : '' }}>Semestral</option>
+                                <option value="anual" {{ periodicidade_atual == 'anual' ? 'selected' : '' }}>Anual</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="ativo" class="form-label fw-semibold">Status</label>
+                            <select class="form-select" id="ativo" name="ativo" required>
+                                <option value="1" {{ (dados.ativo ?? 1) == 1 ? 'selected' : '' }}>Ativo</option>
+                                <option value="0" {{ (dados.ativo ?? 1) == 0 ? 'selected' : '' }}>Inativo</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="objetivo" class="form-label fw-semibold">Objetivo</label>
+                            <textarea class="form-control" id="objetivo" name="objetivo" rows="3">{{ dados.objetivo ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="justificativa" class="form-label fw-semibold">Justificativa</label>
+                            <textarea class="form-control" id="justificativa" name="justificativa" rows="3">{{ dados.justificativa ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="publico_alvo" class="form-label fw-semibold">Publico alvo</label>
+                            <input type="text" class="form-control" id="publico_alvo" name="publico_alvo" maxlength="255" value="{{ dados.publico_alvo ?? '' }}">
+                        </div>
+
+                        <div class="col-12 col-md-2">
+                            <label for="ods_codigo" class="form-label fw-semibold">ODS</label>
+                            <input type="text" class="form-control" id="ods_codigo" name="ods_codigo" maxlength="50" value="{{ dados.ods_codigo ?? '' }}" placeholder="Ex.: ODS 1">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <label for="ods_descricao" class="form-label fw-semibold">Descricao ODS</label>
+                            <input type="text" class="form-control" id="ods_descricao" name="ods_descricao" maxlength="255" value="{{ dados.ods_descricao ?? '' }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label for="meta_ods" class="form-label fw-semibold">Meta ODS</label>
+                            <textarea class="form-control" id="meta_ods" name="meta_ods" rows="3">{{ dados.meta_ods ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="memoria_calculo" class="form-label fw-semibold">Memoria de calculo</label>
+                            <textarea class="form-control" id="memoria_calculo" name="memoria_calculo" rows="5">{{ dados.memoria_calculo ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="fonte_dados" class="form-label fw-semibold">Fonte dos dados</label>
+                            <textarea class="form-control" id="fonte_dados" name="fonte_dados" rows="3">{{ dados.fonte_dados ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="criterio_utilizado" class="form-label fw-semibold">Criterio utilizado</label>
+                            <textarea class="form-control" id="criterio_utilizado" name="criterio_utilizado" rows="3">{{ dados.criterio_utilizado ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="forma_calculo" class="form-label fw-semibold">Forma de calculo</label>
+                            <textarea class="form-control" id="forma_calculo" name="forma_calculo" rows="3">{{ dados.forma_calculo ?? '' }}</textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="resultado_esperado" class="form-label fw-semibold">Resultado esperado</label>
+                            <textarea class="form-control" id="resultado_esperado" name="resultado_esperado" rows="3">{{ dados.resultado_esperado ?? '' }}</textarea>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="col-12 d-flex flex-column flex-sm-row justify-content-end gap-2">
+                            <a href="{{ cancel_url }}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

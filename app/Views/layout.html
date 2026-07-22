@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Observatório</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0f172a; /* Tom escuro similar à imagem */
+            color: #f8fafc;
+        }
+        .card-custom {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            height: 100%;
+        }
+        /* Ajuste para garantir preenchimento em telas 1080p */
+        @media (min-width: 1200px) {
+            .full-hd-container {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                padding: 20px;
+            }
+            .row-flexible { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid full-hd-container">
+    
+    <header class="row mb-3 g-2">
+        <div class="col-12">
+            <div class="card-custom p-3">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h4 class="mb-0">MODO TV: Observatório</h4>
+                        <small class="text-secondary">Dados em tempo real (1920x1080)</small>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                        <div class="row g-2 justify-content-md-end">
+                            <div class="col-auto"><span class="badge bg-primary">Mês: Setembro</span></div>
+                            <div class="col-auto"><span class="badge bg-success">Status: Ativo</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mb-3">
+        <div class="col">
+            <div class="card-custom p-3 text-center">
+                <small class="text-uppercase text-secondary">Total Famílias</small>
+                <h2 class="fw-bold mb-0">103.796</h2>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center border-start border-primary border-4">
+                <small class="text-uppercase text-secondary">Total Pessoas</small>
+                <h2 class="fw-bold mb-0 text-info">231.164</h2>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center">
+                <small class="text-uppercase text-secondary">Bolsa Família</small>
+                <h2 class="fw-bold mb-0 text-success">32.376</h2>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center">
+                <small class="text-uppercase text-secondary">Benefício BPC</small>
+                <h2 class="fw-bold mb-0 text-warning">14.822</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-lg-3 g-3 mb-3 row-flexible">
+        <div class="col">
+            <div class="card-custom p-3">
+                <h6>Distribuição Territorial</h6>
+                <div class="d-flex align-items-center justify-content-center" style="min-height: 200px;">
+                    <span class="text-muted">[Espaço p/ Mapa ou Gráfico]</span>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3">
+                <h6>Distribuição por Região</h6>
+                <div style="min-height: 200px;">
+                    <div class="progress mb-2" style="height: 30px;"><div class="progress-bar" style="width: 80%">Sul</div></div>
+                    <div class="progress mb-2" style="height: 30px;"><div class="progress-bar bg-info" style="width: 65%">Leste</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3">
+                <h6>Público por Faixa Etária</h6>
+                <div class="d-flex justify-content-center">
+                    <div style="width: 150px; height: 150px; border: 15px solid #0dcaf0; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <small>68% Adultos</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-lg-3 g-3 row-flexible">
+        <div class="col">
+            <div class="card-custom p-3">
+                <h6>Atendimentos por Unidade</h6>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover table-sm small">
+                        <thead>
+                            <tr><th>CRAS</th><th>Total</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Alto da Ponte</td><td>74</td></tr>
+                            <tr><td>Anhembi</td><td>34</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3">
+                <h6>Renda Per Capita</h6>
+                <div class="mt-2">
+                    <div class="mb-2 small">Renda 0.00: <div class="bg-warning text-dark p-1" style="width: 90%">27.538</div></div>
+                    <div class="mb-2 small">Até 1/4 SM: <div class="bg-warning text-dark p-1" style="width: 60%">16.252</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center">
+                <h6>Faixa Etária Agrupada</h6>
+                <div class="mt-4 text-muted small">Gráfico de Barras Detalhado</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

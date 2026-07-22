@@ -1,0 +1,12 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+{% include "admin/ppa/indicadores/_form.html" with {
+    form_action: url('admin/ppa/indicadores/update/' ~ dados.id),
+    form_token_key: 'ppa_indicator_edit_' ~ dados.id,
+    page_title: 'Editar indicador PPA',
+    page_subtitle: 'Atualizacao do cadastro base do indicador',
+    submit_label: 'Salvar alteracoes',
+    cancel_url: url('admin/ppa/indicadores')
+} %}
+{% endblock main %}

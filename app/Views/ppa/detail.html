@@ -1,0 +1,357 @@
+{% extends "base.twig" %}
+
+{% block header %}
+    {% set header_menu_items = [
+        { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+        { kind: 'link', label: 'Indicadores PPA', icon: 'bi-grid', url: url('ppa'), class: 'text-warning' },
+        { kind: 'button', label: 'Alternar para Tabela', icon: 'bi-table', id: 'viewToggleBtn', class: 'text-body' },
+        { kind: 'theme' }
+    ] %}
+    {% set header_meta_items = [
+        {
+            icon: 'bi-calendar3',
+            text: dados.referencia ? ('Base: ' ~ dados.referencia|date('d/m/Y')) : 'Base sem referencia definida',
+            class: ''
+        },
+        {
+            icon: 'bi-info-circle',
+            text: 'Status: ' ~ status,
+            class: 'app-header-meta-pill-dark'
+        }
+    ] %}
+
+    {% include "a_modulos/app_header.twig" with {
+        header_title: name,
+        header_subtitle: description ~ ' - ' ~ saudacao(),
+        header_menu_items: header_menu_items,
+        header_meta_items: header_meta_items
+    } %}
+{% endblock header %}
+
+{% block cards %}
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardTotalFamilias">
+            <small class="text-uppercase text-secondary summary-label">Total de familias</small>
+            <h2 class="fw-bold mb-0 summary-value" id="ppaCardTotalFamiliasValue">{{ dados.total_geral ?? 0 }}</h2>
+            <span class="summary-foot" id="ppaCardTotalFamiliasFoot">{{ mensagem }}</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardTotalPessoas">
+            <small class="text-uppercase text-primary summary-label">Total de pessoas</small>
+            <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaCardTotalPessoasValue">{{ dados.total_pessoas ?? 0 }}</h2>
+            <span class="summary-foot">Pessoas residentes nas familias mapeadas</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardTotalCras">
+            <small class="text-uppercase text-warning summary-label">CRAS</small>
+            <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardTotalCrasValue">{{ dados.cras_total ?? 0 }}</h2>
+            <span class="summary-foot">Territorios acompanhados</span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card-custom p-3 text-center summary-card" id="ppaCardTotalBairros">
+            <small class="text-uppercase text-info summary-label">Bairros</small>
+            <h2 class="fw-bold mb-0 summary-value text-info" id="ppaCardTotalBairrosValue">{{ dados.bairro_total ?? 0 }}</h2>
+            <span class="summary-foot">Recortes territoriais consolidados</span>
+        </div>
+    </div>
+{% endblock cards %}
+
+{% block graphics %}
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        #ppaInteractivePanel {
+            display: block !important;
+            flex: none !important;
+            height: auto;
+            min-height: auto !important;
+        }
+
+        #ppaClearFiltersBtn {
+            --bs-btn-padding-y: 0.18rem;
+            --bs-btn-padding-x: 0.65rem;
+            --bs-btn-font-size: 0.84rem;
+            line-height: 1;
+        }
+
+        #ppaInteractiveStatus {
+            font-size: 0.84rem !important;
+            line-height: 1.1;
+        }
+
+        .ppa-filter-pill {
+            font-size: 0.82rem;
+            line-height: 1;
+        }
+
+        .ppa-filter-pill span {
+            color: #7dd3fc;
+        }
+
+        .ppa-table-shell .data-table {
+            table-layout: auto;
+            min-width: 100%;
+        }
+
+        .ppa-table-shell .data-table th,
+        .ppa-table-shell .data-table td {
+            white-space: normal;
+            word-break: normal;
+            overflow-wrap: anywhere;
+            vertical-align: middle;
+        }
+
+        .ppa-table-shell .data-table thead th {
+            padding: 12px 14px;
+            font-size: 0.88rem;
+        }
+
+        .ppa-table-shell .data-table tbody td {
+            padding: 12px 14px;
+            font-size: 1.02rem;
+            line-height: 1.18;
+        }
+
+        .ppa-table-shell .data-table-strategy {
+            max-width: none;
+            font-weight: 700;
+            line-height: 1.18;
+        }
+
+        .ppa-table-shell .data-table-axis {
+            line-height: 1.15;
+            white-space: nowrap;
+        }
+
+        .ppa-table-cras th:nth-child(1),
+        .ppa-table-cras td:nth-child(1) {
+            width: 50%;
+        }
+
+        .ppa-table-cras th:nth-child(2),
+        .ppa-table-cras td:nth-child(2) {
+            width: 14%;
+        }
+
+        .ppa-table-cras th:nth-child(3),
+        .ppa-table-cras td:nth-child(3),
+        .ppa-table-cras th:nth-child(4),
+        .ppa-table-cras td:nth-child(4) {
+            width: 18%;
+        }
+
+        .ppa-table-bairro th:nth-child(1),
+        .ppa-table-bairro td:nth-child(1) {
+            width: 38%;
+        }
+
+        .ppa-table-bairro th:nth-child(2),
+        .ppa-table-bairro td:nth-child(2) {
+            width: 30%;
+        }
+
+        .ppa-table-bairro th:nth-child(3),
+        .ppa-table-bairro td:nth-child(3) {
+            width: 14%;
+        }
+
+        .ppa-table-bairro th:nth-child(4),
+        .ppa-table-bairro td:nth-child(4) {
+            width: 18%;
+        }
+
+        @media (max-width: 1199.98px) {
+            .ppa-table-shell .data-table {
+                min-width: 760px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            #ppaInteractiveStatus {
+                width: 100%;
+            }
+        }
+    </style>
+
+    {# <div class="card-custom py-2 px-3 mb-3" id="ppaInteractivePanel" data-endpoint="{{ interactive_endpoint }}">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <div class="fw-bold fs-5 lh-1 flex-shrink-0">Filtros ativos:</div>
+            <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1" id="ppaActiveFilters">
+                {% if interactive_filters.cras %}
+                    <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">CRAS <span>{{ interactive_filters.cras }}</span></span>
+                {% endif %}
+                {% if interactive_filters.regiao %}
+                    <span class="badge rounded-pill text-bg-secondary px-3 py-2 ppa-filter-pill">Região <span>{{ interactive_filters.regiao }}</span></span>
+                {% endif %}
+                {% if not interactive_filters.cras and not interactive_filters.regiao %}
+                    <span class="text-secondary small fw-semibold">Nenhum filtro cruzado aplicado.</span>
+                {% endif %}
+            </div>
+            <button type="button" class="btn btn-outline-secondary btn-sm ms-lg-auto flex-shrink-0" id="ppaClearFiltersBtn" disabled>Limpar filtros</button>
+            <span class="text-secondary small fw-semibold flex-shrink-0" id="ppaInteractiveStatus">Clique em um CRAS ou região para filtrar.</span>
+        </div>
+    </div> #}
+
+    <div id="view-graficos" class="row row-cols-1 row-cols-lg-2 g-3 mb-0 row-flexible fade-in">
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">Familias por CRAS</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaGraficoCras"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card-custom chart-card p-3 h-100">
+                <h6 style="font-size: 1.2rem; font-weight: 700;" class="mb-3">Familias por regiao</h6>
+                <div class="chart-viewport" style="min-height: 300px;">
+                    <canvas id="ppaGraficoRegiao"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-tabela" class="row row-flexible g-3 mb-3 d-none fade-in">
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">Familias por CRAS</h6>
+                            <span class="data-table-subtitle text-secondary">
+                                {{ indicator.nome ? ('Consolidado territorial de ' ~ indicator.nome) : 'Consolidado territorial do indicador ativo do PPA' }}
+                            </span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaCrasCountBadge">{{ dados.tabela_cras|length }} CRAS</span>
+                    </div>
+
+                    <div id="ppaCrasTableMount">
+                        <div id="ppaTabelaCrasCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_cras|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100 ppa-table-cras">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">CRAS</th>
+                                                        <th scope="col">Regiao</th>
+                                                        <th scope="col" class="text-end">Familias</th>
+                                                        <th scope="col" class="text-end">Pessoas</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-strategy">{{ row.cras }}</td>
+                                                            <td class="data-table-axis">{{ row.regiao }}</td>
+                                                            <td class="data-table-date text-end">{{ row.total_familias }}</td>
+                                                            <td class="data-table-date text-end">{{ row.total_pessoas }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <div class="card-custom data-table-card p-4 h-100">
+                <div class="w-100">
+                    <div class="data-table-header d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="data-table-title">Familias por bairro</h6>
+                            <span class="data-table-subtitle text-secondary">
+                                {{ indicator.nome ? ('Agrupamento territorial de ' ~ indicator.nome) : 'Agrupamento por bairro com referencia de CRAS e regiao' }}
+                            </span>
+                        </div>
+                        <span class="badge bg-secondary" style="font-size: 1rem;" id="ppaBairroCountBadge">{{ dados.tabela_bairro|length }} bairros</span>
+                    </div>
+
+                    <div id="ppaBairroTableMount">
+                        <div id="ppaTabelaBairroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
+                            <div class="carousel-inner">
+                                {% for pagina in dados.tabela_bairro|batch(8) %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <div class="table-responsive data-table-shell ppa-table-shell">
+                                            <table class="table data-table tv-table-large align-middle mb-0 w-100 ppa-table-bairro">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Bairro</th>
+                                                        <th scope="col">CRAS</th>
+                                                        <th scope="col">Regiao</th>
+                                                        <th scope="col" class="text-end">Familias</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in pagina %}
+                                                        <tr>
+                                                            <td class="data-table-strategy">{{ row.bairro }}</td>
+                                                            <td class="data-table-axis">{{ row.cras }}</td>
+                                                            <td class="data-table-axis">{{ row.regiao }}</td>
+                                                            <td class="data-table-date text-end">{{ row.total_familias }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-center mt-3 text-secondary fw-bold">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 10s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-5 text-secondary">
+                                        <h4>Nenhum dado encontrado.</h4>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock graphics %}
+
+{% block js %}
+<script>
+    window.ppaSingleQueryInteractiveState = {{ {
+        endpoint: interactive_endpoint,
+        filters: interactive_filters,
+        payload: dados
+    }|json_encode|raw }};
+</script>
+<script src="/assets/main/js/ppa-single-query-interactive.js"></script>
+<script>
+    (() => {
+        const familiasPorCras = {{ dados.familias_por_cras|json_encode|raw }};
+        const familiasPorRegiao = {{ dados.familias_por_regiao|json_encode|raw }};
+        const isPpaMobile = window.innerWidth <= 576;
+        const ppaPieOptions = isPpaMobile
+            ? { showLegend: false, datalabelOffset: 6 }
+            : { showLegend: true, legendPosition: 'right', datalabelAnchor: 'center', datalabelAlign: 'center', datalabelOffset: 0, dataLabelFontSize: 15 };
+
+        createChart('ppaGraficoCras', familiasPorCras, 'cras', 'pie', 'total', ppaPieOptions);
+        createChart('ppaGraficoRegiao', familiasPorRegiao, 'regiao', 'bar', 'total', { showLegend: false });
+    })();
+</script>
+{% endblock js %}

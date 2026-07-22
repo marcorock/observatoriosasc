@@ -1,0 +1,12 @@
+{% extends "base_form.twig" %}
+
+{% block main %}
+{% include "admin/ppa/vinculos/_form.html" with {
+    form_action: url('admin/ppa/vinculos/store'),
+    form_token_key: 'ppa_link_create',
+    page_title: 'Novo vinculo PPA',
+    page_subtitle: 'Associe um indicador do PPA a uma consulta externa cadastrada',
+    submit_label: 'Salvar vinculo',
+    cancel_url: url('admin/ppa/vinculos')
+} %}
+{% endblock main %}

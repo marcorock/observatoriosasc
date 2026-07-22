@@ -1,0 +1,641 @@
+{% extends "base_form.twig" %}
+
+{% block header %}
+{% include "a_modulos/app_header.twig" with {
+    header_title: name,
+    header_subtitle: '',
+    header_menu_items: [
+        { kind: 'link', label: 'Home', icon: 'bi-house-door', url: url(''), class: 'text-body' },
+        { kind: 'theme' }
+    ],
+    header_meta_items: [
+        {
+            icon: 'bi-grid',
+            text: summary.total_indicadores ~ ' indicadores',
+            class: ''
+        },
+        {
+            icon: 'bi-check2-circle',
+            text: summary.meta_atingida ~ ' metas atingidas',
+            class: 'app-header-meta-pill-dark'
+        }
+    ]
+} %}
+{% endblock header %}
+
+{% block main %}
+<style>
+    body {
+        overflow: hidden;
+    }
+
+    .ppa-catalog-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    .ppa-summary-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 96px;
+    }
+
+    .ppa-summary-label {
+        font-size: 1.05rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted-text);
+    }
+
+    .ppa-summary-value {
+        font-size: 2.15rem !important;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .ppa-summary-foot {
+        color: var(--muted-text);
+        font-size: 0.9rem;
+    }
+
+    .ppa-monitor-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+
+    .ppa-monitor-card > .w-100 {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+
+    .ppa-monitor-shell {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .ppa-monitor-pages {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ppa-monitor-page {
+        display: none;
+        height: 100%;
+    }
+
+    .ppa-monitor-page.is-active {
+        display: block;
+    }
+
+    .ppa-pagination-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+    }
+
+    .ppa-page-indicators {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .ppa-page-dot {
+        width: 10px;
+        height: 10px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.5);
+        padding: 0;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .ppa-page-dot.is-active {
+        background: #2563eb;
+        transform: scale(1.15);
+    }
+
+    .ppa-page-dot:focus-visible {
+        outline: 2px solid rgba(37, 99, 235, 0.35);
+        outline-offset: 2px;
+    }
+
+    .ppa-monitor-shell .data-table {
+        min-width: 100%;
+    }
+
+    .ppa-monitor-shell .data-table-shell,
+    .ppa-monitor-shell {
+        background: var(--table-bg);
+    }
+
+    .ppa-monitor-shell .data-table thead th {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .ppa-monitor-shell .data-table tbody td {
+        padding: 12px 14px;
+        font-size: 0.96rem;
+        color: var(--table-text);
+    }
+
+    .ppa-monitor-shell .data-table-page-note {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--muted-text);
+    }
+
+    .ppa-monitor-shell .data-table tbody tr {
+        background: var(--table-row-bg);
+    }
+
+    .ppa-monitor-shell .data-table tbody tr:nth-child(even) {
+        background: var(--table-row-alt-bg);
+    }
+
+    .ppa-indicator-name {
+        color: var(--app-text);
+        font-weight: 800;
+        line-height: 1.18;
+    }
+
+    .ppa-indicator-goal {
+        color: var(--muted-text);
+        font-size: 0.83rem;
+        line-height: 1.32;
+        margin-top: 4px;
+    }
+
+    .ppa-kicker {
+        color: #93c5fd;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+    }
+
+    .ppa-table-value {
+        color: var(--app-text);
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .ppa-table-muted {
+        color: var(--muted-text);
+        font-size: 0.8rem;
+        margin-top: 2px;
+    }
+
+    .ppa-status-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 122px;
+        padding: 7px 10px;
+        border-radius: 8px;
+        font-size: 0.84rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .ppa-status-success {
+        border-left: 4px solid var(--bs-success);
+        background: rgba(var(--bs-success-rgb), 0.18);
+        color: #8ee6ad;
+    }
+
+    .ppa-status-warning {
+        border-left: 4px solid var(--bs-warning);
+        background: rgba(var(--bs-warning-rgb), 0.18);
+        color: #ffe08a;
+    }
+
+    .ppa-status-danger {
+        border-left: 4px solid var(--bs-danger);
+        background: rgba(var(--bs-danger-rgb), 0.18);
+        color: #ff9aa8;
+    }
+
+    .ppa-status-secondary {
+        border-left: 4px solid var(--bs-secondary);
+        background: rgba(var(--bs-secondary-rgb), 0.18);
+        color: #cbd5e1;
+    }
+
+    .ppa-progress-track {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(148, 163, 184, 0.18);
+    }
+
+    .ppa-progress-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #38bdf8, #22c55e);
+    }
+
+    [data-theme="light"] .ppa-monitor-card {
+        background: var(--card-bg);
+        border-color: var(--card-border);
+    }
+
+    [data-theme="light"] .ppa-monitor-shell,
+    [data-theme="light"] .ppa-monitor-shell .data-table-shell {
+        background: var(--table-bg);
+    }
+
+    [data-theme="light"] .ppa-monitor-shell .data-table {
+        color: #1e293b;
+        --bs-table-color: #1e293b;
+        --bs-table-bg: #ffffff;
+        --bs-table-border-color: rgba(148, 163, 184, 0.24);
+        --bs-table-striped-color: #1e293b;
+        --bs-table-striped-bg: #f8fafc;
+        --bs-table-hover-color: #1e293b;
+        --bs-table-hover-bg: #eef4fb;
+    }
+
+    [data-theme="light"] .ppa-monitor-shell .data-table thead th {
+        background: #e9f0f8;
+        --bs-table-bg: #e9f0f8;
+        color: #4b6178;
+        border-bottom-color: rgba(148, 163, 184, 0.3);
+    }
+
+    [data-theme="light"] .ppa-monitor-shell .data-table tbody tr {
+        background: #ffffff;
+    }
+
+    [data-theme="light"] .ppa-monitor-shell .data-table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    [data-theme="light"] .ppa-monitor-shell .data-table tbody td,
+    [data-theme="light"] .ppa-indicator-name,
+    [data-theme="light"] .ppa-table-value,
+    [data-theme="light"] .ppa-action-btn {
+        color: #12355b;
+    }
+
+    [data-theme="light"] .ppa-indicator-goal,
+    [data-theme="light"] .ppa-table-muted,
+    [data-theme="light"] .data-table-subtitle {
+        color: #5f7891;
+    }
+
+    [data-theme="light"] .ppa-kicker {
+        color: #1d4ed8;
+    }
+
+    [data-theme="light"] .ppa-status-secondary {
+        color: #475569;
+    }
+
+    [data-theme="light"] .ppa-action-btn.btn-primary {
+        color: #ffffff;
+    }
+
+    .ppa-action-btn {
+        min-width: 132px;
+        white-space: nowrap;
+    }
+
+    .ppa-col-indicador {
+        width: 34%;
+    }
+
+    .ppa-col-unidade {
+        width: 11%;
+    }
+
+    .ppa-col-meta,
+    .ppa-col-realizado {
+        width: 10%;
+    }
+
+    .ppa-col-percentual {
+        width: 18%;
+    }
+
+    .ppa-col-status {
+        width: 9%;
+    }
+
+    .ppa-col-acao {
+        width: 8%;
+    }
+
+    @media (min-width: 1200px) {
+        .full-hd-container {
+            height: 100vh;
+        }
+
+        .ppa-monitor-shell .data-table tbody td {
+            padding: 9px 12px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
+<div class="ppa-catalog-layout">
+    {% if mensagem %}
+        <div class="alert alert-warning mb-0">{{ mensagem }}</div>
+    {% endif %}
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3">
+        <div class="col">
+            <div class="card-custom p-3 text-center summary-card ppa-summary-card">
+                <small class="ppa-summary-label">Total de indicadores</small>
+                <div class="ppa-summary-value">{{ summary.total_indicadores }}</div>
+                <span class="ppa-summary-foot">Indicadores públicos do PPA</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center summary-card ppa-summary-card">
+                <small class="ppa-summary-label text-primary">Indicadores ativos</small>
+                <div class="ppa-summary-value text-primary">{{ summary.indicadores_ativos }}</div>
+                <span class="ppa-summary-foot">Indicadores habilitados no sistema</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center summary-card ppa-summary-card">
+                <small class="ppa-summary-label text-warning">Meta atingida</small>
+                <div class="ppa-summary-value text-warning">{{ summary.meta_atingida }}</div>
+                <span class="ppa-summary-foot">Com 100% da meta ou mais</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card-custom p-3 text-center summary-card ppa-summary-card">
+                <small class="ppa-summary-label text-info">Média de execução</small>
+                <div class="ppa-summary-value text-info">
+                    {% if summary.media_execucao is not null %}
+                        {{ summary.media_execucao|number_format(2, ',', '.') }}%
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+                <span class="ppa-summary-foot">Média dos indicadores com leitura</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-flexible g-3">
+        <div class="col-12">
+            <div class="card-custom data-table-card p-4 ppa-monitor-card h-100">
+                <div class="w-100">
+                    <div class="data-table-header mb-3">
+                        <div>
+                            <h6 class="data-table-title">Painel de indicadores</h6>
+                            <span class="data-table-subtitle">Meta, realizado e percentual atingido por indicador</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap justify-content-end">
+                            <div class="ppa-pagination-controls" id="ppaCatalogPaginationControls">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="ppaCatalogPrevBtn">Anterior</button>
+                                <div class="ppa-page-indicators" id="ppaCatalogPageIndicators">
+                                    {% for pagina in indicators|batch(3) %}
+                                        <button
+                                            type="button"
+                                            class="ppa-page-dot {% if loop.first %}is-active{% endif %}"
+                                            data-page-target="{{ loop.index0 }}"
+                                            aria-label="Ir para a página {{ loop.index }}"
+                                            aria-current="{{ loop.first ? 'true' : 'false' }}"
+                                        ></button>
+                                    {% else %}
+                                        <button type="button" class="ppa-page-dot is-active" aria-label="Página única" aria-current="true"></button>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="ppaCatalogNextBtn">Próxima</button>
+                            </div>
+                            <span class="data-table-page" id="ppaCatalogPageStatus">Total: {{ indicators|length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="data-table-shell ppa-monitor-shell">
+                        <div id="ppaCatalogPages" class="ppa-monitor-pages" data-page-count="{{ indicators|batch(3)|length }}">
+                                {% for pagina in indicators|batch(3) %}
+                                    <div class="ppa-monitor-page {% if loop.first %}is-active{% endif %}" data-page-index="{{ loop.index0 }}">
+                                        <table class="table data-table align-middle mb-0 w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" class="ppa-col-indicador">Indicador</th>
+                                                    <th scope="col" class="ppa-col-unidade">Unidade</th>
+                                                    <th scope="col" class="text-end ppa-col-meta">Meta</th>
+                                                    <th scope="col" class="text-end ppa-col-realizado">Realizado</th>
+                                                    <th scope="col" class="ppa-col-percentual">% atingido</th>
+                                                    <th scope="col" class="ppa-col-status">Status</th>
+                                                    <th scope="col" class="text-end ppa-col-acao">Ação</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for indicator in pagina %}
+                                                    {% if indicator %}
+                                                        {% set progress = indicator.percentual_atingido is not null ? min(indicator.percentual_atingido, 100) : 0 %}
+                                                        <tr>
+                                                            <td>
+                                                                <div class="ppa-kicker">
+                                                                    {{ indicator.ods_codigo ?: 'Indicador PPA' }}
+                                                                    {% if indicator.numero_programa %}
+                                                                        • Programa {{ indicator.numero_programa }}
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="ppa-indicator-name">{{ indicator.nome }}</div>
+                                                                <div class="ppa-indicator-goal">
+                                                                    {{ indicator.objetivo ?: indicator.justificativa ?: 'Indicador cadastrado no módulo PPA.' }}
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="ppa-table-value">{{ indicator.unidade_medida ?: '-' }}</div>
+                                                                <div class="ppa-table-muted">{{ indicator.periodicidade|capitalize }}</div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="ppa-table-value">
+                                                                    {% if indicator.meta_valor is not null %}
+                                                                        {{ indicator.meta_valor|number_format(0, ',', '.') }}
+                                                                    {% else %}
+                                                                        -
+                                                                    {% endif %}
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <div class="ppa-table-value">
+                                                                    {% if indicator.realizado_valor is not null %}
+                                                                        {{ indicator.realizado_valor|number_format(0, ',', '.') }}
+                                                                    {% else %}
+                                                                        -
+                                                                    {% endif %}
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {% if indicator.percentual_atingido is not null %}
+                                                                    <div class="d-flex justify-content-between gap-2 mb-2">
+                                                                        <span class="ppa-table-muted mt-0">Execução</span>
+                                                                        <span class="ppa-table-value">{{ indicator.percentual_atingido|number_format(2, ',', '.') }}%</span>
+                                                                    </div>
+                                                                    <div class="ppa-progress-track">
+                                                                        <div class="ppa-progress-fill" style="width: {{ progress }}%;"></div>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="ppa-table-value">-</div>
+                                                                    <div class="ppa-table-muted">Sem leitura</div>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <span class="ppa-status-chip ppa-status-{{ indicator.status_painel_classe }}">
+                                                                    {{ indicator.status_painel }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                {% if indicator.vinculos_ativos > 0 %}
+                                                                    <a href="{{ url('ppa/' ~ indicator.slug) }}" class="btn btn-primary btn-sm ppa-action-btn">
+                                                                        Ver painel
+                                                                    </a>
+                                                                {% else %}
+                                                                    <button type="button" class="btn btn-outline-secondary btn-sm ppa-action-btn" disabled>
+                                                                        Em preparação
+                                                                    </button>
+                                                                {% endif %}
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <tr>
+                                                        <td colspan="7" class="text-center py-5 text-secondary">
+                                                            Nenhum indicador ativo do PPA foi encontrado.
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="text-center py-2 data-table-page-note">
+                                            Página {{ loop.index }} de {{ loop.length }} (Mudando em 12s...)
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="ppa-monitor-page is-active" data-page-index="0">
+                                        <table class="table data-table align-middle mb-0 w-100">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="7" class="text-center py-5 text-secondary">
+                                                        Nenhum indicador ativo do PPA foi encontrado.
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock main %}
+
+{% block js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pagesRoot = document.getElementById('ppaCatalogPages');
+        const prevBtn = document.getElementById('ppaCatalogPrevBtn');
+        const nextBtn = document.getElementById('ppaCatalogNextBtn');
+        const statusNode = document.getElementById('ppaCatalogPageStatus');
+        const dots = Array.from(document.querySelectorAll('[data-page-target]'));
+        const pages = Array.from(document.querySelectorAll('[data-page-index]'));
+
+        if (!pagesRoot || pages.length <= 1) {
+            if (statusNode) {
+                statusNode.textContent = 'Total: {{ indicators|length }}';
+            }
+            return;
+        }
+
+        let currentIndex = 0;
+        let timerId = null;
+        const intervalMs = 12000;
+
+        const updateControls = function () {
+            dots.forEach(function (dot, index) {
+                const active = index === currentIndex;
+                dot.classList.toggle('is-active', active);
+                dot.setAttribute('aria-current', active ? 'true' : 'false');
+            });
+
+            if (statusNode) {
+                statusNode.textContent = 'Página ' + (currentIndex + 1) + ' de ' + pages.length + ' • Total: {{ indicators|length }}';
+            }
+        };
+
+        const showPage = function (index) {
+            currentIndex = (index + pages.length) % pages.length;
+
+            pages.forEach(function (page, pageIndex) {
+                page.classList.toggle('is-active', pageIndex === currentIndex);
+            });
+
+            updateControls();
+        };
+
+        const restartTimer = function () {
+            if (timerId) {
+                window.clearInterval(timerId);
+            }
+
+            timerId = window.setInterval(function () {
+                showPage(currentIndex + 1);
+            }, intervalMs);
+        };
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function () {
+                showPage(currentIndex - 1);
+                restartTimer();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function () {
+                showPage(currentIndex + 1);
+                restartTimer();
+            });
+        }
+
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                const target = Number(dot.getAttribute('data-page-target') || '0');
+                showPage(target);
+                restartTimer();
+            });
+        });
+
+        pagesRoot.addEventListener('mouseenter', function () {
+            if (timerId) {
+                window.clearInterval(timerId);
+                timerId = null;
+            }
+        });
+
+        pagesRoot.addEventListener('mouseleave', function () {
+            restartTimer();
+        });
+
+        showPage(0);
+        restartTimer();
+    });
+</script>
+{% endblock js %}
