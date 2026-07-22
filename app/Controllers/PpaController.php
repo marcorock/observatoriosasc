@@ -2113,119 +2113,31 @@ class PpaController extends BaseController
     /**
      * Calcula as métricas de um indicador para exibição no catálogo.
      * 
-     * Retorna:
-     * - Meta: De indice_futuro (fallback) ou calculada a partir da base RMA
-     * - Realizado: De indice_recente (fallback) ou total de famílias acompanhadas
-     * - Percentual: Realizado/Meta * 100
-     * 
-     * Para indicadores RMA, executa as consultas para obter dados reais.
-     * Para indicadores simples, usa valores estáticos (indice_futuro/indice_recente).
+     * Usa somente os valores persistidos no cadastro do indicador. O catálogo não
+     * executa consultas externas; os dados em tempo real ficam restritos ao
+     * dashboard detalhado de cada indicador.
      * 
      * Aplicável a TODOS os indicadores do PPA.
      * 
-     * @param object $indicator Indicador com indice_futuro, indice_recente, id
+     * @param object $indicator Indicador com indice_futuro e indice_recente
      * @return array Array com 'meta', 'realizado', 'percentual' (ou null se sem dados)
      */
     private function catalogIndicatorMetrics(object $indicator): array
     {
-        $fallbackMeta = isset($indicator->indice_futuro) && $indicator->indice_futuro !== null
+        $meta = isset($indicator->indice_futuro) && $indicator->indice_futuro !== null
             ? (float) $indicator->indice_futuro
             : null;
-        $fallbackRealizado = isset($indicator->indice_recente) && $indicator->indice_recente !== null
+        $realizado = isset($indicator->indice_recente) && $indicator->indice_recente !== null
             ? (float) $indicator->indice_recente
             : null;
-        $fallbackPercentual = ($fallbackMeta !== null && $fallbackMeta > 0 && $fallbackRealizado !== null)
-            ? ($fallbackRealizado / $fallbackMeta) * 100
+        $percentual = ($meta !== null && $meta > 0 && $realizado !== null)
+            ? ($realizado / $meta) * 100
             : null;
 
-        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) ($indicator->id ?? 0));
-
-        if (is_string($links) || $links === []) {
-            return [
-                'meta' => $fallbackMeta,
-                'realizado' => $fallbackRealizado,
-                'percentual' => $fallbackPercentual,
-            ];
-        }
-
-        if ($this->isCadUpdateRmaIndicator($indicator)) {
-            $payload = $this->buildCadUpdateRmaResponse($indicator, $links, [
-                'cras' => null,
-                'mes_referencia' => null,
-            ]);
-
-            $dados = $payload['dados'] ?? [];
-            $meta = isset($dados['meta_familias']) ? (float) $dados['meta_familias'] : $fallbackMeta;
-            $realizado = isset($dados['familias_acompanhadas_total']) ? (float) $dados['familias_acompanhadas_total'] : $fallbackRealizado;
-            $percentual = isset($dados['percentual_alcancado_total']) ? (float) $dados['percentual_alcancado_total'] : $fallbackPercentual;
-
-            return [
-                'meta' => $meta,
-                'realizado' => $realizado,
-                'percentual' => $percentual,
-            ];
-        }
-
-        $type = $this->resolveDashboardType($links);
-
-        if ($type === 'family_rma_progress') {
-            $payload = $this->buildFamilyRmaProgressResponse($indicator, $links, [
-                'cras' => null,
-                'mes_referencia' => null,
-            ]);
-
-            $dados = $payload['dados'] ?? [];
-            $meta = isset($dados['meta_familias']) ? (float) $dados['meta_familias'] : $fallbackMeta;
-            $realizado = isset($dados['familias_acompanhadas_total']) ? (float) $dados['familias_acompanhadas_total'] : $fallbackRealizado;
-            $percentual = isset($dados['percentual_alcancado_total']) ? (float) $dados['percentual_alcancado_total'] : $fallbackPercentual;
-
-            return [
-                'meta' => $meta,
-                'realizado' => $realizado,
-                'percentual' => $percentual,
-            ];
-        }
-
-        if ($type === 'family_snapshot_rma_progress') {
-            $payload = $this->buildFamilySnapshotRmaProgressResponse($indicator, $links, [
-                'cras' => null,
-                'mes_referencia' => null,
-            ]);
-
-            $dados = $payload['dados'] ?? [];
-            $meta = isset($dados['meta_familias']) ? (float) $dados['meta_familias'] : $fallbackMeta;
-            $realizado = isset($dados['familias_acompanhadas_total']) ? (float) $dados['familias_acompanhadas_total'] : $fallbackRealizado;
-            $percentual = isset($dados['percentual_alcancado_total']) ? (float) $dados['percentual_alcancado_total'] : $fallbackPercentual;
-
-            return [
-                'meta' => $meta,
-                'realizado' => $realizado,
-                'percentual' => $percentual,
-            ];
-        }
-
-        if ($type === 'monthly_unit_progress') {
-            $payload = $this->buildMonthlyUnitProgressResponse($indicator, $links, [
-                'unidade' => null,
-                'mes_referencia' => null,
-            ]);
-
-            $dados = $payload['dados'] ?? [];
-            $meta = isset($dados['meta_anual']) ? (float) $dados['meta_anual'] : $fallbackMeta;
-            $realizado = isset($dados['total_inseridos']) ? (float) $dados['total_inseridos'] : $fallbackRealizado;
-            $percentual = isset($dados['percentual_alcancado_total']) ? (float) $dados['percentual_alcancado_total'] : $fallbackPercentual;
-
-            return [
-                'meta' => $meta,
-                'realizado' => $realizado,
-                'percentual' => $percentual,
-            ];
-        }
-
         return [
-            'meta' => $fallbackMeta,
-            'realizado' => $fallbackRealizado,
-            'percentual' => $fallbackPercentual,
+            'meta' => $meta,
+            'realizado' => $realizado,
+            'percentual' => $percentual,
         ];
     }
 
