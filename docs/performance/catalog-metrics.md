@@ -168,3 +168,20 @@ referência: 2026-05-08
 
 A prévia coincidiu com o endpoint JSON. O resultado foi gravado uma única vez
 com status `validado`, e o catálogo permaneceu HTTP 200.
+
+## Quinta sincronização controlada
+
+O indicador `PPA-CREAS-MULHERES-F1` validou o primeiro fluxo do tipo
+`monthly_unit_progress`:
+
+```text
+meta anual: 555,0000
+valor realizado: 73,0000
+percentual atingido: 13,153153153153152
+ano de apuração: 2026
+meses com leitura: 5
+```
+
+A prévia coincidiu com o endpoint JSON. O resultado foi gravado uma única vez
+com status `validado`, sem alteração nas fórmulas do dashboard, e o catálogo
+permaneceu HTTP 200.
