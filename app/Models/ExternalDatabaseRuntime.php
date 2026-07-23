@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Utils\ExternalQueryPerformanceLogger;
 use PDO;
 use PDOException;
 use RuntimeException;
@@ -25,11 +26,36 @@ class ExternalDatabaseRuntime
         }
     }
 
-    public static function runRegisteredQuery(object $source, object $query, int $limit = 100): array
+    public static function runRegisteredQuery(
+        object $source,
+        object $query,
+        int $limit = 100,
+        array $context = []
+    ): array
     {
+        $startedAt = microtime(true);
+        $memoryStartedAt = memory_get_usage(true);
+        $connectionTimeMs = 0.0;
+        $queryTimeMs = 0.0;
+        $errorStage = 'validation';
+        $queryStartedAt = null;
         $validation = self::validateSelectQuery((string) $query->sql_query);
 
         if ($validation !== true) {
+            self::recordPerformance(
+                $source,
+                $query,
+                $limit,
+                $context,
+                $startedAt,
+                $memoryStartedAt,
+                $connectionTimeMs,
+                $queryTimeMs,
+                0,
+                false,
+                'validation'
+            );
+
             return [
                 'success' => false,
                 'message' => $validation,
@@ -40,11 +66,31 @@ class ExternalDatabaseRuntime
         }
 
         try {
+            $errorStage = 'connection';
+            $connectionStartedAt = microtime(true);
             $pdo = self::connect($source);
+            $connectionTimeMs = self::elapsedMilliseconds($connectionStartedAt);
             $sql = self::normalizeSql((string) $query->sql_query);
             $sql = self::applyLimit($sql, $limit);
+            $errorStage = 'query';
+            $queryStartedAt = microtime(true);
             $stmt = $pdo->query($sql);
             $rows = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+            $queryTimeMs = self::elapsedMilliseconds($queryStartedAt);
+
+            self::recordPerformance(
+                $source,
+                $query,
+                $limit,
+                $context,
+                $startedAt,
+                $memoryStartedAt,
+                $connectionTimeMs,
+                $queryTimeMs,
+                count($rows),
+                true,
+                null
+            );
 
             return [
                 'success' => true,
@@ -54,6 +100,24 @@ class ExternalDatabaseRuntime
                 'row_count' => count($rows),
             ];
         } catch (\Throwable $e) {
+            if ($queryStartedAt !== null) {
+                $queryTimeMs = self::elapsedMilliseconds($queryStartedAt);
+            }
+
+            self::recordPerformance(
+                $source,
+                $query,
+                $limit,
+                $context,
+                $startedAt,
+                $memoryStartedAt,
+                $connectionTimeMs,
+                $queryTimeMs,
+                0,
+                false,
+                $errorStage
+            );
+
             return [
                 'success' => false,
                 'message' => 'Falha ao executar a consulta externa: ' . $e->getMessage(),
@@ -108,6 +172,48 @@ class ExternalDatabaseRuntime
         }
 
         return "{$sql}\nLIMIT {$safeLimit}";
+    }
+
+    private static function recordPerformance(
+        object $source,
+        object $query,
+        int $limit,
+        array $context,
+        float $startedAt,
+        int $memoryStartedAt,
+        float $connectionTimeMs,
+        float $queryTimeMs,
+        int $rowCount,
+        bool $success,
+        ?string $errorStage
+    ): void {
+        if (!ExternalQueryPerformanceLogger::enabled()) {
+            return;
+        }
+
+        ExternalQueryPerformanceLogger::record([
+            'indicator_id' => $context['indicator_id'] ?? null,
+            'indicator_code' => $context['indicator_code'] ?? null,
+            'source_id' => $source->id ?? null,
+            'source_name' => $source->nome ?? null,
+            'query_id' => $query->id ?? null,
+            'query_name' => $query->nome ?? null,
+            'query_hash' => hash('sha256', self::normalizeSql((string) ($query->sql_query ?? ''))),
+            'connection_time_ms' => round($connectionTimeMs, 3),
+            'query_time_ms' => round($queryTimeMs, 3),
+            'total_time_ms' => round(self::elapsedMilliseconds($startedAt), 3),
+            'rows_returned' => $rowCount,
+            'limit_requested' => max(1, $limit),
+            'memory_delta_bytes' => memory_get_usage(true) - $memoryStartedAt,
+            'memory_peak_bytes' => memory_get_peak_usage(true),
+            'success' => $success,
+            'error_stage' => $errorStage,
+        ]);
+    }
+
+    private static function elapsedMilliseconds(float $startedAt): float
+    {
+        return (microtime(true) - $startedAt) * 1000;
     }
 
     private static function connect(object $source): PDO

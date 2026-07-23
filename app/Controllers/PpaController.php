@@ -795,7 +795,10 @@ class PpaController extends BaseController
             return $source;
         }
 
-        $preview = ExternalDatabaseRuntime::runRegisteredQuery($source, $query, $limit);
+        $preview = ExternalDatabaseRuntime::runRegisteredQuery($source, $query, $limit, [
+            'indicator_id' => $link->indicador_id ?? null,
+            'indicator_code' => $link->codigo_indicador ?? null,
+        ]);
 
         if (!$preview['success']) {
             return $preview['message'];

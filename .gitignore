@@ -3,4 +3,7 @@
 .env
 /skills/
 *.todo
-/docs/
+/docs/*
+!/docs/performance/
+/docs/performance/*
+!/docs/performance/*.md
