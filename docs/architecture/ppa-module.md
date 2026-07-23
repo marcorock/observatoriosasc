@@ -56,3 +56,9 @@ localiza os vínculos usados por cada dashboard. A ordem de precedência permane
 2. progresso de famílias com base e acompanhamento;
 3. progresso mensal por unidade;
 4. consulta simples como fallback.
+
+## Payload de consulta simples
+
+`PpaSingleQueryPayloadBuilder` agrega famílias e pessoas por CRAS, região e
+bairro, preservando aliases, filtros, ordenação e o formato entregue ao
+dashboard `single_query`. Os payloads dos painéis RMA continuam no controller.

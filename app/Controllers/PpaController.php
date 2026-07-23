@@ -8,6 +8,7 @@ use App\Models\PpaIndicatorQueryModel;
 use App\Services\PpaCatalogService;
 use App\Services\PpaDashboardResolver;
 use App\Services\PpaLinkedQueryService;
+use App\Services\PpaSingleQueryPayloadBuilder;
 
 class PpaController extends BaseController
 {
@@ -89,7 +90,7 @@ class PpaController extends BaseController
 
         if (is_string($links) || $links === []) {
             return $this->renderSingleQueryDashboard([
-                'dados' => $this->emptySingleQueryPayload(),
+                'dados' => PpaSingleQueryPayloadBuilder::empty(),
                 'status' => 'Em Preparacao',
                 'mensagem' => 'Nenhum vinculo ativo foi encontrado para este indicador do PPA.',
                 'filters' => [
@@ -349,7 +350,7 @@ class PpaController extends BaseController
                 'type' => 'single_query',
                 'status' => 'Em Preparacao',
                 'mensagem' => 'Nenhum vinculo ativo foi encontrado para este indicador do PPA.',
-                'dados' => $this->emptySingleQueryPayload($filters),
+                'dados' => PpaSingleQueryPayloadBuilder::empty($filters),
                 'filters' => [
                     'cras' => $this->normalizeNullableFilter($filters['cras'] ?? null),
                     'regiao' => $this->normalizeNullableFilter($filters['regiao'] ?? null),
@@ -370,7 +371,7 @@ class PpaController extends BaseController
                 'type' => 'single_query',
                 'status' => 'Em Preparacao',
                 'mensagem' => $result,
-                'dados' => $this->emptySingleQueryPayload($filters),
+                'dados' => PpaSingleQueryPayloadBuilder::empty($filters),
                 'filters' => [
                     'cras' => $this->normalizeNullableFilter($filters['cras'] ?? null),
                     'regiao' => $this->normalizeNullableFilter($filters['regiao'] ?? null),
@@ -388,7 +389,7 @@ class PpaController extends BaseController
             'type' => 'single_query',
             'status' => 'Ativo',
             'mensagem' => 'Dados consolidados a partir do vinculo ativo configurado no modulo PPA.',
-            'dados' => $this->buildSingleQueryPayload($result['rows'] ?? [], $filters),
+            'dados' => PpaSingleQueryPayloadBuilder::build($result['rows'] ?? [], $filters),
             'filters' => [
                 'cras' => $this->normalizeNullableFilter($filters['cras'] ?? null),
                 'regiao' => $this->normalizeNullableFilter($filters['regiao'] ?? null),
