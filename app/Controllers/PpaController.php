@@ -8,6 +8,7 @@ use App\Models\ExternalDatabaseRuntime;
 use App\Models\ExternalQueryModel;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
+use App\Models\PpaResultModel;
 
 class PpaController extends BaseController
 {
@@ -2068,7 +2069,10 @@ class PpaController extends BaseController
      */
     private function renderCatalog(array $indicators, ?string $message = null)
     {
-        $catalogIndicators = $this->decorateCatalogIndicators($indicators);
+        $resultsByIndicator = (new PpaResultModel())->readLatestPublishedByIndicatorIds(
+            array_map(static fn ($indicator): int => (int) ($indicator->id ?? 0), $indicators)
+        );
+        $catalogIndicators = $this->decorateCatalogIndicators($indicators, $resultsByIndicator);
 
         return $this->renderPage('ppa/catalog.html', [
             'indicators' => $catalogIndicators,
@@ -2095,10 +2099,11 @@ class PpaController extends BaseController
      * @param array $indicators Array de indicadores públicos
      * @return array Indicadores decorados com propriedades adicionais para exibição
      */
-    private function decorateCatalogIndicators(array $indicators): array
+    private function decorateCatalogIndicators(array $indicators, array $resultsByIndicator = []): array
     {
-        return array_map(function ($indicator) {
-            $metrics = $this->catalogIndicatorMetrics($indicator);
+        return array_map(function ($indicator) use ($resultsByIndicator) {
+            $result = $resultsByIndicator[(int) ($indicator->id ?? 0)] ?? null;
+            $metrics = $this->catalogIndicatorMetrics($indicator, $result);
             $meta = $metrics['meta'];
             $realizado = $metrics['realizado'];
             $percentual = $metrics['percentual'];
@@ -2108,6 +2113,8 @@ class PpaController extends BaseController
             $indicator->percentual_atingido = $percentual;
             $indicator->status_painel = $this->catalogIndicatorStatus($indicator);
             $indicator->status_painel_classe = $this->catalogIndicatorStatusClass($indicator->status_painel);
+            $indicator->metricas_origem = $result !== null ? 'resultado_local' : 'cadastro_indicador';
+            $indicator->metricas_atualizadas_em = $result->validated_at ?? $result->created_at ?? null;
 
             return $indicator;
         }, $indicators);
@@ -2125,14 +2132,18 @@ class PpaController extends BaseController
      * @param object $indicator Indicador com indice_futuro e indice_recente
      * @return array Array com 'meta', 'realizado', 'percentual' (ou null se sem dados)
      */
-    private function catalogIndicatorMetrics(object $indicator): array
+    private function catalogIndicatorMetrics(object $indicator, ?object $result = null): array
     {
-        $meta = isset($indicator->indice_futuro) && $indicator->indice_futuro !== null
-            ? (float) $indicator->indice_futuro
-            : null;
-        $realizado = isset($indicator->indice_recente) && $indicator->indice_recente !== null
-            ? (float) $indicator->indice_recente
-            : null;
+        $meta = $this->firstNumericMetric([
+            $result->valor_meta_quantitativa ?? null,
+            $result->indice_futuro ?? null,
+            $indicator->indice_futuro ?? null,
+        ]);
+        $realizado = $this->firstNumericMetric([
+            $result->valor_resultado ?? null,
+            $result->indice_recente ?? null,
+            $indicator->indice_recente ?? null,
+        ]);
         $percentual = ($meta !== null && $meta > 0 && $realizado !== null)
             ? ($realizado / $meta) * 100
             : null;
@@ -2142,6 +2153,17 @@ class PpaController extends BaseController
             'realizado' => $realizado,
             'percentual' => $percentual,
         ];
+    }
+
+    private function firstNumericMetric(array $values): ?float
+    {
+        foreach ($values as $value) {
+            if ($value !== null && $value !== '' && is_numeric($value)) {
+                return (float) $value;
+            }
+        }
+
+        return null;
     }
 
     /**
