@@ -75,4 +75,5 @@ controller após a validação de equivalência.
 
 `PpaFamilyRmaPayloadBuilder` consolida base territorial, meta, acompanhamento
 mensal e progresso por CRAS para os indicadores familiares regulares. O builder
-especializado de atualização cadastral permanece no controller nesta etapa.
+regular duplicado foi removido; os builders especializados de atualização
+cadastral permanecem no controller nesta etapa.

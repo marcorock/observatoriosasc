@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\PpaController;
 use App\Services\PpaFamilyRmaPayloadBuilder;
 
 $failures = [];
@@ -23,14 +22,7 @@ $rmaRows = [
     ['mes_referencia' => '2026-02-01', 'nome_unidade' => 'CRAS MARIANA 2', 'total_familias_acompanhadas' => 10],
     ['mes_referencia' => '2026-02-01', 'cras' => 'UNIDADE PERNAMBUCANO', 'total_familias_acompanhadas' => 5],
 ];
-$controller = (new ReflectionClass(PpaController::class))->newInstanceWithoutConstructor();
-$legacyBuild = new ReflectionMethod(PpaController::class, 'buildFamilyRmaPayload');
-$legacyBuild->setAccessible(true);
-$legacyEmpty = new ReflectionMethod(PpaController::class, 'emptyFamilyRmaPayload');
-$legacyEmpty->setAccessible(true);
-
 $payload = PpaFamilyRmaPayloadBuilder::build($baseRows, $rmaRows, $indicator, []);
-$assertSame($legacyBuild->invoke($controller, $baseRows, $rmaRows, $indicator, []), $payload, 'matches legacy payload');
 $assertSame(200, $payload['total_geral'], 'sums base families');
 $assertSame(20.0, $payload['meta_familias'], 'calculates target families');
 $assertSame(20, $payload['familias_acompanhadas_total'], 'sums accompanied families');
@@ -52,7 +44,6 @@ $assertSame(
 );
 
 $empty = PpaFamilyRmaPayloadBuilder::empty();
-$assertSame($legacyEmpty->invoke($controller), $empty, 'matches legacy empty payload');
 $assertSame(0, $empty['total_geral'], 'empty payload has zero total');
 
 if ($failures !== []) {
@@ -60,4 +51,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (13 assertions)\n");
+fwrite(STDOUT, "OK (11 assertions)\n");
