@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\PpaController;
+use App\Models\PpaResultModel;
 
 $failures = [];
 
@@ -78,9 +79,36 @@ $unsupported = $previewMethod->invoke($controller, $indicator, [
 ]);
 $assertSame(null, $unsupported, 'rejects dashboard types without a safe metric mapping');
 
+$normalized = PpaResultModel::normalizeSyncPreview([
+    'success' => true,
+    'indicator_id' => 10,
+    'indicator_code' => 'PPA-CRAS-ATUALIZACAO-C3',
+    'metrics' => $preview,
+]);
+$assertSame(10, $normalized['indicator_id'], 'normalizes the indicator before persistence');
+$assertSame(2026, $normalized['year'], 'normalizes the reference year before persistence');
+$assertSame(49185.25, $normalized['target'], 'normalizes the target before persistence');
+$assertSame(11480.0, $normalized['result'], 'normalizes the result before persistence');
+$assertSame(
+    'A previa precisa ser concluida com sucesso antes da gravacao.',
+    PpaResultModel::normalizeSyncPreview(['success' => false]),
+    'rejects a failed preview'
+);
+$invalidResult = $preview;
+$invalidResult['valor_resultado'] = -1;
+$assertSame(
+    'O valor realizado da previa e invalido.',
+    PpaResultModel::normalizeSyncPreview([
+        'success' => true,
+        'indicator_id' => 10,
+        'metrics' => $invalidResult,
+    ]),
+    'rejects a negative result'
+);
+
 if ($failures !== []) {
     fwrite(STDERR, implode("\n\n", $failures) . "\n");
     exit(1);
 }
 
-fwrite(STDOUT, "OK (13 assertions)\n");
+fwrite(STDOUT, "OK (19 assertions)\n");

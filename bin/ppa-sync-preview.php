@@ -2,6 +2,7 @@
 <?php
 
 use App\Controllers\PpaController;
+use App\Models\PpaResultModel;
 use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -22,17 +23,34 @@ foreach ([
     }
 }
 
-$slug = trim((string) ($argv[1] ?? ''));
+$arguments = array_slice($argv, 1);
+$commit = in_array('--commit', $arguments, true);
+$arguments = array_values(array_filter(
+    $arguments,
+    static fn (string $argument): bool => $argument !== '--commit'
+));
+$slug = trim((string) ($arguments[0] ?? ''));
 
 if ($slug === '' || in_array($slug, ['-h', '--help'], true)) {
-    fwrite(STDOUT, "Uso: php bin/ppa-sync-preview.php <slug-ou-codigo>\n");
-    fwrite(STDOUT, "Executa somente uma simulacao. Nenhum dado e gravado.\n");
+    fwrite(STDOUT, "Uso: php bin/ppa-sync-preview.php <slug-ou-codigo> [--commit]\n");
+    fwrite(STDOUT, "Sem --commit, executa somente uma simulacao e nao grava dados.\n");
     exit($slug === '' ? 1 : 0);
 }
 
 $startedAt = microtime(true);
 $preview = (new PpaController())->buildCatalogSyncPreview($slug);
 $preview['execution_time_ms'] = round((microtime(true) - $startedAt) * 1000, 3);
+
+if ($preview['success'] && $commit) {
+    try {
+        $preview['persistence'] = (new PpaResultModel())->storeValidatedPreview($preview);
+        $preview['dry_run'] = false;
+    } catch (\Throwable $e) {
+        $preview['success'] = false;
+        $preview['dry_run'] = false;
+        $preview['error'] = $e->getMessage();
+    }
+}
 
 fwrite(
     $preview['success'] ? STDOUT : STDERR,

@@ -79,3 +79,43 @@ realizado: 11480
 percentual atingido: 23,34033068857025
 referência: 2026-05-08
 ```
+
+## Persistência explícita
+
+Depois de revisar a prévia, a gravação é solicitada explicitamente:
+
+```bash
+php bin/ppa-sync-preview.php <slug-ou-codigo> --commit
+```
+
+A operação:
+
+1. valida novamente todos os campos consolidados;
+2. inicia uma transação;
+3. cria uma execução em `ppa_sincronizacoes`;
+4. procura um resultado validado/publicado idêntico;
+5. insere em `ppa_resultados` somente quando houve mudança;
+6. conclui a sincronização;
+7. confirma a transação.
+
+Qualquer exceção durante a persistência executa rollback. A mensagem bruta do
+banco não é exibida pelo comando.
+
+## Primeira sincronização controlada
+
+O indicador `PPA-CRAS-ATUALIZACAO-C3` foi sincronizado em 2026-07-23:
+
+```text
+resultado inserido: sim
+status: validado
+meta quantitativa: 49185,2500
+valor realizado: 11480,0000
+ano de referência: 2026
+```
+
+Uma segunda execução com os mesmos valores foi reconhecida como idêntica. Ela
+foi registrada no histórico de sincronizações com zero inserções e não duplicou
+`ppa_resultados`.
+
+Após a sincronização, `/ppa` permaneceu HTTP 200 e passou a mostrar a meta e o
+realizado do indicador usando somente a leitura local.

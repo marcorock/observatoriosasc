@@ -90,7 +90,7 @@ class PpaIndicatorModel
             return $indicators;
         }
 
-        $slug = trim($slug);
+        $slug = ViewClasses::slug(trim($slug));
 
         foreach ($indicators as $indicator) {
             if (($indicator->slug ?? '') === $slug || ($indicator->codigo_slug ?? '') === $slug) {
