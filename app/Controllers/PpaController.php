@@ -6,6 +6,7 @@ use App\Core\BaseController;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
 use App\Services\PpaCatalogService;
+use App\Services\PpaDashboardResolver;
 use App\Services\PpaLinkedQueryService;
 
 class PpaController extends BaseController
@@ -107,7 +108,7 @@ class PpaController extends BaseController
             return $this->renderCadUpdateRmaDashboard($indicator, $links);
         }
 
-        return match ($this->resolveDashboardType($links)) {
+        return match (PpaDashboardResolver::dashboardType($links)) {
             'family_snapshot_rma_progress' => $this->renderFamilySnapshotRmaProgressDashboard($indicator, $links),
             'family_rma_progress' => $this->renderFamilyRmaProgressDashboard($indicator, $links),
             'monthly_unit_progress' => $this->renderMonthlyUnitProgressDashboard($indicator, $links),
@@ -160,7 +161,7 @@ class PpaController extends BaseController
             $this->json($payload);
         }
 
-        $type = $this->resolveDashboardType($links);
+        $type = PpaDashboardResolver::dashboardType($links);
 
         $payload = match ($type) {
             'family_snapshot_rma_progress' => $this->buildFamilySnapshotRmaProgressResponse($indicator, $links, $filters),
@@ -213,7 +214,7 @@ class PpaController extends BaseController
                 'mes_referencia' => null,
             ]);
         } else {
-            $type = $this->resolveDashboardType($links);
+            $type = PpaDashboardResolver::dashboardType($links);
             $payload = match ($type) {
                 'family_snapshot_rma_progress' => $this->buildFamilySnapshotRmaProgressResponse(
                     $indicator,
@@ -268,44 +269,6 @@ class PpaController extends BaseController
             'dashboard_type' => (string) ($payload['type'] ?? ''),
             'metrics' => $metrics,
         ];
-    }
-
-    /**
-     * Determina o tipo de dashboard a ser renderizado baseado nas consultas vinculadas ao indicador.
-     * 
-     * Analisa os campos de resultado das consultas para identificar:
-     * - "family_rma_progress": Se houver consultas com campos 'base_familias_pbf' E 'familias_acompanhadas_b2_mensal'
-     *   Indicadores: Aqueles que trabalham com base CECAD e acompanhamento RMA de famílias
-     * - "single_query": Para todos os outros casos (padrão)
-     *   Indicadores: Consultas simples de dados de CRAS, região, bairro
-     * 
-     * @param array $links Array de objetos com dados de vínculos de consultas (deve conter campo 'campo_resultado')
-     * @return string Tipo de dashboard: 'family_rma_progress' ou 'single_query'
-     */
-    private function resolveDashboardType(array $links): string
-    {
-        $keys = [];
-
-        foreach ($links as $link) {
-            $keys[] = trim((string) ($link->campo_resultado ?? ''));
-        }
-
-        if ($this->findFirstKeyByPrefixes($keys, ['base_familias_']) !== null
-            && $this->findFirstKeyByPrefixes($keys, ['familias_atualizadas_']) !== null
-            && $this->findFirstKeyByPrefixes($keys, ['serie_mensal_unidade_']) !== null) {
-            return 'family_snapshot_rma_progress';
-        }
-
-        if ($this->findFirstKeyByPrefixes($keys, ['base_familias_']) !== null
-            && $this->findFirstKeyByPrefixes($keys, ['familias_acompanhadas_', 'familias_atualizadas_']) !== null) {
-            return 'family_rma_progress';
-        }
-
-        if ($this->findFirstKeyByPrefixes($keys, ['serie_mensal_unidade_']) !== null) {
-            return 'monthly_unit_progress';
-        }
-
-        return 'single_query';
     }
 
     /**
@@ -573,10 +536,10 @@ class PpaController extends BaseController
      */
     private function buildFamilyRmaProgressResponse(object $indicator, array $links, array $filters): array
     {
-        $baseKey = $this->findLinkKeyByPrefixes($links, ['base_familias_']);
-        $rmaKey = $this->findLinkKeyByPrefixes($links, ['familias_acompanhadas_', 'familias_atualizadas_']);
-        $baseLink = $baseKey !== null ? $this->findLinkByResultKey($links, $baseKey) : null;
-        $rmaLink = $rmaKey !== null ? $this->findLinkByResultKey($links, $rmaKey) : null;
+        $baseKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['base_familias_']);
+        $rmaKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['familias_acompanhadas_', 'familias_atualizadas_']);
+        $baseLink = $baseKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $baseKey) : null;
+        $rmaLink = $rmaKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $rmaKey) : null;
         $ui = $this->familyRmaUiConfig($indicator);
 
         if ($baseLink === null || $rmaLink === null) {
@@ -654,12 +617,12 @@ class PpaController extends BaseController
 
     private function buildFamilySnapshotRmaProgressResponse(object $indicator, array $links, array $filters): array
     {
-        $baseKey = $this->findLinkKeyByPrefixes($links, ['base_familias_']);
-        $updatedKey = $this->findLinkKeyByPrefixes($links, ['familias_atualizadas_']);
-        $rmaKey = $this->findLinkKeyByPrefixes($links, ['serie_mensal_unidade_']);
-        $baseLink = $baseKey !== null ? $this->findLinkByResultKey($links, $baseKey) : null;
-        $updatedLink = $updatedKey !== null ? $this->findLinkByResultKey($links, $updatedKey) : null;
-        $rmaLink = $rmaKey !== null ? $this->findLinkByResultKey($links, $rmaKey) : null;
+        $baseKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['base_familias_']);
+        $updatedKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['familias_atualizadas_']);
+        $rmaKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['serie_mensal_unidade_']);
+        $baseLink = $baseKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $baseKey) : null;
+        $updatedLink = $updatedKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $updatedKey) : null;
+        $rmaLink = $rmaKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $rmaKey) : null;
         $ui = $this->familyRmaUiConfig($indicator);
 
         if ($baseLink === null || $updatedLink === null || $rmaLink === null) {
@@ -732,10 +695,10 @@ class PpaController extends BaseController
 
     private function buildCadUpdateRmaResponse(object $indicator, array $links, array $filters): array
     {
-        $baseKey = $this->findLinkKeyByPrefixes($links, ['base_familias_']);
-        $rmaKey = $this->findLinkKeyByPrefixes($links, ['serie_mensal_unidade_', 'familias_acompanhadas_']);
-        $baseLink = $baseKey !== null ? $this->findLinkByResultKey($links, $baseKey) : null;
-        $rmaLink = $rmaKey !== null ? $this->findLinkByResultKey($links, $rmaKey) : null;
+        $baseKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['base_familias_']);
+        $rmaKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['serie_mensal_unidade_', 'familias_acompanhadas_']);
+        $baseLink = $baseKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $baseKey) : null;
+        $rmaLink = $rmaKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $rmaKey) : null;
         $ui = $this->familyRmaUiConfig($indicator);
 
         if ($baseLink === null || $rmaLink === null) {
@@ -811,8 +774,8 @@ class PpaController extends BaseController
 
     private function buildMonthlyUnitProgressResponse(object $indicator, array $links, array $filters): array
     {
-        $seriesKey = $this->findLinkKeyByPrefixes($links, ['serie_mensal_unidade_']);
-        $seriesLink = $seriesKey !== null ? $this->findLinkByResultKey($links, $seriesKey) : null;
+        $seriesKey = PpaDashboardResolver::findLinkKeyByPrefixes($links, ['serie_mensal_unidade_']);
+        $seriesLink = $seriesKey !== null ? PpaDashboardResolver::findLinkByResultKey($links, $seriesKey) : null;
         $ui = $this->monthlyUnitUiConfig($indicator);
 
         if ($seriesLink === null) {
@@ -1781,51 +1744,6 @@ class PpaController extends BaseController
 
             return true;
         }));
-    }
-
-    /**
-     * Encontra um vínculo de consulta pelo seu campo de resultado.
-     * 
-     * Procura no array de vínculos por aquele que possui um campo específico no resultado.
-     * Usado para localizar vínculos específicos (ex: base_familias_pbf, familias_acompanhadas_b2_mensal)
-     * 
-     * @param array $links Array de vínculos com propriedade 'campo_resultado'
-     * @param string $key Chave do campo resultado a procurar
-     * @return ?object Vínculo encontrado ou null se não existe
-     */
-    private function findLinkByResultKey(array $links, string $key): ?object
-    {
-        foreach ($links as $link) {
-            if (trim((string) ($link->campo_resultado ?? '')) === $key) {
-                return $link;
-            }
-        }
-
-        return null;
-    }
-
-    private function findLinkKeyByPrefixes(array $links, array $prefixes): ?string
-    {
-        $keys = [];
-
-        foreach ($links as $link) {
-            $keys[] = trim((string) ($link->campo_resultado ?? ''));
-        }
-
-        return $this->findFirstKeyByPrefixes($keys, $prefixes);
-    }
-
-    private function findFirstKeyByPrefixes(array $keys, array $prefixes): ?string
-    {
-        foreach ($keys as $key) {
-            foreach ($prefixes as $prefix) {
-                if ($key !== '' && str_starts_with($key, $prefix)) {
-                    return $key;
-                }
-            }
-        }
-
-        return null;
     }
 
     private function familyRmaUiConfig(object $indicator): array

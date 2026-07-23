@@ -44,5 +44,15 @@ O indicador `PPA-ERRADICAR-POBREZA` continua classificado como visão geral.
 
 `PpaLinkedQueryService` resolve a consulta e a fonte cadastradas, executa o SQL
 com o limite solicitado e mantém o mesmo retorno consumido pelos dashboards.
-Os builders de payload e a resolução dos tipos de painel permanecem no
-controller para manter esta etapa pequena e reversível.
+Os builders de payload permanecem no controller para manter cada etapa pequena
+e reversível.
+
+## Resolução dos dashboards
+
+`PpaDashboardResolver` classifica o tipo de painel pelos campos de resultado e
+localiza os vínculos usados por cada dashboard. A ordem de precedência permanece:
+
+1. fotografia da base com atualização e série mensal;
+2. progresso de famílias com base e acompanhamento;
+3. progresso mensal por unidade;
+4. consulta simples como fallback.
