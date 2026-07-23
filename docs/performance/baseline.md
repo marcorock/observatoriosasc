@@ -32,5 +32,22 @@ Com `EXTERNAL_QUERY_PERFORMANCE_LOG=true`, coletar para cada tipo de dashboard:
 - variação e pico de memória;
 - sucesso ou estágio da falha.
 
-Não há números de tempo nesta baseline porque a auditoria não executou consultas
-contra as bases externas de produção.
+A tabela estrutural acima registra apenas a quantidade esperada de operações; os
+primeiros tempos controlados estão registrados a seguir.
+
+## Coleta controlada
+
+Coleta realizada em 2026-07-23, com uma única requisição por fluxo e o
+monitoramento desativado imediatamente após a medição.
+
+| Fluxo | HTTP | Tempo total | Conexão externa | Consulta externa | Linhas | Resposta |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Catálogo `/ppa` | 200 | 74,7 ms | — | — | — | 81.743 bytes |
+| `/ppa/erradicar-a-pobreza` | 200 | 790,1 ms | 13,9 ms | 702,8 ms | 342 | 386.536 bytes |
+
+Uma segunda verificação do catálogo, depois de desativar a instrumentação,
+respondeu HTTP 200 em 82,6 ms.
+
+Esses valores são uma amostra inicial, não um benchmark estatístico. A consulta
+externa representa aproximadamente 89% do tempo total observado no dashboard
+simples.
