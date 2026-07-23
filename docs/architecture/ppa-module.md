@@ -40,8 +40,9 @@ Esta extração não altera:
 
 O indicador `PPA-ERRADICAR-POBREZA` continua classificado como visão geral.
 
-## Próximo limite de refatoração
+## Consultas vinculadas
 
-A próxima extração deve tratar a execução e resolução das consultas vinculadas,
-sem mover simultaneamente os builders de payload. Isso mantém cada commit
-pequeno e reversível.
+`PpaLinkedQueryService` resolve a consulta e a fonte cadastradas, executa o SQL
+com o limite solicitado e mantém o mesmo retorno consumido pelos dashboards.
+Os builders de payload e a resolução dos tipos de painel permanecem no
+controller para manter esta etapa pequena e reversível.

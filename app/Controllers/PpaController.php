@@ -3,15 +3,15 @@
 namespace App\Controllers;
 
 use App\Core\BaseController;
-use App\Models\ExternalDataSourceModel;
-use App\Models\ExternalDatabaseRuntime;
-use App\Models\ExternalQueryModel;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
 use App\Services\PpaCatalogService;
+use App\Services\PpaLinkedQueryService;
 
 class PpaController extends BaseController
 {
+    private ?PpaLinkedQueryService $linkedQueryService = null;
+
     /**
      * Configuração básica da página PPA.
      * Define o título, descrição e nome do sistema para o módulo do Plano Plurianual.
@@ -878,32 +878,9 @@ class PpaController extends BaseController
      */
     private function runLinkQuery(object $link, int $limit): array|string
     {
-        $query = (new ExternalQueryModel())->readById((int) $link->external_query_id);
+        $service = $this->linkedQueryService ??= new PpaLinkedQueryService();
 
-        if (is_string($query)) {
-            return $query;
-        }
-
-        $source = (new ExternalDataSourceModel())->readById((int) $query->source_id);
-
-        if (is_string($source)) {
-            return $source;
-        }
-
-        $preview = ExternalDatabaseRuntime::runRegisteredQuery($source, $query, $limit, [
-            'indicator_id' => $link->indicador_id ?? null,
-            'indicator_code' => $link->codigo_indicador ?? null,
-        ]);
-
-        if (!$preview['success']) {
-            return $preview['message'];
-        }
-
-        return [
-            'rows' => $preview['rows'] ?? [],
-            'query' => $query,
-            'source' => $source,
-        ];
+        return $service->run($link, $limit);
     }
 
     /**
