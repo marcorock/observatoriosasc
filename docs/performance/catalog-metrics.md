@@ -207,3 +207,21 @@ ano de apuração: 2026
 O consolidado coincidiu com o endpoint JSON e foi gravado como `validado`.
 Depois da sincronização, o resumo do catálogo passou de uma para zero metas
 atingidas, corrigindo o valor sem executar consultas externas no catálogo.
+
+## Sincronizações finais dos indicadores quantitativos
+
+Os três indicadores quantitativos restantes foram processados individualmente.
+Cada prévia coincidiu com o respectivo endpoint JSON antes da gravação:
+
+| Indicador | Meta | Realizado | Atingido | Ano |
+| --- | ---: | ---: | ---: | ---: |
+| `PPA-CREAS-MSE-J4` | 90 | 39 | 43,333333333333336% | 2026 |
+| `PPA-CREAS-CRIANCAS-ADOLESCENTES-C1A5` | 2260 | 469 | 20,75221238938053% | 2026 |
+| `PPA-CRAS-ATENDIMENTOS-C1` | 90000 | 26963 | 29,95888888888889% | 2026 |
+
+Todos foram gravados uma única vez com status `validado`.
+
+Com isso, nove dos dez indicadores públicos possuem resultado consolidado
+local. O indicador `PPA-ERRADICAR-POBREZA` permanece sem registro de meta e
+realizado porque sua finalidade é oferecer uma visão geral da base de dados,
+não acompanhar alcance de uma meta.
