@@ -185,3 +185,25 @@ meses com leitura: 5
 A prévia coincidiu com o endpoint JSON. O resultado foi gravado uma única vez
 com status `validado`, sem alteração nas fórmulas do dashboard, e o catálogo
 permaneceu HTTP 200.
+
+## Sexta sincronização controlada
+
+O indicador `PPA-CREAS-PAEFI-A2` revelou uma diferença relevante entre o
+fallback cadastral e o dashboard:
+
+```text
+fallback anterior:
+meta: 3299
+realizado: 3299
+percentual exibido: 100%
+
+resultado consolidado:
+meta anual: 3299,0000
+valor realizado: 861,0000
+percentual atingido: 26,098817823582905
+ano de apuração: 2026
+```
+
+O consolidado coincidiu com o endpoint JSON e foi gravado como `validado`.
+Depois da sincronização, o resumo do catálogo passou de uma para zero metas
+atingidas, corrigindo o valor sem executar consultas externas no catálogo.
