@@ -8,6 +8,7 @@ use App\Models\PpaIndicatorQueryModel;
 use App\Services\PpaCatalogService;
 use App\Services\PpaDashboardResolver;
 use App\Services\PpaLinkedQueryService;
+use App\Services\PpaMonthlyUnitPayloadBuilder;
 use App\Services\PpaSingleQueryPayloadBuilder;
 
 class PpaController extends BaseController
@@ -784,7 +785,7 @@ class PpaController extends BaseController
                 'type' => 'monthly_unit_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => 'As consultas necessarias para este indicador ainda nao foram vinculadas corretamente.',
-                'dados' => $this->emptyMonthlyUnitPayload(),
+                'dados' => PpaMonthlyUnitPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => 'Vinculo mensal por unidade nao encontrado.',
                 'ui' => $ui,
@@ -801,7 +802,7 @@ class PpaController extends BaseController
                 'type' => 'monthly_unit_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => $result,
-                'dados' => $this->emptyMonthlyUnitPayload(),
+                'dados' => PpaMonthlyUnitPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => $result,
                 'ui' => $ui,
@@ -815,7 +816,7 @@ class PpaController extends BaseController
             'type' => 'monthly_unit_progress',
             'status' => 'Ativo',
             'mensagem' => $ui['message_active'] ?? 'Leitura mensal da base RMA consolidada por unidade.',
-            'dados' => $this->buildMonthlyUnitPayload($result['rows'] ?? [], $indicator, $filters),
+            'dados' => PpaMonthlyUnitPayloadBuilder::build($result['rows'] ?? [], $indicator, $filters),
             'filters' => [
                 'unidade' => $this->normalizeNullableFilter($filters['unidade'] ?? null),
                 'mes_referencia' => $this->normalizeDateFilter($filters['mes_referencia'] ?? null),
