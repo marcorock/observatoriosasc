@@ -7,6 +7,7 @@ use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
 use App\Services\PpaCatalogService;
 use App\Services\PpaDashboardResolver;
+use App\Services\PpaFamilyRmaPayloadBuilder;
 use App\Services\PpaLinkedQueryService;
 use App\Services\PpaMonthlyUnitPayloadBuilder;
 use App\Services\PpaSingleQueryPayloadBuilder;
@@ -549,7 +550,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => 'As consultas necessarias para este indicador ainda nao foram vinculadas corretamente.',
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => 'Vinculos incompletos.',
                 'ui' => $ui,
@@ -567,7 +568,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => $baseResult,
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => $baseResult,
                 'ui' => $ui,
@@ -585,7 +586,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => $rmaResult,
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => $rmaResult,
                 'ui' => $ui,
@@ -596,7 +597,12 @@ class PpaController extends BaseController
             ];
         }
 
-        $payload = $this->buildFamilyRmaPayload($baseResult['rows'] ?? [], $rmaResult['rows'] ?? [], $indicator, $filters);
+        $payload = PpaFamilyRmaPayloadBuilder::build(
+            $baseResult['rows'] ?? [],
+            $rmaResult['rows'] ?? [],
+            $indicator,
+            $filters
+        );
 
         return [
             'type' => 'family_rma_progress',
@@ -632,7 +638,7 @@ class PpaController extends BaseController
                 'type' => 'family_snapshot_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => 'As consultas necessarias para este indicador ainda nao foram vinculadas corretamente.',
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => 'Vinculos incompletos.',
                 'ui' => $ui,
@@ -654,7 +660,7 @@ class PpaController extends BaseController
                     'type' => 'family_snapshot_rma_progress',
                     'status' => 'Em Preparacao',
                     'mensagem' => $result,
-                    'dados' => $this->emptyFamilyRmaPayload(),
+                    'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                     'filters' => $filters,
                     'error' => $result,
                     'ui' => $ui,
@@ -708,7 +714,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => 'As consultas necessarias para este indicador ainda nao foram vinculadas corretamente.',
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => 'Vinculos incompletos.',
                 'ui' => $ui,
@@ -726,7 +732,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => $baseResult,
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => $baseResult,
                 'ui' => $ui,
@@ -744,7 +750,7 @@ class PpaController extends BaseController
                 'type' => 'family_rma_progress',
                 'status' => 'Em Preparacao',
                 'mensagem' => $rmaResult,
-                'dados' => $this->emptyFamilyRmaPayload(),
+                'dados' => PpaFamilyRmaPayloadBuilder::empty(),
                 'filters' => $filters,
                 'error' => $rmaResult,
                 'ui' => $ui,

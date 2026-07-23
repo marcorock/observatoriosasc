@@ -70,3 +70,9 @@ os payloads dos painéis RMA continuam nele.
 participação, meta e filtros do dashboard `monthly_unit_progress`. A
 implementação duplicada e o filtro exclusivo desse payload foram removidos do
 controller após a validação de equivalência.
+
+## Payload de progresso familiar
+
+`PpaFamilyRmaPayloadBuilder` consolida base territorial, meta, acompanhamento
+mensal e progresso por CRAS para os indicadores familiares regulares. O builder
+especializado de atualização cadastral permanece no controller nesta etapa.
