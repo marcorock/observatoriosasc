@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\PpaController;
 use App\Services\PpaMonthlyUnitPayloadBuilder;
 
 $failures = [];
@@ -27,18 +26,7 @@ $rows = [
     ['mes_referencia' => '2026-02-01', 'id_cras' => 'UNIDADE PERNAMBUCANO', 'total_inseridos' => 20],
     ['mes_referencia' => '', 'unidade' => 'CRAS IGNORADO', 'total_inseridos' => 99],
 ];
-$controller = (new ReflectionClass(PpaController::class))->newInstanceWithoutConstructor();
-$legacyBuild = new ReflectionMethod(PpaController::class, 'buildMonthlyUnitPayload');
-$legacyBuild->setAccessible(true);
-$legacyEmpty = new ReflectionMethod(PpaController::class, 'emptyMonthlyUnitPayload');
-$legacyEmpty->setAccessible(true);
-
 $payload = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, []);
-$assertSame(
-    $legacyBuild->invoke($controller, $rows, $indicator, []),
-    $payload,
-    'matches the previous controller payload'
-);
 $assertSame(2, $payload['total_unidades'], 'merges CRAS aliases');
 $assertSame(35, $payload['total_inseridos'], 'sums all valid monthly values');
 $assertSame(35.0, $payload['percentual_alcancado_total'], 'calculates annual target progress');
@@ -68,7 +56,6 @@ $invalidFilter = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, [
 $assertSame(null, $invalidFilter['filtros_ativos']['mes_referencia'], 'rejects an invalid date filter');
 
 $empty = PpaMonthlyUnitPayloadBuilder::empty();
-$assertSame($legacyEmpty->invoke($controller), $empty, 'matches the previous empty payload');
 $assertSame(0, $empty['total_unidades'], 'empty payload has zero units');
 
 if ($failures !== []) {
@@ -76,4 +63,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (13 assertions)\n");
+fwrite(STDOUT, "OK (11 assertions)\n");

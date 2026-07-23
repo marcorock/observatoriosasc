@@ -67,6 +67,6 @@ os payloads dos painéis RMA continuam nele.
 ## Payload mensal por unidade
 
 `PpaMonthlyUnitPayloadBuilder` consolida a série mensal, unidades, acumulados,
-participação, meta e filtros do dashboard `monthly_unit_progress`. Durante a
-etapa de transição, a implementação anterior permanece sem uso no controller
-para permitir comparação direta antes da remoção.
+participação, meta e filtros do dashboard `monthly_unit_progress`. A
+implementação duplicada e o filtro exclusivo desse payload foram removidos do
+controller após a validação de equivalência.
