@@ -61,4 +61,5 @@ localiza os vínculos usados por cada dashboard. A ordem de precedência permane
 
 `PpaSingleQueryPayloadBuilder` agrega famílias e pessoas por CRAS, região e
 bairro, preservando aliases, filtros, ordenação e o formato entregue ao
-dashboard `single_query`. Os payloads dos painéis RMA continuam no controller.
+dashboard `single_query`. A implementação duplicada foi removida do controller;
+os payloads dos painéis RMA continuam nele.

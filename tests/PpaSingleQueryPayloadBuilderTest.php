@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Services\PpaSingleQueryPayloadBuilder;
-use App\Controllers\PpaController;
 
 $failures = [];
 $assertSame = static function ($expected, $actual, string $label) use (&$failures): void {
@@ -45,13 +44,6 @@ $rows = [
 ];
 
 $payload = PpaSingleQueryPayloadBuilder::build($rows);
-$controller = (new ReflectionClass(PpaController::class))->newInstanceWithoutConstructor();
-$legacyBuild = new ReflectionMethod(PpaController::class, 'buildSingleQueryPayload');
-$legacyBuild->setAccessible(true);
-$legacyEmpty = new ReflectionMethod(PpaController::class, 'emptySingleQueryPayload');
-$legacyEmpty->setAccessible(true);
-
-$assertSame($legacyBuild->invoke($controller, $rows), $payload, 'matches the previous controller payload');
 $assertSame(23, $payload['total_geral'], 'sums families');
 $assertSame(51, $payload['total_pessoas'], 'sums people');
 $assertSame(2, $payload['cras_total'], 'merges CRAS aliases');
@@ -79,11 +71,6 @@ $assertSame(
 );
 
 $empty = PpaSingleQueryPayloadBuilder::empty(['cras' => '  ', 'regiao' => "'Sul'"]);
-$assertSame(
-    $legacyEmpty->invoke($controller, ['cras' => '  ', 'regiao' => "'Sul'"]),
-    $empty,
-    'matches the previous empty controller payload'
-);
 $assertSame(0, $empty['total_geral'], 'empty payload has zero totals');
 $assertSame(
     ['cras' => null, 'regiao' => 'Sul'],
@@ -97,4 +84,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (14 assertions)\n");
+fwrite(STDOUT, "OK (12 assertions)\n");
