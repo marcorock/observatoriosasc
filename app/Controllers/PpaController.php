@@ -8,7 +8,7 @@ use App\Models\ExternalDatabaseRuntime;
 use App\Models\ExternalQueryModel;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
-use App\Models\PpaResultModel;
+use App\Services\PpaCatalogService;
 
 class PpaController extends BaseController
 {
@@ -2163,93 +2163,16 @@ class PpaController extends BaseController
      */
     private function renderCatalog(array $indicators, ?string $message = null)
     {
-        $resultsByIndicator = (new PpaResultModel())->readLatestPublishedByIndicatorIds(
-            array_map(static fn ($indicator): int => (int) ($indicator->id ?? 0), $indicators)
-        );
-        $catalogIndicators = $this->decorateCatalogIndicators($indicators, $resultsByIndicator);
+        $catalog = (new PpaCatalogService())->build($indicators);
 
         return $this->renderPage('ppa/catalog.html', [
-            'indicators' => $catalogIndicators,
-            'summary' => $this->buildCatalogSummary($catalogIndicators),
+            'indicators' => $catalog['indicators'],
+            'summary' => $catalog['summary'],
             'mensagem' => $message,
         ], [
             'name' => 'PPA - Indicadores',
             'description' => 'Selecione um indicador do Plano Plurianual',
         ]);
-    }
-
-    /**
-     * Decora indicadores com métricas para exibição no catálogo.
-     * 
-     * Calcula para cada indicador:
-     * - Meta (indice_futuro ou 10% da base para RMA)
-     * - Realizado (indice_recente ou total de famílias acompanhadas)
-     * - Percentual atingido
-     * - Status do painel (Meta atingida, Em progresso, Em atenção, Sem leitura)
-     * - Classe CSS para o status
-     * 
-     * Aplicável a TODOS os indicadores do PPA.
-     * 
-     * @param array $indicators Array de indicadores públicos
-     * @return array Indicadores decorados com propriedades adicionais para exibição
-     */
-    private function decorateCatalogIndicators(array $indicators, array $resultsByIndicator = []): array
-    {
-        return array_map(function ($indicator) use ($resultsByIndicator) {
-            $result = $resultsByIndicator[(int) ($indicator->id ?? 0)] ?? null;
-            $metrics = $this->catalogIndicatorMetrics($indicator, $result);
-            $meta = $metrics['meta'];
-            $realizado = $metrics['realizado'];
-            $percentual = $metrics['percentual'];
-
-            $indicator->meta_valor = $meta;
-            $indicator->realizado_valor = $realizado;
-            $indicator->percentual_atingido = $percentual;
-            $indicator->metricas_tipo = $this->isCatalogOverviewIndicator($indicator)
-                ? 'visao_geral'
-                : 'meta';
-            $indicator->status_painel = $this->catalogIndicatorStatus($indicator);
-            $indicator->status_painel_classe = $this->catalogIndicatorStatusClass($indicator->status_painel);
-            $indicator->metricas_origem = $result !== null ? 'resultado_local' : 'cadastro_indicador';
-            $indicator->metricas_atualizadas_em = $result->validated_at ?? $result->created_at ?? null;
-
-            return $indicator;
-        }, $indicators);
-    }
-
-    /**
-     * Calcula as métricas de um indicador para exibição no catálogo.
-     * 
-     * Usa somente os valores persistidos no cadastro do indicador. O catálogo não
-     * executa consultas externas; os dados em tempo real ficam restritos ao
-     * dashboard detalhado de cada indicador.
-     * 
-     * Aplicável a TODOS os indicadores do PPA.
-     * 
-     * @param object $indicator Indicador com indice_futuro e indice_recente
-     * @return array Array com 'meta', 'realizado', 'percentual' (ou null se sem dados)
-     */
-    private function catalogIndicatorMetrics(object $indicator, ?object $result = null): array
-    {
-        $meta = $this->firstNumericMetric([
-            $result->valor_meta_quantitativa ?? null,
-            $result->indice_futuro ?? null,
-            $indicator->indice_futuro ?? null,
-        ]);
-        $realizado = $this->firstNumericMetric([
-            $result->valor_resultado ?? null,
-            $result->indice_recente ?? null,
-            $indicator->indice_recente ?? null,
-        ]);
-        $percentual = ($meta !== null && $meta > 0 && $realizado !== null)
-            ? ($realizado / $meta) * 100
-            : null;
-
-        return [
-            'meta' => $meta,
-            'realizado' => $realizado,
-            'percentual' => $percentual,
-        ];
     }
 
     private function firstNumericMetric(array $values): ?float
@@ -2314,111 +2237,9 @@ class PpaController extends BaseController
         return (int) date('Y');
     }
 
-    /**
-     * Cria um resumo geral do catálogo de indicadores.
-     * 
-     * Calcula:
-     * - Total de indicadores
-     * - Indicadores ativos
-     * - Quantidade com meta atingida
-     * - Média de execução (percentual médio entre todos)
-     * 
-     * Aplicável a TODOS os indicadores do PPA (resumo geral).
-     * 
-     * @param array $indicators Array de indicadores já decorados com métricas
-     * @return array Array com 'total_indicadores', 'indicadores_ativos', 'meta_atingida', 'media_execucao'
-     */
-    private function buildCatalogSummary(array $indicators): array
-    {
-        $total = count($indicators);
-        $ativos = count(array_filter($indicators, fn ($indicator) => (int) ($indicator->ativo ?? 0) === 1));
-        $metaAtingida = 0;
-        $percentuais = [];
-
-        foreach ($indicators as $indicator) {
-            if (($indicator->percentual_atingido ?? null) !== null) {
-                $percentuais[] = (float) $indicator->percentual_atingido;
-            }
-
-            if (($indicator->status_painel ?? '') === 'Meta atingida') {
-                $metaAtingida++;
-            }
-        }
-
-        return [
-            'total_indicadores' => $total,
-            'indicadores_ativos' => $ativos,
-            'meta_atingida' => $metaAtingida,
-            'media_execucao' => $percentuais !== [] ? array_sum($percentuais) / count($percentuais) : null,
-        ];
-    }
-
-    /**
-     * Determina o status de um indicador baseado em seu desempenho.
-     * 
-     * Retorna:
-     * - "Sem leitura": Se faltam dados (meta inválida ou realizado nulo)
-     * - "Meta atingida": Se percentual >= 100%
-     * - "Em progresso": Se percentual >= 70%
-     * - "Em atenção": Se percentual < 70%
-     * 
-     * Aplicável a TODOS os indicadores do PPA.
-     * 
-     * @param object $indicator Indicador com meta_valor, realizado_valor, percentual_atingido
-     * @return string Status do indicador para exibição no catálogo
-     */
-    private function catalogIndicatorStatus(object $indicator): string
-    {
-        if (($indicator->metricas_tipo ?? '') === 'visao_geral') {
-            return 'Visão geral';
-        }
-
-        $meta = $indicator->meta_valor ?? null;
-        $realizado = $indicator->realizado_valor ?? null;
-        $percentual = $indicator->percentual_atingido ?? null;
-
-        if ($meta === null || $meta <= 0 || $realizado === null) {
-            return 'Sem leitura';
-        }
-
-        if ($percentual >= 100) {
-            return 'Meta atingida';
-        }
-
-        if ($percentual >= 70) {
-            return 'Em progresso';
-        }
-
-        return 'Em atenção';
-    }
-
     private function isCatalogOverviewIndicator(object $indicator): bool
     {
-        $code = trim((string) ($indicator->codigo_indicador ?? $indicator->codigo ?? ''));
-
-        return $code === 'PPA-ERRADICAR-POBREZA';
-    }
-
-    /**
-     * Retorna a classe CSS (Bootstrap) correspondente ao status de um indicador.
-     * 
-     * Mapeia status para cores/estilos:
-     * - "Meta atingida" => 'success' (verde)
-     * - "Em progresso" => 'warning' (amarelo)
-     * - "Em atenção" => 'danger' (vermelho)
-     * - Outros => 'secondary' (cinza)
-     * 
-     * @param string $status Status do indicador (resultado de catalogIndicatorStatus)
-     * @return string Classe CSS Bootstrap para estilização
-     */
-    private function catalogIndicatorStatusClass(string $status): string
-    {
-        return match ($status) {
-            'Meta atingida' => 'success',
-            'Em progresso' => 'warning',
-            'Em atenção' => 'danger',
-            default => 'secondary',
-        };
+        return PpaCatalogService::isOverviewIndicator($indicator);
     }
 
     private function shouldShowPeriodProgress(object $indicator): bool

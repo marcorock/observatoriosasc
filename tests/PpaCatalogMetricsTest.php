@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\PpaController;
 use App\Models\PpaResultModel;
+use App\Services\PpaCatalogService;
 
 $failures = [];
 
@@ -19,15 +20,13 @@ $assertSame = static function ($expected, $actual, string $label) use (&$failure
 };
 
 $controller = (new ReflectionClass(PpaController::class))->newInstanceWithoutConstructor();
-$metricsMethod = new ReflectionMethod(PpaController::class, 'catalogIndicatorMetrics');
-$metricsMethod->setAccessible(true);
 
 $indicator = (object) [
     'indice_futuro' => '10.0000',
     'indice_recente' => null,
 ];
 
-$fallback = $metricsMethod->invoke($controller, $indicator, null);
+$fallback = PpaCatalogService::indicatorMetrics($indicator);
 $assertSame(10.0, $fallback['meta'], 'uses indicator target when no local result exists');
 $assertSame(null, $fallback['realizado'], 'keeps no-reading fallback without a local result');
 $assertSame(null, $fallback['percentual'], 'does not invent a percentage without a result');
@@ -39,14 +38,14 @@ $localResult = (object) [
     'indice_recente' => null,
 ];
 
-$snapshot = $metricsMethod->invoke($controller, $indicator, $localResult);
+$snapshot = PpaCatalogService::indicatorMetrics($indicator, $localResult);
 $assertSame(250.0, $snapshot['meta'], 'prefers the local quantitative target');
 $assertSame(125.0, $snapshot['realizado'], 'uses the local consolidated result');
 $assertSame(50.0, $snapshot['percentual'], 'calculates percentage from local values');
 
 $zeroResult = clone $localResult;
 $zeroResult->valor_resultado = '0.0000';
-$zero = $metricsMethod->invoke($controller, $indicator, $zeroResult);
+$zero = PpaCatalogService::indicatorMetrics($indicator, $zeroResult);
 $assertSame(0.0, $zero['realizado'], 'preserves a valid zero result');
 $assertSame(0.0, $zero['percentual'], 'calculates zero percent for a zero result');
 
@@ -106,24 +105,20 @@ $assertSame(
     'rejects a negative result'
 );
 
-$overviewMethod = new ReflectionMethod(PpaController::class, 'isCatalogOverviewIndicator');
-$overviewMethod->setAccessible(true);
 $assertSame(
     true,
-    $overviewMethod->invoke($controller, (object) ['codigo_indicador' => 'PPA-ERRADICAR-POBREZA']),
+    PpaCatalogService::isOverviewIndicator((object) ['codigo_indicador' => 'PPA-ERRADICAR-POBREZA']),
     'identifies the overview indicator'
 );
 $assertSame(
     false,
-    $overviewMethod->invoke($controller, (object) ['codigo_indicador' => 'PPA-CREAS-MSE-J4']),
+    PpaCatalogService::isOverviewIndicator((object) ['codigo_indicador' => 'PPA-CREAS-MSE-J4']),
     'keeps target indicators out of overview mode'
 );
 
-$statusMethod = new ReflectionMethod(PpaController::class, 'catalogIndicatorStatus');
-$statusMethod->setAccessible(true);
 $assertSame(
     'Visão geral',
-    $statusMethod->invoke($controller, (object) [
+    PpaCatalogService::indicatorStatus((object) [
         'metricas_tipo' => 'visao_geral',
         'meta_valor' => null,
         'realizado_valor' => null,
@@ -132,9 +127,19 @@ $assertSame(
     'shows overview status instead of no reading'
 );
 
+$summary = PpaCatalogService::buildSummary([
+    (object) ['ativo' => 1, 'percentual_atingido' => 50.0, 'status_painel' => 'Em atenção'],
+    (object) ['ativo' => 1, 'percentual_atingido' => 100.0, 'status_painel' => 'Meta atingida'],
+    (object) ['ativo' => 1, 'percentual_atingido' => null, 'status_painel' => 'Visão geral'],
+]);
+$assertSame(3, $summary['total_indicadores'], 'keeps overview indicators in the catalog total');
+$assertSame(3, $summary['indicadores_ativos'], 'counts all active indicators');
+$assertSame(1, $summary['meta_atingida'], 'counts only reached targets');
+$assertSame(75.0, $summary['media_execucao'], 'excludes overview indicators from the execution average');
+
 if ($failures !== []) {
     fwrite(STDERR, implode("\n\n", $failures) . "\n");
     exit(1);
 }
 
-fwrite(STDOUT, "OK (22 assertions)\n");
+fwrite(STDOUT, "OK (26 assertions)\n");

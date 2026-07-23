@@ -7,3 +7,6 @@
 !/docs/performance/
 /docs/performance/*
 !/docs/performance/*.md
+!/docs/architecture/
+/docs/architecture/*
+!/docs/architecture/*.md
