@@ -49,9 +49,38 @@ $zero = $metricsMethod->invoke($controller, $indicator, $zeroResult);
 $assertSame(0.0, $zero['realizado'], 'preserves a valid zero result');
 $assertSame(0.0, $zero['percentual'], 'calculates zero percent for a zero result');
 
+$previewMethod = new ReflectionMethod(PpaController::class, 'catalogMetricsFromDashboardPayload');
+$previewMethod->setAccessible(true);
+$preview = $previewMethod->invoke($controller, (object) [
+    'indice_futuro' => '85.0000',
+    'unidade_medida' => 'percentual',
+], [
+    'type' => 'family_rma_progress',
+    'dados' => [
+        'meta_familias' => 49185.25,
+        'familias_acompanhadas_total' => 11480,
+        'referencia' => '2026-05-08',
+        'ano_apuracao' => '2026',
+    ],
+]);
+$assertSame(49185.25, $preview['valor_meta_quantitativa'], 'extracts quantitative target from dashboard');
+$assertSame(11480.0, $preview['valor_resultado'], 'extracts consolidated dashboard result');
+$assertSame(2026, $preview['ano_referencia'], 'extracts the dashboard reference year');
+$assertSame(
+    23.34033068857025,
+    $preview['percentual_atingido'],
+    'preserves the dashboard percentage formula'
+);
+
+$unsupported = $previewMethod->invoke($controller, $indicator, [
+    'type' => 'single_query',
+    'dados' => ['total_familias' => 100],
+]);
+$assertSame(null, $unsupported, 'rejects dashboard types without a safe metric mapping');
+
 if ($failures !== []) {
     fwrite(STDERR, implode("\n\n", $failures) . "\n");
     exit(1);
 }
 
-fwrite(STDOUT, "OK (8 assertions)\n");
+fwrite(STDOUT, "OK (13 assertions)\n");

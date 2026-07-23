@@ -53,3 +53,29 @@ resultado e gravar em `ppa_resultados`, registrando a execução em
 
 Essa sincronização não deve ser disparada automaticamente por uma requisição
 pública.
+
+## Prévia sem gravação
+
+Antes de implementar persistência, a consolidação pode ser validada por CLI:
+
+```bash
+php bin/ppa-sync-preview.php <slug-ou-codigo>
+```
+
+O comando:
+
+- executa o mesmo pipeline do dashboard;
+- aceita somente um indicador;
+- não grava em `ppa_resultados` ou `ppa_sincronizacoes`;
+- retorna erro para tipos de dashboard ainda não mapeados;
+- imprime meta, realizado, percentual, referência e tempo total.
+
+Indicador piloto validado:
+
+```text
+PPA-CRAS-ATUALIZACAO-C3
+meta quantitativa: 49185,25
+realizado: 11480
+percentual atingido: 23,34033068857025
+referência: 2026-05-08
+```

@@ -176,6 +176,91 @@ class PpaController extends BaseController
         $this->json($payload);
     }
 
+    public function buildCatalogSyncPreview(string $slug): array
+    {
+        $indicator = (new PpaIndicatorModel())->readPublicBySlug($slug);
+
+        if (is_string($indicator)) {
+            return [
+                'success' => false,
+                'error' => $indicator,
+            ];
+        }
+
+        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+
+        if (is_string($links) || $links === []) {
+            return [
+                'success' => false,
+                'error' => is_string($links)
+                    ? $links
+                    : 'Nenhum vinculo ativo foi encontrado para este indicador do PPA.',
+            ];
+        }
+
+        if ($this->isCadUpdateRmaIndicator($indicator)) {
+            $payload = $this->buildCadUpdateRmaResponse($indicator, $links, [
+                'cras' => null,
+                'mes_referencia' => null,
+            ]);
+        } else {
+            $type = $this->resolveDashboardType($links);
+            $payload = match ($type) {
+                'family_snapshot_rma_progress' => $this->buildFamilySnapshotRmaProgressResponse(
+                    $indicator,
+                    $links,
+                    ['cras' => null, 'mes_referencia' => null]
+                ),
+                'family_rma_progress' => $this->buildFamilyRmaProgressResponse(
+                    $indicator,
+                    $links,
+                    ['cras' => null, 'mes_referencia' => null]
+                ),
+                'monthly_unit_progress' => $this->buildMonthlyUnitProgressResponse(
+                    $indicator,
+                    $links,
+                    ['unidade' => null, 'mes_referencia' => null]
+                ),
+                default => $this->buildSingleQueryResponse(
+                    $indicator,
+                    $links,
+                    ['cras' => null, 'regiao' => null]
+                ),
+            };
+        }
+
+        if (!empty($payload['error'])) {
+            return [
+                'success' => false,
+                'indicator_id' => (int) $indicator->id,
+                'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
+                'error' => (string) $payload['error'],
+            ];
+        }
+
+        $metrics = $this->catalogMetricsFromDashboardPayload($indicator, $payload);
+
+        if ($metrics === null) {
+            return [
+                'success' => false,
+                'indicator_id' => (int) $indicator->id,
+                'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
+                'dashboard_type' => (string) ($payload['type'] ?? ''),
+                'error' => 'Este tipo de dashboard ainda nao possui consolidacao segura para o catalogo.',
+            ];
+        }
+
+        return [
+            'success' => true,
+            'dry_run' => true,
+            'indicator_id' => (int) $indicator->id,
+            'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
+            'indicator_slug' => (string) ($indicator->slug ?? $slug),
+            'dashboard_type' => (string) ($payload['type'] ?? ''),
+            'metrics' => $metrics,
+        ];
+    }
+
     /**
      * Determina o tipo de dashboard a ser renderizado baseado nas consultas vinculadas ao indicador.
      * 
@@ -2164,6 +2249,57 @@ class PpaController extends BaseController
         }
 
         return null;
+    }
+
+    private function catalogMetricsFromDashboardPayload(object $indicator, array $payload): ?array
+    {
+        $type = (string) ($payload['type'] ?? '');
+        $data = is_array($payload['dados'] ?? null) ? $payload['dados'] : [];
+
+        if (in_array($type, ['family_rma_progress', 'family_snapshot_rma_progress'], true)) {
+            $meta = $this->firstNumericMetric([$data['meta_familias'] ?? null]);
+            $realizado = $this->firstNumericMetric([$data['familias_acompanhadas_total'] ?? null]);
+        } elseif ($type === 'monthly_unit_progress') {
+            $meta = $this->firstNumericMetric([
+                $data['meta_anual'] ?? null,
+                $indicator->indice_futuro ?? null,
+            ]);
+            $realizado = $this->firstNumericMetric([$data['total_inseridos'] ?? null]);
+        } else {
+            return null;
+        }
+
+        if ($meta === null || $meta <= 0 || $realizado === null) {
+            return null;
+        }
+
+        return [
+            'ano_referencia' => $this->normalizeReferenceYear(
+                $data['ano_apuracao'] ?? null,
+                $data['referencia'] ?? null
+            ),
+            'competencia' => null,
+            'valor_meta_quantitativa' => $meta,
+            'valor_resultado' => $realizado,
+            'percentual_atingido' => ($realizado / $meta) * 100,
+            'unidade_medida' => (string) ($indicator->unidade_medida ?? ''),
+            'data_referencia' => $data['referencia'] ?? null,
+        ];
+    }
+
+    private function normalizeReferenceYear($year, $reference): int
+    {
+        $normalizedYear = (int) $year;
+
+        if ($normalizedYear >= 2000 && $normalizedYear <= 2100) {
+            return $normalizedYear;
+        }
+
+        if (is_string($reference) && preg_match('/^(20\d{2})/', $reference, $matches)) {
+            return (int) $matches[1];
+        }
+
+        return (int) date('Y');
     }
 
     /**
