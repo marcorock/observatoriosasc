@@ -187,6 +187,15 @@ class PpaController extends BaseController
             ];
         }
 
+        if ($this->isCatalogOverviewIndicator($indicator)) {
+            return [
+                'success' => false,
+                'indicator_id' => (int) $indicator->id,
+                'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
+                'error' => 'Este indicador e uma visao geral e nao possui meta, realizado ou percentual para sincronizar.',
+            ];
+        }
+
         $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
 
         if (is_string($links) || $links === []) {
@@ -2196,6 +2205,9 @@ class PpaController extends BaseController
             $indicator->meta_valor = $meta;
             $indicator->realizado_valor = $realizado;
             $indicator->percentual_atingido = $percentual;
+            $indicator->metricas_tipo = $this->isCatalogOverviewIndicator($indicator)
+                ? 'visao_geral'
+                : 'meta';
             $indicator->status_painel = $this->catalogIndicatorStatus($indicator);
             $indicator->status_painel_classe = $this->catalogIndicatorStatusClass($indicator->status_painel);
             $indicator->metricas_origem = $result !== null ? 'resultado_local' : 'cadastro_indicador';
@@ -2357,6 +2369,10 @@ class PpaController extends BaseController
      */
     private function catalogIndicatorStatus(object $indicator): string
     {
+        if (($indicator->metricas_tipo ?? '') === 'visao_geral') {
+            return 'Visão geral';
+        }
+
         $meta = $indicator->meta_valor ?? null;
         $realizado = $indicator->realizado_valor ?? null;
         $percentual = $indicator->percentual_atingido ?? null;
@@ -2374,6 +2390,13 @@ class PpaController extends BaseController
         }
 
         return 'Em atenção';
+    }
+
+    private function isCatalogOverviewIndicator(object $indicator): bool
+    {
+        $code = trim((string) ($indicator->codigo_indicador ?? $indicator->codigo ?? ''));
+
+        return $code === 'PPA-ERRADICAR-POBREZA';
     }
 
     /**

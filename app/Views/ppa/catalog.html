@@ -490,6 +490,9 @@
                                                                     <div class="ppa-progress-track">
                                                                         <div class="ppa-progress-fill" style="width: {{ progress }}%;"></div>
                                                                     </div>
+                                                                {% elseif indicator.metricas_tipo == 'visao_geral' %}
+                                                                    <div class="ppa-table-value">-</div>
+                                                                    <div class="ppa-table-muted">Não se aplica</div>
                                                                 {% else %}
                                                                     <div class="ppa-table-value">-</div>
                                                                     <div class="ppa-table-muted">Sem leitura</div>

@@ -106,9 +106,35 @@ $assertSame(
     'rejects a negative result'
 );
 
+$overviewMethod = new ReflectionMethod(PpaController::class, 'isCatalogOverviewIndicator');
+$overviewMethod->setAccessible(true);
+$assertSame(
+    true,
+    $overviewMethod->invoke($controller, (object) ['codigo_indicador' => 'PPA-ERRADICAR-POBREZA']),
+    'identifies the overview indicator'
+);
+$assertSame(
+    false,
+    $overviewMethod->invoke($controller, (object) ['codigo_indicador' => 'PPA-CREAS-MSE-J4']),
+    'keeps target indicators out of overview mode'
+);
+
+$statusMethod = new ReflectionMethod(PpaController::class, 'catalogIndicatorStatus');
+$statusMethod->setAccessible(true);
+$assertSame(
+    'Visão geral',
+    $statusMethod->invoke($controller, (object) [
+        'metricas_tipo' => 'visao_geral',
+        'meta_valor' => null,
+        'realizado_valor' => null,
+        'percentual_atingido' => null,
+    ]),
+    'shows overview status instead of no reading'
+);
+
 if ($failures !== []) {
     fwrite(STDERR, implode("\n\n", $failures) . "\n");
     exit(1);
 }
 
-fwrite(STDOUT, "OK (19 assertions)\n");
+fwrite(STDOUT, "OK (22 assertions)\n");

@@ -225,3 +225,16 @@ Com isso, nove dos dez indicadores públicos possuem resultado consolidado
 local. O indicador `PPA-ERRADICAR-POBREZA` permanece sem registro de meta e
 realizado porque sua finalidade é oferecer uma visão geral da base de dados,
 não acompanhar alcance de uma meta.
+
+## Indicador de visão geral
+
+`PPA-ERRADICAR-POBREZA` é classificado explicitamente como `visao_geral` no
+catálogo:
+
+- meta e realizado permanecem sem valor;
+- percentual mostra `Não se aplica`;
+- status mostra `Visão geral`;
+- ele não entra na média de execução nem na contagem de metas atingidas;
+- o comando de sincronização encerra antes de consultar a base externa.
+
+O painel detalhado continua disponível para apresentar a leitura geral da base.
