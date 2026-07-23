@@ -153,3 +153,18 @@ referência: 2026-05-08
 
 O resultado foi gravado com status `validado`, sem repetição do comando, e o
 catálogo permaneceu HTTP 200.
+
+## Quarta sincronização controlada
+
+O indicador `PPA-ACOMPANHAR-FAMILIAS-PBF` foi validado pelo mesmo procedimento:
+
+```text
+base total: 35571
+meta quantitativa: 3557,1000
+valor realizado: 1069,0000
+percentual atingido: 30,05257091450901
+referência: 2026-05-08
+```
+
+A prévia coincidiu com o endpoint JSON. O resultado foi gravado uma única vez
+com status `validado`, e o catálogo permaneceu HTTP 200.
