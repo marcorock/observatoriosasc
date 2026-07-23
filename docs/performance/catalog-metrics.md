@@ -119,3 +119,21 @@ foi registrada no histórico de sincronizações com zero inserções e não dup
 
 Após a sincronização, `/ppa` permaneceu HTTP 200 e passou a mostrar a meta e o
 realizado do indicador usando somente a leitura local.
+
+## Segunda sincronização controlada
+
+O indicador `PPA-ACOMPANHAR-BPC-PAIF` foi sincronizado individualmente depois
+de a prévia CLI ser comparada com o endpoint JSON do dashboard:
+
+```text
+base total: 13228
+meta quantitativa: 1322,8000
+valor realizado: 481,0000
+percentual atingido: 36,36226186876323
+referência: 2026-05-08
+```
+
+O resultado foi gravado com status `validado`, a sincronização foi concluída
+com uma inserção e o catálogo permaneceu HTTP 200. Uma repetição para testar
+idempotência não foi executada, pois esse comportamento já havia sido validado
+com o indicador piloto e geraria carga externa desnecessária.
