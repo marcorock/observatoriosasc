@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 9.
-- Restantes: 5.
-- Progresso: 64,3%.
+- Concluídas: 10.
+- Restantes: 4.
+- Progresso: 71,4%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -37,7 +37,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] 7. Caracterizar o payload de atualização cadastral.
 - [x] 8. Criar o teste de equivalência da atualização cadastral.
 - [x] 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
-- [ ] 10. Integrar o builder e remover o legado cadastral.
+- [x] 10. Integrar o builder e remover o legado cadastral.
 - [ ] 11. Revisar responsabilidades restantes no `PpaController`.
 - [ ] 12. Coletar métricas controladas dos dashboards representativos.
 - [ ] 13. Produzir decisão sobre filtros, conexões e cache com base nas métricas.
@@ -60,7 +60,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaSingleQueryPayloadBuilder`.
 - [x] Extrair `PpaMonthlyUnitPayloadBuilder`.
 - [x] Extrair `PpaFamilyRmaPayloadBuilder`.
-- [x] Manter nove testes locais, com 145 assertions na verificação de 2026-07-24.
+- [x] Manter nove testes locais, com 141 assertions na verificação de 2026-07-24.
 
 ## Homologações pendentes
 

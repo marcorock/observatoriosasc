@@ -63,6 +63,13 @@
 - Suíte ampliada para 145 assertions.
 - Checklist avançado para 9 de 14 etapas concluídas, ou 64,3%.
 - Builder publicado no commit `2a63a16`.
+- Integrado `PpaCadUpdateRmaPayloadBuilder` ao `PpaController`.
+- Removidos `buildCadUpdateRmaPayload()`, `filterBaseRows()` e
+  `filterRmaRows()` do controller.
+- Renomeado o teste para `PpaCadUpdateRmaPayloadBuilderTest.php`.
+- Suíte mantida com nove testes e 141 assertions.
+- Checklist avançado para 10 de 14 etapas concluídas, ou 71,4%.
+- Integração publicada no commit `05e2801`.
 
 ## 2026-07-23
 

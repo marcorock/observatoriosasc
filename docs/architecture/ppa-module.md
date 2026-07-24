@@ -87,8 +87,9 @@ O payload de fotografia familiar já foi extraído para
 `PpaFamilySnapshotRmaPayloadBuilder`, integrado ao controller e teve sua
 implementação legada removida.
 
-O candidato especializado restante é `buildCadUpdateRmaPayload()`, usado pelo
-fluxo de atualização cadastral.
+O payload especializado restante foi extraído para
+`PpaCadUpdateRmaPayloadBuilder`, integrado ao controller e teve a implementação
+legada removida.
 
 ### Contrato atual da atualização cadastral
 
@@ -174,6 +175,12 @@ legado por reflexão e registra 28 assertions legadas.
 controller. Quatro comparações adicionais de payload completo confirmam
 equivalência com o legado, totalizando 32 assertions no teste de transição e
 145 assertions na suíte.
+
+Depois da integração, o teste foi renomeado para
+`PpaCadUpdateRmaPayloadBuilderTest.php` e passou a validar diretamente o
+serviço com 28 assertions. `buildCadUpdateRmaPayload()`, `filterBaseRows()` e
+`filterRmaRows()` foram removidos do controller. A suíte final da etapa passou
+com 141 assertions.
 
 ### Contrato atual da fotografia familiar
 
