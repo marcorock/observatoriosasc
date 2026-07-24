@@ -17,7 +17,8 @@ class PpaLinkedQueryService
         ?ExternalQueryModel $queryModel = null,
         ?ExternalDataSourceModel $sourceModel = null,
         ?Closure $queryRunner = null,
-        private ?PpaQueryFileCache $fileCache = null
+        private ?PpaQueryFileCache $fileCache = null,
+        private bool $useFileCache = true
     ) {
         $this->queryModel = $queryModel;
         $this->sourceModel = $sourceModel;
@@ -45,8 +46,12 @@ class PpaLinkedQueryService
             return $source;
         }
 
-        $cache = $this->fileCache ??= new PpaQueryFileCache();
-        $cached = $cache->read($source, $query, $limit);
+        $cached = null;
+
+        if ($this->useFileCache) {
+            $cache = $this->fileCache ??= new PpaQueryFileCache();
+            $cached = $cache->read($source, $query, $limit);
+        }
 
         if ($cached !== null) {
             return [

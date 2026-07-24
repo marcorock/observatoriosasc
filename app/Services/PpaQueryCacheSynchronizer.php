@@ -7,6 +7,7 @@ use Closure;
 final class PpaQueryCacheSynchronizer
 {
     private ?Closure $linkRunner;
+    private ?PpaLinkedQueryService $linkedQueryService = null;
 
     public function __construct(
         private ?PpaQueryFileCache $cache = null,
@@ -116,6 +117,8 @@ final class PpaQueryCacheSynchronizer
             return ($this->linkRunner)($link, $limit);
         }
 
-        return (new PpaLinkedQueryService())->run($link, $limit);
+        $service = $this->linkedQueryService ??= new PpaLinkedQueryService(useFileCache: false);
+
+        return $service->run($link, $limit);
     }
 }

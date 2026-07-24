@@ -139,6 +139,21 @@ $cacheMiss = (new PpaLinkedQueryService(
 $assertSame([['total' => 2]], $cacheMiss['rows'] ?? null, 'falls back when the limit is incompatible');
 $assertSame(1, $externalCalls, 'executes the external query on cache miss');
 
+$cacheBypassed = (new PpaLinkedQueryService(
+    new FakeExternalQueryModel($query),
+    new FakeExternalDataSourceModel($source),
+    static function () use (&$externalCalls): array {
+        $externalCalls++;
+
+        return ['success' => true, 'rows' => [['total' => 3]]];
+    },
+    $fileCache,
+    false
+))->run($link, 5000);
+
+$assertSame([['total' => 3]], $cacheBypassed['rows'] ?? null, 'can bypass a compatible cache for refresh');
+$assertSame(2, $externalCalls, 'executes externally when cache use is disabled');
+
 foreach (glob($cacheDirectory . '/*') ?: [] as $file) {
     unlink($file);
 }
@@ -149,4 +164,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (15 assertions)\n");
+fwrite(STDOUT, "OK (17 assertions)\n");
