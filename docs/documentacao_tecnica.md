@@ -19,6 +19,17 @@ Estrutura principal identificada:
 - `core/app.php`: bootstrap complementar da aplicacao
 - `database`: scripts SQL de referencia
 
+### Seleção da conexão local
+
+`public/index.php` carrega o `.env` antes de incluir `core/app.php`. O switch de
+`core/app.php` seleciona credenciais específicas para SASC-SA, OSC e CadÚnico.
+Para as demais rotas, inclusive PPA e BSC, o caso padrão repassa `DB_HOST`,
+`DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS` e `DB_CHARSET` do ambiente para as
+constantes consumidas por `DataConect`.
+
+Os valores de um ambiente Docker ou remoto pertencem ao `.env`; não devem ser
+fixados como defaults globais em `DataConect.php`.
+
 Dependencias identificadas em `composer.json`:
 
 - `pecee/simple-router`

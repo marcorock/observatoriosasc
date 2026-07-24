@@ -105,6 +105,11 @@ defaults de desenvolvimento. Por isso, `DataConect.php` foi mantido exatamente
 como estava no Git. Ambientes Docker ou remotos devem declarar host e senha no
 `.env`, que não é versionado.
 
+Em 2026-07-24, `core/app.php` foi corrigido para carregar explicitamente as
+variáveis `DB_*` no caso padrão. Antes, o `default` atribuía `NULL` e fazia a
+conexão ignorar o `.env`. A correção foi validada por sintaxe PHP e pelos sete
+testes, e publicada no commit `e17ee07`.
+
 ## Contrato caracterizado para a próxima extração
 
 O fluxo `family_snapshot_rma_progress` usado por

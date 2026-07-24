@@ -25,6 +25,9 @@
 
 - Mantidos os defaults `localhost` e senha vazia em `DataConect.php`.
 - Ambientes Docker ou remotos devem configurar a conexão no `.env`.
+- Corrigido `core/app.php` para repassar as variáveis `DB_*` do `.env` no caso
+  padrão, evitando fallback indevido da conexão.
+- Correção validada e publicada no commit `e17ee07`.
 - Checklist atualizado para 2 de 14 etapas concluídas, ou 14,3%.
 - Checkpoint documental registrado no commit `651e652`.
 - Caracterizado o contrato completo do payload de fotografia familiar.
