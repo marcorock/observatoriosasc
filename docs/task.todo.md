@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 13.
-- Restantes: 1.
-- Progresso: 92,9%.
+- Concluídas: 14.
+- Restantes: 0.
+- Progresso: 100%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -41,7 +41,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] 11. Revisar responsabilidades restantes no `PpaController`.
 - [x] 12. Coletar métricas controladas dos dashboards representativos.
 - [x] 13. Produzir decisão sobre filtros, conexões e cache com base nas métricas.
-- [ ] 14. Homologar e preparar o pull request da branch `update-repository`.
+- [x] 14. Homologar e preparar o pull request da branch `update-repository`.
 
 ## Concluído na frente de performance do PPA
 
@@ -77,6 +77,9 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Homologar filtros e endpoints HTTP representativos com cache.
 - [x] Adicionar atualização em lote e documentar agendamento somente após
   homologar o fluxo manual.
+- [x] Criar branch de integração conectando os históricos independentes.
+- [x] Criar a pull request draft
+  `https://github.com/marcorock/observatoriosasc/pull/2`.
 
 - [ ] Fluxos administrativos do PPA.
 - [ ] Catálogo e dashboards públicos em desktop e mobile.

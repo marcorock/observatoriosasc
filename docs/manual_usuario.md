@@ -329,3 +329,45 @@ pessoa técnica deve executar novamente o comando manual.
 Para agendamento, use o comando `--all` com uma trava do sistema, como `flock`,
 e monitore stdout, stderr e exit code. Um exemplo completo está em
 `docs/performance/dashboard-file-cache.md`.
+
+## Adicionar um novo indicador PPA
+
+Fluxo operacional recomendado:
+
+1. Cadastre o indicador no painel administrativo.
+2. Cadastre ou revise as consultas externas necessárias.
+3. Crie os vínculos ativos e defina `campo_resultado` conforme o tipo de
+   dashboard.
+4. Abra o dashboard sem cache e valide cards, gráficos, tabelas e filtros.
+5. Execute a prévia das métricas do catálogo:
+
+```bash
+php bin/ppa-sync-preview.php <slug-ou-codigo>
+```
+
+6. Compare meta, realizado, percentual e referência. Depois da validação,
+   persista explicitamente:
+
+```bash
+php bin/ppa-sync-preview.php <slug-ou-codigo> --commit
+```
+
+7. Gere as entradas detalhadas do dashboard:
+
+```bash
+php bin/ppa-dashboard-cache.php <slug-ou-codigo>
+```
+
+8. Revalide HTML, endpoint JSON e filtros. Em cache hit, não deve existir
+   consulta externa.
+9. Inclua o indicador no lote programado somente depois da homologação manual.
+
+As métricas do catálogo e o cache detalhado são independentes:
+
+- `ppa-sync-preview.php --commit` atualiza meta e realizado exibidos no
+  catálogo;
+- `ppa-dashboard-cache.php` atualiza as linhas usadas em gráficos, tabelas e
+  filtros.
+
+Alterações de SQL, fonte ou limite deixam entradas anteriores incompatíveis e
+fazem o dashboard usar o fallback externo até uma nova sincronização.

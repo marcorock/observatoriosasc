@@ -85,7 +85,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 13 de 14 etapas, ou 92,9%.
+Progresso atual: 14 de 14 etapas, ou 100%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -100,7 +100,7 @@ Progresso atual: 13 de 14 etapas, ou 92,9%.
 11. Concluído — revisar as responsabilidades restantes no `PpaController`.
 12. Concluído — executar nova campanha de medição.
 13. Concluído — produzir decisão técnica baseada nas métricas.
-14. Homologar e preparar a entrega no GitHub.
+14. Concluído — homologar e preparar a entrega no GitHub.
 
 Cada etapa vale um ponto. O percentual é calculado por
 `etapas concluídas / 14 × 100`.
@@ -206,9 +206,17 @@ externa. O lote sequencial `--all` foi publicado em `359a269`, com continuação
 após falhas individuais e exit code de falha parcial. O exemplo de agendamento
 usa `flock` para impedir sobreposição.
 
-Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-O próximo incremento é revisar integralmente a branch, confirmar a documentação
-e preparar a entrega. A criação do pull request depende de autorização.
+O checklist original foi concluído. A branch de integração
+`integration/update-repository` conectou os históricos independentes preservando
+a árvore de `update-repository`.
+
+Pull request draft:
+
+`https://github.com/marcorock/observatoriosasc/pull/2`
+
+A PR está aberta, mergeável e aponta para `main`. Próximo fluxo: revisão humana
+da PR, eventuais ajustes em pequenos commits, conversão para pronta para revisão
+e merge somente após aprovação.
 
 ## Regra documental para cada incremento
 

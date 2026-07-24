@@ -141,6 +141,15 @@
 - Adicionado teste do lote com 10 assertions; suíte ampliada para doze testes e
   186 assertions.
 - Lote publicado em `359a269` e agendamento documentado com trava `flock`.
+- Criada `integration/update-repository` para conectar os históricos
+  independentes de `main` e `update-repository`, preservando a árvore
+  refatorada.
+- Criada a pull request draft #2:
+  `https://github.com/marcorock/observatoriosasc/pull/2`.
+- Confirmado pelo GitHub que a PR está aberta e mergeável.
+- Documentado o fluxo completo para cadastro, validação, consolidação do
+  catálogo e geração do cache de um novo indicador.
+- Checklist avançado para 14 de 14 etapas concluídas, ou 100%.
 
 ## 2026-07-23
 

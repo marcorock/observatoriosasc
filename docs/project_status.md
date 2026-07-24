@@ -67,7 +67,7 @@ devem configurar suas credenciais no `.env`.
 
 ## Bloqueios e riscos
 
-- Não existe PR aberto reunindo a refatoração.
+- A PR draft #2 reúne a refatoração e aguarda revisão humana.
 - O Notion estava defasado em relação ao código até a atualização de 2026-07-24.
 - O BSC mantém a divergência `cancelado` x `Suspenso`.
 - Existe uma baseline operacional curta, mas ainda não há teste de carga ou
@@ -77,5 +77,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Revisar integralmente a branch e preparar a entrega; pull request somente após
-autorização.
+Revisar a PR #2, aplicar eventuais ajustes em commits pequenos, marcar como
+pronta para revisão e realizar merge somente após aprovação.
