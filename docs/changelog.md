@@ -58,6 +58,11 @@
 - Suíte ampliada para nove testes e 141 assertions.
 - Checklist avançado para 8 de 14 etapas concluídas, ou 57,1%.
 - Teste publicado no commit `2d451c2`.
+- Criado `PpaCadUpdateRmaPayloadBuilder` sem integração ao controller.
+- Adicionadas quatro comparações completas entre builder cadastral e legado.
+- Suíte ampliada para 145 assertions.
+- Checklist avançado para 9 de 14 etapas concluídas, ou 64,3%.
+- Builder publicado no commit `2a63a16`.
 
 ## 2026-07-23
 

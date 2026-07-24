@@ -168,7 +168,12 @@ Ordenação:
 O teste `PpaCadUpdateRmaLegacyPayloadTest.php` cobre aliases, fallbacks das
 colunas RMA, filtros, mês vazio, CRAS somente no RMA, valores zero, meta padrão,
 referência, ano, ordenação e contrato completo. Ele executa o método privado
-legado por reflexão e registra 28 assertions.
+legado por reflexão e registra 28 assertions legadas.
+
+`PpaCadUpdateRmaPayloadBuilder` foi criado em 2026-07-24 sem alterar o
+controller. Quatro comparações adicionais de payload completo confirmam
+equivalência com o legado, totalizando 32 assertions no teste de transição e
+145 assertions na suíte.
 
 ### Contrato atual da fotografia familiar
 
