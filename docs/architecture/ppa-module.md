@@ -47,8 +47,9 @@ O indicador `PPA-ERRADICAR-POBREZA` continua classificado como visão geral.
 
 `PpaLinkedQueryService` resolve a consulta e a fonte cadastradas, executa o SQL
 com o limite solicitado e mantém o mesmo retorno consumido pelos dashboards.
-Os builders de payload permanecem no controller para manter cada etapa pequena
-e reversível.
+Os builders de payload ficam em serviços dedicados. O controller apenas
+orquestra a seleção dos vínculos, a execução das consultas e a composição da
+resposta HTTP.
 
 ## Resolução dos dashboards
 
@@ -81,7 +82,7 @@ mensal e progresso por CRAS para os indicadores familiares regulares. O builder
 regular duplicado foi removido; os builders especializados de atualização
 cadastral permanecem no controller nesta etapa.
 
-## Payloads especializados ainda no controller
+## Payloads especializados
 
 O payload de fotografia familiar já foi extraído para
 `PpaFamilySnapshotRmaPayloadBuilder`, integrado ao controller e teve sua
@@ -279,8 +280,44 @@ e a duplicação foi removida. A suíte completa passou com 113 assertions.
 ## Testes de arquitetura e payload
 
 Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
-dashboard, consultas vinculadas e os três builders extraídos. Em 2026-07-24,
-sete arquivos passaram com 87 assertions.
+dashboard, consultas vinculadas e os cinco builders extraídos. Em 2026-07-24,
+nove arquivos passaram com 141 assertions.
+
+## Responsabilidades restantes no controller
+
+Revisão concluída em 2026-07-24, sem extração automática de código.
+
+Devem permanecer no `PpaController`:
+
+- ações HTTP (`index()`, `show()` e `dashboardData()`), status HTTP e resposta
+  JSON;
+- leitura e normalização dos filtros da query string;
+- seleção do dashboard e encaminhamento para renderização;
+- configuração básica da página e chamada dos templates;
+- coordenação entre vínculos, consultas e builders já extraídos.
+
+Podem permanecer por enquanto, mas são candidatos futuros:
+
+- `buildCatalogSyncPreview()` e a conversão do payload em métricas de catálogo,
+  pois formam um caso de uso de sincronização reutilizado fora da resposta HTTP;
+- `familyRmaUiConfig()` e `monthlyUnitUiConfig()`, pois são tabelas extensas de
+  configuração visual e podem migrar para configuração dedicada;
+- os quatro métodos `build*Response()`, caso medições ou novos consumidores
+  mostrem benefício em criar um serviço de orquestração.
+
+Foram identificados como candidatos a remoção, após confirmação por teste:
+
+- `buildPeriodProgressPercent()`;
+- `monthLabel()`;
+- `normalizeIndicatorUnitLabel()` e seus helpers territoriais exclusivos.
+
+Esses métodos não possuem chamadas no controller após a extração dos builders.
+A remoção não faz parte desta revisão para manter a etapa apenas documental e
+evitar combinar limpeza estrutural com a campanha de medição.
+
+Decisão: não criar novos serviços antes da medição. A etapa seguinte deve
+medir os fluxos representativos e usar os resultados para priorizar filtros em
+SQL, conexão e eventual cache.
 
 ## Limites da etapa atual
 

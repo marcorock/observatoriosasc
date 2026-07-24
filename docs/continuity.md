@@ -10,7 +10,7 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `update-repository`
-- Último commit documentado: `0fcef27`
+- Último checkpoint publicado antes desta revisão: `f2cf6e8`
 - Situação: sincronizada com `origin/update-repository` e 23 commits à frente
   de `main` na última verificação
 - Pull request da branch: inexistente na última verificação
@@ -51,9 +51,12 @@ sem alterar rotas, payloads, templates, cálculos ou regras de negócio.
 - `PpaSingleQueryPayloadBuilder`
 - `PpaMonthlyUnitPayloadBuilder`
 - `PpaFamilyRmaPayloadBuilder`
+- `PpaFamilySnapshotRmaPayloadBuilder`
+- `PpaCadUpdateRmaPayloadBuilder`
 
-O controller ainda contém os builders especializados de fotografia familiar e
-atualização cadastral, além de configurações visuais e normalizações.
+O controller mantém a orquestração HTTP, filtros de entrada, renderização e
+configurações visuais. A revisão da etapa 11 não encontrou benefício suficiente
+para uma nova extração antes da campanha de medição.
 
 ## Testes
 
@@ -79,7 +82,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 10 de 14 etapas, ou 71,4%.
+Progresso atual: 11 de 14 etapas, ou 78,6%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -91,7 +94,7 @@ Progresso atual: 10 de 14 etapas, ou 71,4%.
 8. Concluído — criar seu teste de equivalência.
 9. Concluído — criar `PpaCadUpdateRmaPayloadBuilder`.
 10. Concluído — integrar o builder e remover o legado cadastral.
-11. Revisar as responsabilidades restantes no `PpaController`.
+11. Concluído — revisar as responsabilidades restantes no `PpaController`.
 12. Executar nova campanha de medição.
 13. Produzir decisão técnica baseada nas métricas.
 14. Homologar e preparar a entrega no GitHub.
@@ -147,8 +150,14 @@ filtro que ficaram sem consumidores foram removidos. O teste foi renomeado para
 `PpaCadUpdateRmaPayloadBuilderTest.php` e valida diretamente o serviço com 28
 assertions.
 
-Próxima etapa: revisar e classificar as responsabilidades restantes no
-`PpaController`.
+As responsabilidades restantes foram classificadas. Ações HTTP, filtros,
+seleção de dashboard, renderização e coordenação permanecem no controller.
+Sincronização de catálogo, configuração visual e orquestração das respostas são
+candidatos futuros, condicionados a benefício mensurável. Helpers sem chamadas
+foram registrados para uma limpeza posterior isolada.
+
+Próxima etapa: executar a campanha de medição dos fluxos representativos e
+registrar a baseline pós-refatoração.
 
 ## Regra documental para cada incremento
 

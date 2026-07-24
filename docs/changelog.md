@@ -70,6 +70,15 @@
 - Suíte mantida com nove testes e 141 assertions.
 - Checklist avançado para 10 de 14 etapas concluídas, ou 71,4%.
 - Integração publicada no commit `05e2801`.
+- Revisadas e classificadas as responsabilidades restantes no
+  `PpaController`.
+- Mantidas no controller as ações HTTP, filtros de entrada, seleção de
+  dashboard, renderização e coordenação dos serviços.
+- Registrados como candidatos futuros a sincronização do catálogo,
+  configurações visuais e orquestração das respostas, condicionados às
+  medições.
+- Identificados helpers sem chamadas para limpeza posterior isolada.
+- Checklist avançado para 11 de 14 etapas concluídas, ou 78,6%.
 
 ## 2026-07-23
 

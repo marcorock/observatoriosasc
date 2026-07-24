@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 10.
-- Restantes: 4.
-- Progresso: 71,4%.
+- Concluídas: 11.
+- Restantes: 3.
+- Progresso: 78,6%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -38,7 +38,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] 8. Criar o teste de equivalência da atualização cadastral.
 - [x] 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
 - [x] 10. Integrar o builder e remover o legado cadastral.
-- [ ] 11. Revisar responsabilidades restantes no `PpaController`.
+- [x] 11. Revisar responsabilidades restantes no `PpaController`.
 - [ ] 12. Coletar métricas controladas dos dashboards representativos.
 - [ ] 13. Produzir decisão sobre filtros, conexões e cache com base nas métricas.
 - [ ] 14. Homologar e preparar o pull request da branch `update-repository`.
@@ -60,6 +60,10 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaSingleQueryPayloadBuilder`.
 - [x] Extrair `PpaMonthlyUnitPayloadBuilder`.
 - [x] Extrair `PpaFamilyRmaPayloadBuilder`.
+- [x] Extrair `PpaFamilySnapshotRmaPayloadBuilder`.
+- [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
+- [x] Classificar as responsabilidades restantes no `PpaController` sem nova
+  extração prematura.
 - [x] Manter nove testes locais, com 141 assertions na verificação de 2026-07-24.
 
 ## Homologações pendentes
