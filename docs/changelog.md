@@ -37,6 +37,13 @@
 - Suíte ampliada para oito arquivos e 113 assertions.
 - Checklist avançado para 4 de 14 etapas concluídas, ou 28,6%.
 - Teste publicado no commit `b325692`.
+- Criado `PpaFamilySnapshotRmaPayloadBuilder` sem integração ao controller.
+- Adicionadas quatro comparações completas entre builder e método legado.
+- Corrigida durante o desenvolvimento a preservação do tipo `float` para
+  `percentual_periodo` quando não existem meses.
+- Suíte ampliada para 117 assertions.
+- Checklist avançado para 5 de 14 etapas concluídas, ou 35,7%.
+- Builder publicado no commit `f6ebb0b`.
 
 ## 2026-07-23
 

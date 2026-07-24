@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 4.
-- Restantes: 10.
-- Progresso: 28,6%.
+- Concluídas: 5.
+- Restantes: 9.
+- Progresso: 35,7%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -32,7 +32,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 
 - [x] 3. Caracterizar o payload de fotografia familiar.
 - [x] 4. Criar o teste de equivalência da fotografia familiar.
-- [ ] 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
+- [x] 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
 - [ ] 6. Integrar o builder e remover o legado de fotografia.
 - [ ] 7. Caracterizar o payload de atualização cadastral.
 - [ ] 8. Criar o teste de equivalência da atualização cadastral.
@@ -60,7 +60,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaSingleQueryPayloadBuilder`.
 - [x] Extrair `PpaMonthlyUnitPayloadBuilder`.
 - [x] Extrair `PpaFamilyRmaPayloadBuilder`.
-- [x] Manter oito testes locais, com 113 assertions na verificação de 2026-07-24.
+- [x] Manter oito testes locais, com 117 assertions na verificação de 2026-07-24.
 
 ## Homologações pendentes
 

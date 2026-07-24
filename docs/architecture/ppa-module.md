@@ -180,7 +180,12 @@ Casos cobertos pelo teste de equivalência legado:
 
 O teste `PpaFamilySnapshotRmaLegacyPayloadTest.php` executa o método privado
 legado por reflexão, sem abrir conexões ou instanciar models. Ele registra 26
-assertions. A suíte completa passou com 113 assertions em 2026-07-24.
+assertions legadas e quatro comparações completas com o novo builder.
+
+`PpaFamilySnapshotRmaPayloadBuilder` foi criado em 2026-07-24 sem alterar o
+controller. Ele preserva entradas, fallbacks, filtros, aliases, tipos numéricos,
+cálculos e ordenação do método legado. A suíte completa passou com 117
+assertions.
 
 ## Testes de arquitetura e payload
 
