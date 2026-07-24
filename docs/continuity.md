@@ -57,7 +57,7 @@ atualização cadastral, além de configurações visuais e normalizações.
 
 ## Testes
 
-Na última verificação, os sete arquivos de teste passaram:
+Na última verificação, os oito arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -65,10 +65,11 @@ Na última verificação, os sete arquivos de teste passaram:
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
+| `PpaFamilySnapshotRmaLegacyPayloadTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 8 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **87** |
+| **Total** | **113** |
 
 ## Próxima sequência aprovada
 
@@ -77,12 +78,12 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 3 de 14 etapas, ou 21,4%.
+Progresso atual: 4 de 14 etapas, ou 28,6%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
 3. Concluído — caracterizar o payload de fotografia familiar.
-4. Criar seu teste de equivalência.
+4. Concluído — criar seu teste de equivalência.
 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
 6. Integrar o builder e remover o legado de fotografia.
 7. Caracterizar o payload de atualização cadastral.
@@ -117,7 +118,12 @@ O fluxo `family_snapshot_rma_progress` usado por
 atualizadas e série RMA. Entradas, filtros, aliases, cálculos, ordenação e
 campos de saída estão registrados em `docs/architecture/ppa-module.md`.
 
-Próxima etapa: criar o teste de equivalência antes do novo builder.
+O teste foi criado em `tests/PpaFamilySnapshotRmaLegacyPayloadTest.php` e chama
+o método privado legado por reflexão, sem construir models ou abrir conexões.
+Ele possui 26 assertions e fixa o contrato que o novo builder deverá reproduzir.
+
+Próxima etapa: criar `PpaFamilySnapshotRmaPayloadBuilder` sem integrar ao
+controller.
 
 ## Regra documental para cada incremento
 

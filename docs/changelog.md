@@ -32,6 +32,11 @@
 - Checkpoint documental registrado no commit `651e652`.
 - Caracterizado o contrato completo do payload de fotografia familiar.
 - Checklist avançado para 3 de 14 etapas concluídas, ou 21,4%.
+- Criado teste de equivalência do payload legado de fotografia familiar com 26
+  assertions.
+- Suíte ampliada para oito arquivos e 113 assertions.
+- Checklist avançado para 4 de 14 etapas concluídas, ou 28,6%.
+- Teste publicado no commit `b325692`.
 
 ## 2026-07-23
 

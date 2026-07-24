@@ -164,7 +164,7 @@ Ordenação:
   desempate;
 - gráfico de CRAS herda a ordem da tabela.
 
-Casos que o teste de equivalência da próxima etapa deve cobrir:
+Casos cobertos pelo teste de equivalência legado:
 
 - aliases de CRAS;
 - fallbacks de nomes de colunas;
@@ -177,6 +177,10 @@ Casos que o teste de equivalência da próxima etapa deve cobrir:
 - referência e ano com seus fallbacks;
 - ordenação mensal e territorial;
 - contrato completo das chaves retornadas.
+
+O teste `PpaFamilySnapshotRmaLegacyPayloadTest.php` executa o método privado
+legado por reflexão, sem abrir conexões ou instanciar models. Ele registra 26
+assertions. A suíte completa passou com 113 assertions em 2026-07-24.
 
 ## Testes de arquitetura e payload
 
