@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 6.
-- Restantes: 8.
-- Progresso: 42,9%.
+- Concluídas: 7.
+- Restantes: 7.
+- Progresso: 50%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -34,7 +34,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] 4. Criar o teste de equivalência da fotografia familiar.
 - [x] 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
 - [x] 6. Integrar o builder e remover o legado de fotografia.
-- [ ] 7. Caracterizar o payload de atualização cadastral.
+- [x] 7. Caracterizar o payload de atualização cadastral.
 - [ ] 8. Criar o teste de equivalência da atualização cadastral.
 - [ ] 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
 - [ ] 10. Integrar o builder e remover o legado cadastral.

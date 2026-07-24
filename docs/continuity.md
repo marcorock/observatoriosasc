@@ -78,7 +78,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 6 de 14 etapas, ou 42,9%.
+Progresso atual: 7 de 14 etapas, ou 50%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -86,7 +86,7 @@ Progresso atual: 6 de 14 etapas, ou 42,9%.
 4. Concluído — criar seu teste de equivalência.
 5. Concluído — criar `PpaFamilySnapshotRmaPayloadBuilder`.
 6. Concluído — integrar o builder e remover o legado de fotografia.
-7. Caracterizar o payload de atualização cadastral.
+7. Concluído — caracterizar o payload de atualização cadastral.
 8. Criar seu teste de equivalência.
 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
 10. Integrar o builder e remover o legado cadastral.
@@ -130,7 +130,12 @@ O controller passou a usar o builder e o método legado foi removido. O teste fo
 renomeado para `PpaFamilySnapshotRmaPayloadBuilderTest.php` e agora valida
 diretamente o serviço com 26 assertions.
 
-Próxima etapa: caracterizar o payload especializado de atualização cadastral.
+O contrato foi caracterizado em `docs/architecture/ppa-module.md`. O fluxo é
+forçado para `PPA-CRAS-ATUALIZACAO-C3`, usa base CECAD e série RMA, e calcula o
+realizado pelo acumulado do RMA. Ele não deve ser confundido com a fotografia
+familiar de três fontes.
+
+Próxima etapa: criar o teste de equivalência do payload cadastral legado.
 
 ## Regra documental para cada incremento
 

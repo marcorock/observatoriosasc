@@ -90,6 +90,85 @@ implementação legada removida.
 O candidato especializado restante é `buildCadUpdateRmaPayload()`, usado pelo
 fluxo de atualização cadastral.
 
+### Contrato atual da atualização cadastral
+
+Caracterizado em 2026-07-24 antes da criação do teste.
+
+Esse fluxo é selecionado explicitamente por `isCadUpdateRmaIndicator()` para o
+indicador `PPA-CRAS-ATUALIZACAO-C3`, antes da resolução genérica do tipo de
+dashboard. Ele usa dois vínculos:
+
+- `base_familias_*`;
+- `serie_mensal_unidade_*` ou `familias_acompanhadas_*`.
+
+A consulta de base usa limite 500 e a série RMA usa limite 5000.
+
+Entradas do payload:
+
+- `baseRows`: `cras`, `regiao`, `total_familias_pbf`,
+  `ref_cad_referencia` ou `ref_cad`;
+- `rmaRows`: `mes_referencia`, `cras`, `unidade` ou `nome_unidade`,
+  `total_inseridos` ou `total_familias_acompanhadas`;
+- `indicator`: `indice_futuro`, interpretado como percentual e com fallback
+  de 85%;
+- `filters`: `cras` e `mes_referencia`.
+
+Regras de filtro:
+
+- `cras` filtra base e RMA depois das consultas externas;
+- `mes_referencia` filtra somente o RMA;
+- valores vazios de filtro viram `null`;
+- aliases territoriais seguem `normalizeCrasLabel()`.
+
+Cálculos:
+
+- `baseTotal`: soma de `total_familias_pbf` da base filtrada;
+- `metaTotal = baseTotal × indice_futuro / 100`;
+- realizado total: soma acumulada da série RMA filtrada;
+- percentual total: `realizado acumulado / metaTotal × 100`;
+- série mensal: total, acumulado e percentuais mensal e acumulado sobre a meta;
+- consolidado por CRAS: base, meta proporcional, soma RMA e percentual;
+- percentual do período: meses distintos com leitura, limitado a 12, dividido
+  por 12.
+
+Diferenças importantes em relação à fotografia familiar:
+
+- utiliza somente duas fontes, não três;
+- o realizado vem da série RMA, não de uma fotografia separada de famílias
+  atualizadas;
+- a base aceita apenas `total_familias_pbf`, sem fallback para
+  `total_familias`;
+- a referência vem apenas da base;
+- o ano vem apenas da primeira linha RMA válida;
+- CRAS presente somente no RMA é incluído com base zero.
+
+Contrato de saída:
+
+- `total_geral`;
+- `meta_familias`;
+- `familias_acompanhadas_total`;
+- `percentual_alcancado_total`;
+- `percentual_periodo`;
+- `meses_periodo`;
+- `referencia`;
+- `ano_apuracao`;
+- `grafico_mensal`;
+- `grafico_cras`;
+- `grafico_meta`, atualmente vazio;
+- `tabela_mensal`;
+- `tabela_cras`;
+- `filtros_ativos`.
+
+Ordenação:
+
+- meses em ordem crescente de `mes_referencia`;
+- tabela e gráfico de CRAS pelo realizado em ordem decrescente, usando o nome
+  como desempate.
+
+O teste da próxima etapa deve cobrir aliases, fallbacks das colunas RMA, filtros,
+mês vazio, CRAS somente no RMA, valores zero, meta padrão, referência, ano,
+ordenação e contrato completo.
+
 ### Contrato atual da fotografia familiar
 
 Caracterizado em 2026-07-24 antes da extração.

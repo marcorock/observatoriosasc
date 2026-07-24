@@ -50,6 +50,10 @@
 - Suíte mantida com oito testes e 113 assertions.
 - Checklist avançado para 6 de 14 etapas concluídas, ou 42,9%.
 - Integração publicada no commit `36d0cfd`.
+- Caracterizado o contrato especializado de atualização cadastral, incluindo
+  seleção antecipada, duas fontes, filtros, cálculos e diferenças em relação à
+  fotografia familiar.
+- Checklist avançado para 7 de 14 etapas concluídas, ou 50%.
 
 ## 2026-07-23
 
