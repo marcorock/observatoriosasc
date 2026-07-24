@@ -70,12 +70,12 @@ Na última verificação, os onze arquivos de teste passaram:
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
-| `PpaLinkedQueryServiceTest.php` | 8 |
+| `PpaLinkedQueryServiceTest.php` | 15 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
 | `PpaQueryCacheSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **167** |
+| **Total** | **174** |
 
 ## Próxima sequência aprovada
 
@@ -181,12 +181,17 @@ consumidores e não altera os dashboards.
 O comando manual `bin/ppa-dashboard-cache.php` e
 `PpaQueryCacheSynchronizer` foram criados no commit `4df0c63`. A validação real
 de `PPA-CREAS-MULHERES-F1` gravou uma entrada com 13 linhas em 65,729 ms. O
-arquivo é local, ignorado pelo Git, e ainda não é lido pelo runtime.
+arquivo é local e ignorado pelo Git.
+
+`PpaLinkedQueryService` passou a usar cache compatível no commit `9baaa3d`.
+Ausência, corrupção ou incompatibilidade mantêm a consulta externa; requisições
+públicas nunca gravam cache. A prévia cache-first do indicador mensal preservou
+meta 555 e realizado 73, respondeu em 46,381 ms e registrou zero consultas
+externas.
 
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-Antes da homologação final, o próximo incremento é integrar a leitura
-cache-first ao serviço de consultas, com fallback externo e sem renovação em
-requisições públicas.
+Antes da homologação final, o próximo incremento é sincronizar e homologar
+indicadores representativos, comparando payloads e tempos cache-first.
 
 ## Regra documental para cada incremento
 

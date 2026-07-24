@@ -132,3 +132,17 @@ os controles e a ordem de implementação estão em
 
 A revisão do SQL CECAD continua recomendada como frente independente. Pushdown
 de filtros e reutilização de conexões ficam com prioridade posterior.
+
+## Primeira validação cache-first
+
+Em 2026-07-24, o indicador mensal `PPA-CREAS-MULHERES-F1` reutilizou a entrada
+manual com 13 linhas:
+
+- meta e realizado preservados em 555 e 73;
+- tempo total de 46,381 ms;
+- zero consultas externas registradas;
+- mediana anterior sem cache: 71,6 ms.
+
+O ganho absoluto é pequeno nesse fluxo rápido. A homologação seguinte deve
+priorizar atualização cadastral e progresso familiar, onde a baseline externa
+é maior.

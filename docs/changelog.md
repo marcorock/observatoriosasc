@@ -110,6 +110,15 @@
   testes e 167 assertions.
 - Comando manual publicado no commit `4df0c63`; dashboards continuam sem ler o
   cache nesta etapa.
+- Integrada leitura cache-first em `PpaLinkedQueryService`, sem escrita ou
+  renovação durante requisições públicas.
+- Preservado fallback externo para ausência, corrupção, mudança de SQL ou
+  limite incompatível.
+- Ampliado `PpaLinkedQueryServiceTest.php` para 15 assertions; suíte total com
+  174 assertions.
+- Validado hit real de `PPA-CREAS-MULHERES-F1`: métricas preservadas, 46,381 ms
+  e zero consultas externas.
+- Integração publicada no commit `9baaa3d`.
 
 ## 2026-07-23
 

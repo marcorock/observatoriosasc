@@ -38,6 +38,7 @@ mensurável do PPA.
   com os dashboards.
 - Comando manual para um indicador implementado e validado, sem escrita no
   banco.
+- Leitura cache-first integrada com fallback externo e sem renovação pública.
 
 ## Última tarefa trabalhada
 
@@ -50,7 +51,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-24, os onze testes locais passaram com 167 assertions.
+Em 2026-07-24, os onze testes locais passaram com 174 assertions.
 
 ## Configuração local
 
@@ -65,10 +66,10 @@ devem configurar suas credenciais no `.env`.
 - O BSC mantém a divergência `cancelado` x `Suspenso`.
 - Existe uma baseline operacional curta, mas ainda não há teste de carga ou
   concorrência.
-- O cache em arquivo ainda não está implementado; até lá, dashboards detalhados
+- Somente indicadores previamente sincronizados usam cache; os demais
   continuam consultando as fontes externas.
 
 ## Próximo passo recomendado
 
-Integrar leitura cache-first ao serviço de consultas, preservando fallback
-externo e proibindo atualização durante requisições públicas.
+Sincronizar e homologar indicadores representativos, comparando payloads,
+filtros, tempos e ausência de consultas externas em hits.

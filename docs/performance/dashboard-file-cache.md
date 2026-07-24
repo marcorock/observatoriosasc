@@ -2,7 +2,7 @@
 
 Decisão registrada em 2026-07-24. O armazenamento isolado foi implementado no
 commit `b66a4c0` e o comando manual para um indicador no commit `4df0c63`.
-A integração com os dashboards ainda não está implementada.
+A leitura cache-first foi integrada no commit `9baaa3d`.
 
 ## Estado da implementação
 
@@ -16,12 +16,12 @@ A integração com os dashboards ainda não está implementada.
 - preservação do arquivo anterior quando a nova entrada é inválida;
 - rejeição segura de arquivo ausente, corrompido ou incompatível.
 
-O diretório `storage/cache/` foi incluído no `.gitignore`. O serviço ainda não
-possui consumidores no runtime e, portanto, não altera o comportamento atual.
+O diretório `storage/cache/` foi incluído no `.gitignore`.
 
 `PpaQueryFileCacheTest.php` cobre 16 assertions. Na verificação de 2026-07-24,
-o armazenamento e o sincronizador possuem 26 assertions; os onze testes do
-projeto passaram com 167 assertions.
+o armazenamento e o sincronizador possuem 26 assertions. Com os testes de hit
+e fallback no serviço de consultas, os onze testes do projeto passaram com 174
+assertions.
 
 `PpaQueryCacheSynchronizer`:
 
@@ -50,6 +50,30 @@ tempo total: 65,729 ms
 
 Essa validação criou somente arquivos locais ignorados pelo Git e não alterou
 o banco de dados.
+
+## Leitura cache-first implementada
+
+`PpaLinkedQueryService` agora:
+
+1. resolve consulta e fonte como antes;
+2. procura uma entrada com fonte, consulta, hash do SQL e limite compatíveis;
+3. em hit, retorna as linhas armazenadas e não chama o executor externo;
+4. em ausência, corrupção ou incompatibilidade, executa a consulta externa
+   original;
+5. nunca grava ou renova cache durante a requisição.
+
+O retorno interno informa `cache.hit`, horário de geração e quantidade de
+linhas para observabilidade, sem alterar os payloads entregues às views.
+
+Validação real do hit em 2026-07-24:
+
+```text
+indicador: PPA-CREAS-MULHERES-F1
+meta: 555
+realizado: 73
+tempo total cache-first: 46,381 ms
+consultas externas registradas: 0
+```
 
 ## Decisão
 
@@ -232,8 +256,8 @@ aplicação de instância única sem métricas de concorrência.
 2. Concluído — criar testes unitários de hit, ausência, corrupção e
    substituição.
 3. Concluído — criar comando manual para um indicador.
-4. Próximo — integrar leitura cache-first com fallback externo, sem renovação
+4. Concluído — integrar leitura cache-first com fallback externo, sem renovação
    pública.
-5. Medir novamente e homologar filtros e equivalência.
+5. Próximo — medir novamente e homologar filtros e equivalência.
 6. Adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.

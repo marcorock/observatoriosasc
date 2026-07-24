@@ -312,5 +312,9 @@ O comando:
 - informa entradas, linhas e tempo total;
 - não oferece `--all` nesta etapa.
 
-Os dashboards ainda não leem esses arquivos. Até a integração cache-first, o
-comando serve apenas para preparar e validar as entradas locais.
+Após uma sincronização bem-sucedida, os dashboards usam automaticamente a
+entrada compatível. Se o arquivo estiver ausente, corrompido ou incompatível
+com SQL e limite atuais, a consulta externa é executada normalmente.
+
+O acesso público nunca cria nem renova arquivos. Para atualizar os dados, a
+pessoa técnica deve executar novamente o comando manual.
