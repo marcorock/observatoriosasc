@@ -43,6 +43,8 @@ mensurável do PPA.
   equivalência das prévias e zero consultas externas em hits.
 - Catálogo, HTML, JSON e filtros representativos homologados com HTTP 200 e zero
   consultas externas nos hits.
+- Renovação corrigida para sempre consultar a fonte; lote sequencial e exemplo
+  de agendamento com trava disponíveis.
 
 ## Última tarefa trabalhada
 
@@ -55,7 +57,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-24, os onze testes locais passaram com 174 assertions.
+Em 2026-07-24, os doze testes locais passaram com 186 assertions.
 
 ## Configuração local
 
@@ -75,4 +77,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Adicionar atualização em lote e documentar agendamento seguro do comando.
+Revisar integralmente a branch e preparar a entrega; pull request somente após
+autorização.

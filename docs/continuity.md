@@ -70,12 +70,13 @@ Na última verificação, os onze arquivos de teste passaram:
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
-| `PpaLinkedQueryServiceTest.php` | 15 |
+| `PpaLinkedQueryServiceTest.php` | 17 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
 | `PpaQueryCacheSynchronizerTest.php` | 10 |
+| `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **174** |
+| **Total** | **186** |
 
 ## Próxima sequência aprovada
 
@@ -199,9 +200,15 @@ Filtros representativos de unidade/CRAS e mês retornaram um mês e um territór
 sem erro e sem consulta externa. Os endpoints filtrados responderam entre
 36,721 ms e 44,228 ms.
 
+O comando de atualização foi corrigido no commit `fa905b0` para sempre ignorar
+cache existente e consultar a fonte. A renovação mensal registrou uma consulta
+externa. O lote sequencial `--all` foi publicado em `359a269`, com continuação
+após falhas individuais e exit code de falha parcial. O exemplo de agendamento
+usa `flock` para impedir sobreposição.
+
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-Antes da homologação final, o próximo incremento é adicionar atualização em
-lote e documentar o agendamento, reutilizando o comando manual já homologado.
+O próximo incremento é revisar integralmente a branch, confirmar a documentação
+e preparar a entrega. A criação do pull request depende de autorização.
 
 ## Regra documental para cada incremento
 

@@ -64,7 +64,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter onze testes locais, com 174 assertions na verificação de 2026-07-24.
+- [x] Manter doze testes locais, com 186 assertions na verificação de 2026-07-24.
 
 ## Homologações pendentes
 
@@ -75,7 +75,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Homologar equivalência e tempos cache-first do progresso familiar e da
   atualização cadastral.
 - [x] Homologar filtros e endpoints HTTP representativos com cache.
-- [ ] Adicionar atualização em lote e documentar agendamento somente após
+- [x] Adicionar atualização em lote e documentar agendamento somente após
   homologar o fluxo manual.
 
 - [ ] Fluxos administrativos do PPA.

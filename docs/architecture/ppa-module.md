@@ -326,7 +326,11 @@ consultas nem ao controller.
 
 `PpaQueryCacheSynchronizer` e `bin/ppa-dashboard-cache.php` permitem preencher
 manualmente as entradas de um indicador. O comando usa somente vínculos ativos,
-não grava no banco e não aceita atualização em lote.
+não grava no banco e força consulta externa durante a renovação.
+
+`PpaQueryCacheBatchSynchronizer` adiciona `--all`, processa indicadores públicos
+sequencialmente, preserva resultados individuais e sinaliza falha parcial por
+exit code.
 
 `PpaLinkedQueryService` usa uma entrada compatível antes do executor externo.
 Miss, corrupção ou mudança de SQL/limite preservam o fallback original. A

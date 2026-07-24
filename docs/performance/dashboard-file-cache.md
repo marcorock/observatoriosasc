@@ -30,6 +30,8 @@ assertions.
 - usa limite 500 para bases e fotografias e 5.000 para as demais séries;
 - não grava nenhuma entrada quando uma consulta falha antes da etapa de escrita;
 - relata chaves, IDs, limites, linhas e horário das entradas gravadas.
+- ignora deliberadamente entradas existentes e sempre consulta a fonte durante
+  uma atualização.
 
 O comando disponível é:
 
@@ -37,7 +39,19 @@ O comando disponível é:
 php bin/ppa-dashboard-cache.php <slug-ou-codigo>
 ```
 
-Ele aceita somente um indicador. `--all` ainda não existe.
+Para atualizar todos os indicadores públicos sequencialmente:
+
+```bash
+php bin/ppa-dashboard-cache.php --all
+```
+
+`PpaQueryCacheBatchSynchronizer` continua após uma falha individual e retorna:
+
+- total de indicadores;
+- sucessos e falhas;
+- total de entradas gravadas;
+- um resultado ordenado por indicador;
+- exit code diferente de zero se qualquer indicador falhar.
 
 Validação real em 2026-07-24:
 
@@ -50,6 +64,10 @@ tempo total: 65,729 ms
 
 Essa validação criou somente arquivos locais ignorados pelo Git e não alterou
 o banco de dados.
+
+Depois da integração cache-first, foi confirmado que o comando de atualização
+ignora o cache existente: uma nova execução do indicador mensal levou 65,439 ms
+e registrou uma consulta externa. A correção foi publicada em `fa905b0`.
 
 ## Leitura cache-first implementada
 
@@ -279,8 +297,30 @@ aplicação de instância única sem métricas de concorrência.
    pública.
 5. Concluído — equivalência, tempos, filtros e endpoints HTTP representativos
    homologados.
-6. Próximo — adicionar `--all` e documentar exemplo de agendamento.
+6. Concluído — adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.
+
+## Agendamento seguro
+
+O lote completo não foi executado durante a implementação para evitar carga
+desnecessária nas fontes. Antes de agendar, execute manualmente em uma janela
+controlada e revise o resumo.
+
+Exemplo diário às 04:15, ajustando caminhos e política de logs do ambiente:
+
+```cron
+15 4 * * * /usr/bin/flock -n /tmp/observatoriosasc-ppa-cache.lock /bin/sh -c 'cd /var/www/projects/observatoriosasc && /usr/bin/php bin/ppa-dashboard-cache.php --all'
+```
+
+Requisitos operacionais:
+
+- usar o mesmo usuário do PHP ou um grupo com acesso a `storage/cache/ppa`;
+- manter `flock -n` para impedir duas execuções simultâneas;
+- capturar stdout e stderr pelo mecanismo de logs do servidor;
+- alertar quando o exit code for diferente de zero;
+- não apagar entradas anteriores antes do lote;
+- preferir horário posterior à atualização das fontes CECAD e RMA;
+- testar primeiro o comando de um indicador no ambiente de destino.
 
 ## Homologação HTTP e filtros
 

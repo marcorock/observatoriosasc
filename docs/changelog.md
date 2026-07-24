@@ -132,6 +132,15 @@
   por resposta, sem erro.
 - Endpoints filtrados responderam entre 36,721 ms e 44,228 ms, com zero
   consultas externas registradas.
+- Corrigida a atualização manual para ignorar cache existente e sempre consultar
+  a fonte; correção publicada em `fa905b0`.
+- Renovação real do indicador mensal registrou uma consulta externa e concluiu
+  em 65,439 ms.
+- Criado `PpaQueryCacheBatchSynchronizer` e adicionada a opção `--all` ao
+  comando, com processamento sequencial e relatório de falhas parciais.
+- Adicionado teste do lote com 10 assertions; suíte ampliada para doze testes e
+  186 assertions.
+- Lote publicado em `359a269` e agendamento documentado com trava `flock`.
 
 ## 2026-07-23
 

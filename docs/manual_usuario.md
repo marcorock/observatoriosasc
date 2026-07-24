@@ -303,6 +303,12 @@ Para atualizar os arquivos locais das consultas ativas de um indicador:
 php bin/ppa-dashboard-cache.php <slug-ou-codigo>
 ```
 
+Para atualizar todos os indicadores públicos sequencialmente:
+
+```bash
+php bin/ppa-dashboard-cache.php --all
+```
+
 O comando:
 
 - processa somente um indicador;
@@ -310,7 +316,8 @@ O comando:
 - não altera `ppa_resultados`, `ppa_sincronizacoes` ou outras tabelas;
 - mantém os arquivos fora do diretório público e do Git;
 - informa entradas, linhas e tempo total;
-- não oferece `--all` nesta etapa.
+- no lote, continua os demais indicadores após uma falha e retorna exit code
+  diferente de zero se o resultado for parcial.
 
 Após uma sincronização bem-sucedida, os dashboards usam automaticamente a
 entrada compatível. Se o arquivo estiver ausente, corrompido ou incompatível
@@ -318,3 +325,7 @@ com SQL e limite atuais, a consulta externa é executada normalmente.
 
 O acesso público nunca cria nem renova arquivos. Para atualizar os dados, a
 pessoa técnica deve executar novamente o comando manual.
+
+Para agendamento, use o comando `--all` com uma trava do sistema, como `flock`,
+e monitore stdout, stderr e exit code. Um exemplo completo está em
+`docs/performance/dashboard-file-cache.md`.
