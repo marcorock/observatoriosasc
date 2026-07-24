@@ -165,9 +165,10 @@ Ordenação:
 - tabela e gráfico de CRAS pelo realizado em ordem decrescente, usando o nome
   como desempate.
 
-O teste da próxima etapa deve cobrir aliases, fallbacks das colunas RMA, filtros,
-mês vazio, CRAS somente no RMA, valores zero, meta padrão, referência, ano,
-ordenação e contrato completo.
+O teste `PpaCadUpdateRmaLegacyPayloadTest.php` cobre aliases, fallbacks das
+colunas RMA, filtros, mês vazio, CRAS somente no RMA, valores zero, meta padrão,
+referência, ano, ordenação e contrato completo. Ele executa o método privado
+legado por reflexão e registra 28 assertions.
 
 ### Contrato atual da fotografia familiar
 

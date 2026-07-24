@@ -63,13 +63,14 @@ Na última verificação, os oito arquivos de teste passaram:
 | --- | ---: |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
 | `PpaCatalogMetricsTest.php` | 26 |
+| `PpaCadUpdateRmaLegacyPayloadTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 8 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **113** |
+| **Total** | **141** |
 
 ## Próxima sequência aprovada
 
@@ -78,7 +79,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 7 de 14 etapas, ou 50%.
+Progresso atual: 8 de 14 etapas, ou 57,1%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -87,7 +88,7 @@ Progresso atual: 7 de 14 etapas, ou 50%.
 5. Concluído — criar `PpaFamilySnapshotRmaPayloadBuilder`.
 6. Concluído — integrar o builder e remover o legado de fotografia.
 7. Concluído — caracterizar o payload de atualização cadastral.
-8. Criar seu teste de equivalência.
+8. Concluído — criar seu teste de equivalência.
 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
 10. Integrar o builder e remover o legado cadastral.
 11. Revisar as responsabilidades restantes no `PpaController`.
@@ -135,7 +136,10 @@ forçado para `PPA-CRAS-ATUALIZACAO-C3`, usa base CECAD e série RMA, e calcula 
 realizado pelo acumulado do RMA. Ele não deve ser confundido com a fotografia
 familiar de três fontes.
 
-Próxima etapa: criar o teste de equivalência do payload cadastral legado.
+O teste `PpaCadUpdateRmaLegacyPayloadTest.php` fixa o comportamento legado com
+28 assertions, sem abrir conexões ou instanciar models.
+
+Próxima etapa: criar `PpaCadUpdateRmaPayloadBuilder` sem integrar ao controller.
 
 ## Regra documental para cada incremento
 

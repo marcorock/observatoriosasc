@@ -54,6 +54,10 @@
   seleção antecipada, duas fontes, filtros, cálculos e diferenças em relação à
   fotografia familiar.
 - Checklist avançado para 7 de 14 etapas concluídas, ou 50%.
+- Criado teste de equivalência do payload cadastral legado com 28 assertions.
+- Suíte ampliada para nove testes e 141 assertions.
+- Checklist avançado para 8 de 14 etapas concluídas, ou 57,1%.
+- Teste publicado no commit `2d451c2`.
 
 ## 2026-07-23
 
