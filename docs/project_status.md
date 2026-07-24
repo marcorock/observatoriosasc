@@ -47,11 +47,11 @@ mensurável do PPA.
 Em 2026-07-24, os sete testes locais passaram com 87 assertions. A branch estava
 sincronizada com seu remoto e 23 commits à frente de `main`.
 
-## Pendência local
+## Configuração local
 
-`app/Database/DataConect.php` possui uma alteração não commitada que troca os
-defaults para host `database` e senha `root`. É necessário decidir se isso é
-configuração oficial do ambiente Docker ou ajuste exclusivamente local.
+Os defaults de `app/Database/DataConect.php` permanecem `localhost` e senha
+vazia, coerentes com `.env.example`, README e CLI. Ambientes Docker ou remotos
+devem configurar suas credenciais no `.env`.
 
 ## Bloqueios e riscos
 
@@ -64,6 +64,5 @@ configuração oficial do ambiente Docker ou ajuste exclusivamente local.
 
 ## Próximo passo recomendado
 
-Resolver a alteração pendente de conexão e, em seguida, extrair
-`buildFamilySnapshotRmaPayload()` com teste de equivalência antes de remover a
-implementação do controller.
+Caracterizar o contrato atual de `buildFamilySnapshotRmaPayload()` antes de
+criar seu teste de equivalência.

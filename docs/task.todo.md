@@ -6,19 +6,19 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 0.
-- Restantes: 14.
-- Progresso: 0%.
+- Concluídas: 2.
+- Restantes: 12.
+- Progresso: 14,3%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
 ## Próximo incremento
 
-- [ ] 1. Decidir o destino da alteração local em `app/Database/DataConect.php`
+- [x] 1. Decidir o destino da alteração local em `app/Database/DataConect.php`
   - confirmar se host `database` e senha `root` são defaults oficiais do Docker;
   - manter a mudança separada da refatoração do PPA;
   - não expor credenciais reais em documentação ou commits.
-- [ ] 2. Consolidar o checkpoint documental no Git
+- [x] 2. Consolidar o checkpoint documental no Git
   - revisar os arquivos Markdown liberados pelo `.gitignore`;
   - validar formatação sem misturar a mudança funcional de conexão.
 Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:

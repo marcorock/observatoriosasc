@@ -19,8 +19,14 @@
 
 ### Próximo incremento
 
-- Resolver os defaults locais de conexão.
-- Extrair `buildFamilySnapshotRmaPayload()` com teste de equivalência.
+- Caracterizar o contrato de `buildFamilySnapshotRmaPayload()`.
+
+### Decisões de continuidade
+
+- Mantidos os defaults `localhost` e senha vazia em `DataConect.php`.
+- Ambientes Docker ou remotos devem configurar a conexão no `.env`.
+- Checklist atualizado para 2 de 14 etapas concluídas, ou 14,3%.
+- Checkpoint documental registrado no commit `651e652`.
 
 ## 2026-07-23
 

@@ -15,8 +15,8 @@ detalham arquitetura, operação e histórico.
   de `main` na última verificação
 - Pull request da branch: inexistente na última verificação
 - Issues abertas: nenhuma na última verificação
-- Alteração local não commitada: defaults de conexão em
-  `app/Database/DataConect.php` para host `database` e senha `root`
+- Defaults de conexão: mantidos como `localhost` e senha vazia no código; cada
+  ambiente deve configurar valores diferentes em seu `.env`
 
 Antes de continuar, executar:
 
@@ -77,10 +77,10 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso inicial: 0 de 14 etapas, ou 0%.
+Progresso atual: 2 de 14 etapas, ou 14,3%.
 
-1. Decidir os defaults de conexão em `DataConect.php`.
-2. Consolidar o checkpoint documental no Git.
+1. Concluído — decidir os defaults de conexão em `DataConect.php`.
+2. Concluído — consolidar o checkpoint documental no Git.
 3. Caracterizar o payload de fotografia familiar.
 4. Criar seu teste de equivalência.
 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
@@ -96,6 +96,14 @@ Progresso inicial: 0 de 14 etapas, ou 0%.
 
 Cada etapa vale um ponto. O percentual é calculado por
 `etapas concluídas / 14 × 100`.
+
+## Decisão sobre a conexão local
+
+Não existe configuração Docker Compose versionada no repositório. O
+`.env.example`, o README e o bootstrap CLI usam `localhost` e senha vazia como
+defaults de desenvolvimento. Por isso, `DataConect.php` foi mantido exatamente
+como estava no Git. Ambientes Docker ou remotos devem declarar host e senha no
+`.env`, que não é versionado.
 
 ## Regra documental para cada incremento
 
