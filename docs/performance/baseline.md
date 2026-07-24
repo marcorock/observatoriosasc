@@ -1,6 +1,7 @@
 # Baseline de performance do PPA
 
 Data da auditoria inicial: 2026-07-23.
+Última revisão documental: 2026-07-24.
 
 ## Estado inicial
 
@@ -51,3 +52,18 @@ respondeu HTTP 200 em 82,6 ms.
 Esses valores são uma amostra inicial, não um benchmark estatístico. A consulta
 externa representa aproximadamente 89% do tempo total observado no dashboard
 simples.
+
+## Estado após os incrementos
+
+- o catálogo permanece com zero consultas e conexões externas;
+- nove indicadores quantitativos possuem resultados locais validados;
+- o indicador de visão geral não dispara sincronização;
+- serviços e builders foram extraídos sem alteração intencional de payload;
+- sete testes passaram com 87 assertions em 2026-07-24.
+
+## Próxima medição
+
+Uma nova coleta deve ocorrer depois da extração dos dois builders especializados.
+Ela deve comparar ao menos consulta simples, mensal por unidade, progresso
+familiar e fotografia familiar. Cache, Redis, pushdown de filtros e reutilização
+de conexões serão avaliados somente com essas medições.

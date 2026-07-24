@@ -4,6 +4,7 @@
 /skills/
 *.todo
 /docs/*
+!/docs/*.md
 !/docs/performance/
 /docs/performance/*
 !/docs/performance/*.md

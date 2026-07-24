@@ -1,5 +1,7 @@
 # Monitoramento de consultas externas
 
+Atualizado em 2026-07-24.
+
 ## Objetivo
 
 Registrar métricas das consultas externas sem alterar cálculos, payloads ou
@@ -61,3 +63,9 @@ EXTERNAL_QUERY_PERFORMANCE_LOG=false
 Sem a variável, o comportamento também é desativado. O rollback do código
 consiste em remover o logger e o quarto argumento opcional de
 `runRegisteredQuery()`. Nenhuma alteração de banco de dados é necessária.
+
+## Próxima campanha de medição
+
+Depois da extração dos builders especializados, coletar amostras controladas de
+cada tipo de dashboard e registrar os resultados em `baseline.md`. O logger deve
+permanecer desativado fora da janela de medição.

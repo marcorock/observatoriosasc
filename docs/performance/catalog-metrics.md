@@ -1,5 +1,8 @@
 # Métricas locais do catálogo PPA
 
+Atualizado em 2026-07-24. Este documento registra a implementação concluída; o
+próximo passo vigente está em `docs/continuity.md`.
+
 ## Decisão incremental
 
 O catálogo `/ppa` não executa consultas externas. Ele tenta carregar, em uma
@@ -44,7 +47,7 @@ Valores zero são leituras válidas. A ausência de resultado mantém o estado
   fallback de `ppa_indicadores`;
 - o payload e os templates existentes permanecem compatíveis.
 
-## Próximo incremento
+## Incremento de sincronização planejado à época
 
 Implementar uma sincronização explícita e controlada para um indicador por vez.
 Ela deverá executar as consultas já usadas pelo dashboard, consolidar o
@@ -238,3 +241,10 @@ catálogo:
 - o comando de sincronização encerra antes de consultar a base externa.
 
 O painel detalhado continua disponível para apresentar a leitura geral da base.
+
+## Estado consolidado
+
+A frente de métricas locais e sincronização controlada está concluída para o
+escopo atual. O trabalho ativo migrou para a extração incremental dos builders
+especializados do `PpaController`. Não implementar cache ou nova tabela de
+snapshot como consequência automática deste documento.

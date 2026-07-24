@@ -1,5 +1,8 @@
 # Módulo PPA
 
+Atualizado em 2026-07-24. O ponto de retomada está em
+`docs/continuity.md`.
+
 ## Catálogo
 
 Fluxo após a primeira extração incremental:
@@ -77,3 +80,31 @@ controller após a validação de equivalência.
 mensal e progresso por CRAS para os indicadores familiares regulares. O builder
 regular duplicado foi removido; os builders especializados de atualização
 cadastral permanecem no controller nesta etapa.
+
+## Payloads especializados ainda no controller
+
+Os próximos candidatos de extração são:
+
+- `buildFamilySnapshotRmaPayload()`, usado pela fotografia da base com
+  atualização e série mensal;
+- `buildCadUpdateRmaPayload()`, usado pelo fluxo especializado de atualização
+  cadastral.
+
+A ordem aprovada é extrair primeiro a fotografia familiar, criar teste de
+equivalência e somente então remover o método legado. O fluxo de atualização
+cadastral será tratado em incremento posterior.
+
+## Testes de arquitetura e payload
+
+Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
+dashboard, consultas vinculadas e os três builders extraídos. Em 2026-07-24,
+sete arquivos passaram com 87 assertions.
+
+## Limites da etapa atual
+
+- não introduzir cache ou Redis;
+- não alterar fórmulas;
+- não alterar nomes do payload;
+- não alterar rotas, templates ou comportamento AJAX;
+- não mover filtros para SQL sem medição e estratégia de parâmetros;
+- atualizar documentação local e Notion em cada extração.
