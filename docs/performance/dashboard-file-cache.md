@@ -1,7 +1,26 @@
 # Decisão de cache em arquivo para dashboards PPA
 
-Decisão registrada em 2026-07-24. Este documento define a direção técnica; o
-cache ainda não está implementado.
+Decisão registrada em 2026-07-24. O armazenamento isolado foi implementado no
+commit `b66a4c0`; comando de sincronização e integração com dashboards ainda
+não estão implementados.
+
+## Estado da implementação
+
+`PpaQueryFileCache` já oferece:
+
+- diretório padrão fora de `public`;
+- identidade por versão, fonte, consulta, hash do SQL e limite;
+- envelope JSON validado na leitura;
+- trava compartilhada para leitura e exclusiva para escrita;
+- arquivo temporário no mesmo diretório e substituição por `rename()`;
+- preservação do arquivo anterior quando a nova entrada é inválida;
+- rejeição segura de arquivo ausente, corrompido ou incompatível.
+
+O diretório `storage/cache/` foi incluído no `.gitignore`. O serviço ainda não
+possui consumidores no runtime e, portanto, não altera o comportamento atual.
+
+`PpaQueryFileCacheTest.php` cobre 16 assertions. Na verificação de 2026-07-24,
+os dez testes do projeto passaram com 157 assertions.
 
 ## Decisão
 
@@ -179,11 +198,12 @@ aplicação de instância única sem métricas de concorrência.
 
 ## Ordem de implementação recomendada
 
-1. Criar armazenamento de arquivo com validação, trava e escrita atômica.
-2. Criar testes unitários de hit, ausência, corrupção e substituição.
-3. Criar comando manual para um indicador.
+1. Concluído — criar armazenamento de arquivo com validação, trava e escrita
+   atômica.
+2. Concluído — criar testes unitários de hit, ausência, corrupção e
+   substituição.
+3. Próximo — criar comando manual para um indicador.
 4. Integrar leitura cache-first com fallback externo, sem renovação pública.
 5. Medir novamente e homologar filtros e equivalência.
 6. Adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.
-

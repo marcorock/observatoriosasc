@@ -94,6 +94,13 @@
 - Redis removido do escopo atual; revisão do SQL CECAD mantida como frente
   independente.
 - Checklist avançado para 13 de 14 etapas concluídas, ou 92,9%.
+- Criado `PpaQueryFileCache` com identidade por fonte, consulta, hash do SQL,
+  limite e versão do formato.
+- Implementadas validação do envelope, travas de leitura/escrita, arquivo
+  temporário e substituição atômica.
+- Adicionado `PpaQueryFileCacheTest.php` com 16 assertions; suíte ampliada para
+  dez testes e 157 assertions.
+- Armazenamento publicado no commit `b66a4c0`, ainda sem integração ao runtime.
 
 ## 2026-07-23
 

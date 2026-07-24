@@ -60,7 +60,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na última verificação, os oito arquivos de teste passaram:
+Na última verificação, os dez arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -72,8 +72,9 @@ Na última verificação, os oito arquivos de teste passaram:
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 8 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
+| `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **141** |
+| **Total** | **157** |
 
 ## Próxima sequência aprovada
 
@@ -172,9 +173,13 @@ O desenho, riscos, invalidação e ordem de implementação estão em
 `docs/performance/dashboard-file-cache.md`. A revisão do SQL CECAD continua
 recomendada como frente independente.
 
+O armazenamento isolado `PpaQueryFileCache` foi criado no commit `b66a4c0`,
+com validação, trava, escrita atômica e 16 assertions. Ele ainda não possui
+consumidores e não altera os dashboards.
+
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-A implementação do cache deve ser organizada em pequenos commits antes da
-homologação final, preservando a documentação a cada incremento.
+Antes da homologação final, o próximo incremento é criar o comando manual de
+sincronização do cache para apenas um indicador.
 
 ## Regra documental para cada incremento
 

@@ -64,11 +64,11 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter nove testes locais, com 141 assertions na verificação de 2026-07-24.
+- [x] Manter dez testes locais, com 157 assertions na verificação de 2026-07-24.
 
 ## Homologações pendentes
 
-- [ ] Implementar armazenamento de cache em arquivo com validação, trava e
+- [x] Implementar armazenamento de cache em arquivo com validação, trava e
   escrita atômica.
 - [ ] Criar comando manual de sincronização do cache para um indicador.
 - [ ] Integrar leitura cache-first com fallback externo.

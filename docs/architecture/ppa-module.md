@@ -320,6 +320,10 @@ agregadas das consultas vinculadas, com sincronização fora da requisição
 pública. O desenho está em `docs/performance/dashboard-file-cache.md`. Redis
 fica fora do escopo atual.
 
+`PpaQueryFileCache` implementa o armazenamento isolado, com identidade por hash,
+validação, trava e escrita atômica. Ele ainda não está conectado ao serviço de
+consultas nem ao controller.
+
 ## Limites da etapa atual
 
 - não introduzir cache ou Redis;

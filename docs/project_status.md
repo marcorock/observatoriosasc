@@ -34,6 +34,8 @@ mensurável do PPA.
 - Serviços e builders extraídos com cobertura mínima de testes.
 - Baseline pós-refatoração coletada com três amostras por fluxo representativo.
 - Cache local em arquivo aprovado como próxima otimização; Redis fora do escopo.
+- Armazenamento isolado em arquivo implementado e testado, ainda sem integração
+  com os dashboards.
 
 ## Última tarefa trabalhada
 
@@ -46,7 +48,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-24, os nove testes locais passaram com 141 assertions.
+Em 2026-07-24, os dez testes locais passaram com 157 assertions.
 
 ## Configuração local
 
@@ -66,5 +68,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Implementar primeiro o armazenamento seguro do cache em arquivo, com testes,
-sem ainda integrar sua leitura aos dashboards.
+Criar o comando manual de sincronização do cache para um indicador, sem ainda
+integrar sua leitura aos dashboards.
