@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\PpaController;
+use App\Services\PpaCadUpdateRmaPayloadBuilder;
 
 $failures = [];
 $assertSame = static function ($expected, $actual, string $label) use (&$failures): void {
@@ -76,6 +77,11 @@ $rmaRows = [
 ];
 
 $payload = $method->invoke($controller, $baseRows, $rmaRows, $indicator, []);
+$assertSame(
+    $payload,
+    PpaCadUpdateRmaPayloadBuilder::build($baseRows, $rmaRows, $indicator, []),
+    'new builder matches the complete unfiltered legacy payload'
+);
 
 $assertSame(
     [
@@ -119,6 +125,16 @@ $filtered = $method->invoke($controller, $baseRows, $rmaRows, $indicator, [
     'cras' => 'CRAS MARIANA',
     'mes_referencia' => '2026-02-01',
 ]);
+$assertSame(
+    $filtered,
+    PpaCadUpdateRmaPayloadBuilder::build(
+        $baseRows,
+        $rmaRows,
+        $indicator,
+        ['cras' => 'CRAS MARIANA', 'mes_referencia' => '2026-02-01']
+    ),
+    'new builder matches the filtered legacy payload'
+);
 $assertSame(100, $filtered['total_geral'], 'filters base by CRAS');
 $assertSame(7, $filtered['familias_acompanhadas_total'], 'filters RMA by CRAS and month');
 $assertSame(7, $filtered['tabela_mensal'][0]['familias_acompanhadas'], 'keeps the filtered monthly value');
@@ -135,9 +151,24 @@ $defaultTarget = $method->invoke(
     (object) [],
     []
 );
+$assertSame(
+    $defaultTarget,
+    PpaCadUpdateRmaPayloadBuilder::build(
+        [['cras' => 'CRAS TESTE', 'total_familias_pbf' => 100]],
+        [],
+        (object) [],
+        []
+    ),
+    'new builder matches the legacy default target payload'
+);
 $assertSame(85.0, $defaultTarget['meta_familias'], 'uses 85 percent as the legacy default target');
 
 $empty = $method->invoke($controller, [], [], $indicator, []);
+$assertSame(
+    $empty,
+    PpaCadUpdateRmaPayloadBuilder::build([], [], $indicator, []),
+    'new builder matches the empty legacy payload'
+);
 $assertSame(0, $empty['total_geral'], 'supports an empty base');
 $assertSame(0, $empty['percentual_alcancado_total'], 'avoids division by zero');
 $assertSame(0.0, $empty['percentual_periodo'], 'keeps the empty period as a float');
@@ -149,4 +180,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (28 assertions)\n");
+fwrite(STDOUT, "OK (32 assertions)\n");
