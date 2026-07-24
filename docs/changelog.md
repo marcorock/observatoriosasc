@@ -119,6 +119,13 @@
 - Validado hit real de `PPA-CREAS-MULHERES-F1`: métricas preservadas, 46,381 ms
   e zero consultas externas.
 - Integração publicada no commit `9baaa3d`.
+- Sincronizados e homologados `PPA-ACOMPANHAR-FAMILIAS-PBF` e
+  `PPA-CRAS-ATUALIZACAO-C3`.
+- Confirmada equivalência integral das prévias, excluindo somente o tempo de
+  execução.
+- Progresso familiar passou de 11.508,229 ms para 30,548 ms; atualização
+  cadastral passou de 4.069,384 ms para 31,560 ms.
+- Cada fluxo passou de duas consultas externas para zero no cache hit.
 
 ## 2026-07-23
 

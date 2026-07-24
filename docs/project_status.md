@@ -39,6 +39,8 @@ mensurável do PPA.
 - Comando manual para um indicador implementado e validado, sem escrita no
   banco.
 - Leitura cache-first integrada com fallback externo e sem renovação pública.
+- Progresso familiar e atualização cadastral homologados sem filtros, com
+  equivalência das prévias e zero consultas externas em hits.
 
 ## Última tarefa trabalhada
 
@@ -71,5 +73,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Sincronizar e homologar indicadores representativos, comparando payloads,
-filtros, tempos e ausência de consultas externas em hits.
+Homologar filtros e endpoints HTTP representativos com as cinco entradas locais
+já sincronizadas.

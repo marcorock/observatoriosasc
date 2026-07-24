@@ -146,3 +146,15 @@ manual com 13 linhas:
 O ganho absoluto é pequeno nesse fluxo rápido. A homologação seguinte deve
 priorizar atualização cadastral e progresso familiar, onde a baseline externa
 é maior.
+
+### Homologação dos fluxos mais caros
+
+Ainda em 2026-07-24:
+
+- progresso familiar: prévia equivalente, de 11.508,229 ms e duas consultas
+  externas para 30,548 ms e zero consultas;
+- atualização cadastral: prévia equivalente, de 4.069,384 ms e duas consultas
+  externas para 31,560 ms e zero consultas.
+
+Os tempos sem cache continuam sujeitos à variação da fonte. A equivalência foi
+determinada pelo conteúdo completo da prévia, excluindo apenas o tempo.

@@ -189,9 +189,14 @@ públicas nunca gravam cache. A prévia cache-first do indicador mensal preservo
 meta 555 e realizado 73, respondeu em 46,381 ms e registrou zero consultas
 externas.
 
+Progresso familiar e atualização cadastral também foram sincronizados e
+comparados antes/depois. As prévias foram idênticas, os tempos cache-first foram
+30,548 ms e 31,560 ms e cada fluxo passou de duas consultas externas para zero.
+Existem cinco entradas locais válidas no ambiente de homologação.
+
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-Antes da homologação final, o próximo incremento é sincronizar e homologar
-indicadores representativos, comparando payloads e tempos cache-first.
+Antes da homologação final, o próximo incremento é validar filtros e endpoints
+HTTP representativos usando as entradas já sincronizadas.
 
 ## Regra documental para cada incremento
 

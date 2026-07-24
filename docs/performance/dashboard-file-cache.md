@@ -75,6 +75,25 @@ tempo total cache-first: 46,381 ms
 consultas externas registradas: 0
 ```
 
+## Homologação dos fluxos representativos
+
+Em 2026-07-24, progresso familiar e atualização cadastral foram executados
+antes da sincronização, sincronizados manualmente e executados novamente pelo
+cache. A comparação removeu somente `execution_time_ms`; todo o restante da
+prévia foi idêntico.
+
+| Indicador | Entradas | Linhas | Antes | Cache-first | Consultas antes/depois |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `PPA-ACOMPANHAR-FAMILIAS-PBF` | 2 | 58 | 11.508,229 ms | 30,548 ms | 2 / 0 |
+| `PPA-CRAS-ATUALIZACAO-C3` | 2 | 59 | 4.069,384 ms | 31,560 ms | 2 / 0 |
+
+A execução externa de progresso familiar voltou a demonstrar variação de cache
+frio já observada na baseline. A sincronização posterior levou 513,225 ms. A
+sincronização cadastral levou 4.070,769 ms.
+
+Depois dessa homologação existem cinco entradas locais: uma mensal, duas do
+progresso familiar e duas da atualização cadastral.
+
 ## Decisão
 
 Adotar, em incremento posterior, um cache local em arquivo para as linhas
@@ -258,6 +277,7 @@ aplicação de instância única sem métricas de concorrência.
 3. Concluído — criar comando manual para um indicador.
 4. Concluído — integrar leitura cache-first com fallback externo, sem renovação
    pública.
-5. Próximo — medir novamente e homologar filtros e equivalência.
+5. Em andamento — equivalência sem filtros e tempos homologados; ainda faltam
+   filtros e endpoints HTTP representativos.
 6. Adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.
