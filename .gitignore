@@ -1,6 +1,7 @@
 .vscode/
 /vendor/
 .env
+/storage/cache/
 /skills/
 *.todo
 /docs/*
