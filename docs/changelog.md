@@ -44,6 +44,12 @@
 - Suíte ampliada para 117 assertions.
 - Checklist avançado para 5 de 14 etapas concluídas, ou 35,7%.
 - Builder publicado no commit `f6ebb0b`.
+- Integrado `PpaFamilySnapshotRmaPayloadBuilder` ao `PpaController`.
+- Removido `buildFamilySnapshotRmaPayload()` do controller.
+- Renomeado o teste legado para `PpaFamilySnapshotRmaPayloadBuilderTest.php`.
+- Suíte mantida com oito testes e 113 assertions.
+- Checklist avançado para 6 de 14 etapas concluídas, ou 42,9%.
+- Integração publicada no commit `36d0cfd`.
 
 ## 2026-07-23
 

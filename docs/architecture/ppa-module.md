@@ -83,16 +83,12 @@ cadastral permanecem no controller nesta etapa.
 
 ## Payloads especializados ainda no controller
 
-Os próximos candidatos de extração são:
+O payload de fotografia familiar já foi extraído para
+`PpaFamilySnapshotRmaPayloadBuilder`, integrado ao controller e teve sua
+implementação legada removida.
 
-- `buildFamilySnapshotRmaPayload()`, usado pela fotografia da base com
-  atualização e série mensal;
-- `buildCadUpdateRmaPayload()`, usado pelo fluxo especializado de atualização
-  cadastral.
-
-A ordem aprovada é extrair primeiro a fotografia familiar, criar teste de
-equivalência e somente então remover o método legado. O fluxo de atualização
-cadastral será tratado em incremento posterior.
+O candidato especializado restante é `buildCadUpdateRmaPayload()`, usado pelo
+fluxo de atualização cadastral.
 
 ### Contrato atual da fotografia familiar
 
@@ -178,14 +174,15 @@ Casos cobertos pelo teste de equivalência legado:
 - ordenação mensal e territorial;
 - contrato completo das chaves retornadas.
 
-O teste `PpaFamilySnapshotRmaLegacyPayloadTest.php` executa o método privado
-legado por reflexão, sem abrir conexões ou instanciar models. Ele registra 26
-assertions legadas e quatro comparações completas com o novo builder.
+O teste de transição executou o método privado legado por reflexão antes da
+integração. Depois da remoção, ele foi renomeado para
+`PpaFamilySnapshotRmaPayloadBuilderTest.php` e passou a validar diretamente o
+serviço com 26 assertions.
 
 `PpaFamilySnapshotRmaPayloadBuilder` foi criado em 2026-07-24 sem alterar o
 controller. Ele preserva entradas, fallbacks, filtros, aliases, tipos numéricos,
-cálculos e ordenação do método legado. A suíte completa passou com 117
-assertions.
+cálculos e ordenação do método legado. Em seguida, foi integrado ao controller
+e a duplicação foi removida. A suíte completa passou com 113 assertions.
 
 ## Testes de arquitetura e payload
 
