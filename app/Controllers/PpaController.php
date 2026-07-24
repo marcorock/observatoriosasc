@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\BaseController;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
+use App\Services\PpaCadUpdateRmaPayloadBuilder;
 use App\Services\PpaCatalogService;
 use App\Services\PpaDashboardResolver;
 use App\Services\PpaFamilyRmaPayloadBuilder;
@@ -766,7 +767,12 @@ class PpaController extends BaseController
             'type' => 'family_rma_progress',
             'status' => 'Ativo',
             'mensagem' => $ui['message_active'] ?? 'Base CECAD de referencia cruzada com RMA CRAS C.3.',
-            'dados' => $this->buildCadUpdateRmaPayload($baseResult['rows'] ?? [], $rmaResult['rows'] ?? [], $indicator, $filters),
+            'dados' => PpaCadUpdateRmaPayloadBuilder::build(
+                $baseResult['rows'] ?? [],
+                $rmaResult['rows'] ?? [],
+                $indicator,
+                $filters
+            ),
             'filters' => $filters,
             'error' => null,
             'ui' => $ui,
@@ -853,206 +859,6 @@ class PpaController extends BaseController
         $service = $this->linkedQueryService ??= new PpaLinkedQueryService();
 
         return $service->run($link, $limit);
-    }
-
-    private function buildCadUpdateRmaPayload(array $baseRows, array $rmaRows, object $indicator, array $filters): array
-    {
-        $referenciaBase = null;
-        $anoApuracao = null;
-        $baseTotal = 0;
-        $metaPercentual = (float) ($indicator->indice_futuro ?? 85);
-        $metaFator = $metaPercentual / 100;
-        $filterCras = $this->normalizeNullableFilter($filters['cras'] ?? null);
-        $filterMes = $this->normalizeNullableFilter($filters['mes_referencia'] ?? null);
-
-        $baseRows = $this->filterBaseRows($baseRows, $filterCras);
-        $rmaRows = $this->filterRmaRows($rmaRows, $filterCras, $filterMes);
-
-        $basePorCras = [];
-        $rmaPorMes = [];
-        $rmaPorCras = [];
-
-        foreach ($baseRows as $row) {
-            $cras = $this->normalizeCrasLabel((string) ($row['cras'] ?? 'Não informado'));
-            $regiao = $this->cleanLabel((string) ($row['regiao'] ?? 'Não informada'), 'Não informada');
-            $totalFamilias = (int) ($row['total_familias_pbf'] ?? 0);
-            $refCad = trim((string) ($row['ref_cad_referencia'] ?? $row['ref_cad'] ?? ''));
-
-            $baseTotal += $totalFamilias;
-
-            if ($referenciaBase === null && $refCad !== '') {
-                $referenciaBase = $refCad;
-            }
-
-            if (!isset($basePorCras[$cras])) {
-                $basePorCras[$cras] = [
-                    'cras' => $cras,
-                    'regiao' => $regiao,
-                    'base_familias_pbf' => 0,
-                ];
-            }
-
-            $basePorCras[$cras]['base_familias_pbf'] += $totalFamilias;
-        }
-
-        foreach ($rmaRows as $row) {
-            $mesReferencia = trim((string) ($row['mes_referencia'] ?? ''));
-            $cras = $this->normalizeCrasLabel((string) ($row['cras'] ?? $row['unidade'] ?? $row['nome_unidade'] ?? 'Não informado'));
-            $atualizadas = (int) ($row['total_inseridos'] ?? $row['total_familias_acompanhadas'] ?? 0);
-
-            if ($mesReferencia === '') {
-                continue;
-            }
-
-            $anoApuracao ??= substr($mesReferencia, 0, 4);
-
-            if (!isset($rmaPorMes[$mesReferencia])) {
-                $rmaPorMes[$mesReferencia] = [
-                    'mes_referencia' => $mesReferencia,
-                    'mes_label' => $this->monthLabel($mesReferencia),
-                    'total_familias_acompanhadas' => 0,
-                ];
-            }
-
-            $rmaPorMes[$mesReferencia]['total_familias_acompanhadas'] += $atualizadas;
-
-            if (!isset($rmaPorCras[$cras])) {
-                $rmaPorCras[$cras] = [
-                    'cras' => $cras,
-                    'familias_acompanhadas' => 0,
-                ];
-            }
-
-            $rmaPorCras[$cras]['familias_acompanhadas'] += $atualizadas;
-
-            if (!isset($basePorCras[$cras])) {
-                $basePorCras[$cras] = [
-                    'cras' => $cras,
-                    'regiao' => 'Nao informada',
-                    'base_familias_pbf' => 0,
-                ];
-            }
-        }
-
-        ksort($rmaPorMes);
-        $metaTotal = $baseTotal * $metaFator;
-
-        $acumulado = 0;
-        $tabelaMensal = [];
-        $graficoMensal = [];
-
-        foreach (array_values($rmaPorMes) as $row) {
-            $mesTotal = (int) $row['total_familias_acompanhadas'];
-            $acumulado += $mesTotal;
-
-            $percentualMes = $metaTotal > 0 ? ($mesTotal / $metaTotal) * 100 : 0;
-            $percentualAcumulado = $metaTotal > 0 ? ($acumulado / $metaTotal) * 100 : 0;
-
-            $tabelaMensal[] = [
-                'mes_referencia' => $row['mes_referencia'],
-                'mes_label' => $row['mes_label'],
-                'familias_acompanhadas' => $mesTotal,
-                'acumulado' => $acumulado,
-                'percentual_mes' => $percentualMes,
-                'percentual_acumulado' => $percentualAcumulado,
-            ];
-
-            $graficoMensal[] = [
-                'mes_referencia' => $row['mes_referencia'],
-                'mes' => $row['mes_label'],
-                'total' => $mesTotal,
-            ];
-        }
-
-        $tabelaCras = [];
-
-        foreach ($basePorCras as $cras => $row) {
-            $baseCras = (int) ($row['base_familias_pbf'] ?? 0);
-            $acompanhadas = (int) (($rmaPorCras[$cras]['familias_acompanhadas'] ?? 0));
-            $metaCras = $baseCras * $metaFator;
-            $percentualCras = $metaCras > 0 ? ($acompanhadas / $metaCras) * 100 : 0;
-
-            $tabelaCras[] = [
-                'cras' => $cras,
-                'regiao' => $row['regiao'] ?? 'Nao informada',
-                'base_familias_pbf' => $baseCras,
-                'meta_familias' => $metaCras,
-                'familias_acompanhadas' => $acompanhadas,
-                'percentual_alcancado' => $percentualCras,
-            ];
-        }
-
-        usort($tabelaCras, fn ($a, $b) => ($b['familias_acompanhadas'] <=> $a['familias_acompanhadas']) ?: strcasecmp($a['cras'], $b['cras']));
-
-        $graficoCras = array_map(fn ($row) => [
-            'cras' => $row['cras'],
-            'total' => $row['familias_acompanhadas'],
-        ], $tabelaCras);
-
-        return [
-            'total_geral' => $baseTotal,
-            'meta_familias' => $metaTotal,
-            'familias_acompanhadas_total' => $acumulado,
-            'percentual_alcancado_total' => $metaTotal > 0 ? ($acumulado / $metaTotal) * 100 : 0,
-            'percentual_periodo' => $this->buildPeriodProgressPercent(count($graficoMensal)),
-            'meses_periodo' => count($graficoMensal),
-            'referencia' => $referenciaBase,
-            'ano_apuracao' => $anoApuracao,
-            'grafico_mensal' => $graficoMensal,
-            'grafico_cras' => $graficoCras,
-            'grafico_meta' => [],
-            'tabela_mensal' => $tabelaMensal,
-            'tabela_cras' => $tabelaCras,
-            'filtros_ativos' => [
-                'cras' => $filterCras,
-                'mes_referencia' => $filterMes,
-            ],
-        ];
-    }
-
-    /**
-     * Filtra linhas da base CECAD por CRAS (quando filtro é fornecido).
-     * 
-     * @param array $rows Linhas da base com coluna 'cras'
-     * @param ?string $filterCras CRAS para filtro (null = sem filtro)
-     * @return array Linhas filtradas ou todas se filterCras for null
-     */
-    private function filterBaseRows(array $rows, ?string $filterCras): array
-    {
-        if ($filterCras === null) {
-            return $rows;
-        }
-
-        return array_values(array_filter($rows, function ($row) use ($filterCras) {
-            $cras = $this->normalizeCrasLabel((string) ($row['cras'] ?? ''));
-            return $cras === $filterCras;
-        }));
-    }
-
-    /**
-     * Filtra linhas do RMA por CRAS e/ou Mês de Referência (quando filtros são fornecidos).
-     * 
-     * @param array $rows Linhas do RMA com colunas: cras (ou nome_unidade), mes_referencia
-     * @param ?string $filterCras CRAS para filtro (null = sem filtro)
-     * @param ?string $filterMes Mês (YYYY-MM) para filtro (null = sem filtro)
-     * @return array Linhas filtradas conforme os critérios fornecidos
-     */
-    private function filterRmaRows(array $rows, ?string $filterCras, ?string $filterMes): array
-    {
-        return array_values(array_filter($rows, function ($row) use ($filterCras, $filterMes) {
-            $cras = $this->normalizeCrasLabel((string) ($row['cras'] ?? $row['unidade'] ?? $row['nome_unidade'] ?? ''));
-            $mes = trim((string) ($row['mes_referencia'] ?? ''));
-
-            if ($filterCras !== null && $cras !== $filterCras) {
-                return false;
-            }
-
-            if ($filterMes !== null && $mes !== $filterMes) {
-                return false;
-            }
-
-            return true;
-        }));
     }
 
     private function familyRmaUiConfig(object $indicator): array
