@@ -79,6 +79,14 @@
   medições.
 - Identificados helpers sem chamadas para limpeza posterior isolada.
 - Checklist avançado para 11 de 14 etapas concluídas, ou 78,6%.
+- Executada a campanha pós-refatoração com três amostras por fluxo, sem
+  persistência e com monitoramento temporário somente nos processos CLI.
+- Registradas medianas de 740,2 ms para consulta simples, 71,6 ms para mensal
+  por unidade, 618,7 ms para progresso familiar, 4.041,3 ms para atualização
+  cadastral e 12.997,9 ms para a fotografia familiar simulada.
+- Confirmado que as consultas CECAD dominam os fluxos mais lentos, enquanto
+  conexão, RMA e builders têm participação menor.
+- Checklist avançado para 12 de 14 etapas concluídas, ou 85,7%.
 
 ## 2026-07-23
 

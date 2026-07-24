@@ -17,7 +17,7 @@ mensurável do PPA.
 | Home e navegação | Funcional | Homologação visual contínua |
 | Administração | Login, sessão e CRUD funcionais | Homologar fluxos sensíveis |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
-| PPA público | Catálogo, dashboards e filtros funcionais | Concluir extrações especializadas |
+| PPA público | Catálogo, dashboards, filtros e builders funcionais | Decidir otimizações pelas métricas |
 | PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
 | CadÚnico | Tela inicial | Definir fluxo funcional mínimo |
 | SASC-SA, OSC e POPWEB | Planejados | Levantar requisitos e fontes |
@@ -32,6 +32,7 @@ mensurável do PPA.
 - Nove indicadores quantitativos consolidados localmente.
 - Um indicador classificado como visão geral.
 - Serviços e builders extraídos com cobertura mínima de testes.
+- Baseline pós-refatoração coletada com três amostras por fluxo representativo.
 
 ## Última tarefa trabalhada
 
@@ -44,8 +45,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-24, os sete testes locais passaram com 87 assertions. A branch estava
-sincronizada com seu remoto e 23 commits à frente de `main`.
+Em 2026-07-24, os nove testes locais passaram com 141 assertions.
 
 ## Configuração local
 
@@ -58,11 +58,11 @@ devem configurar suas credenciais no `.env`.
 - Não existe PR aberto reunindo a refatoração.
 - O Notion estava defasado em relação ao código até a atualização de 2026-07-24.
 - O BSC mantém a divergência `cancelado` x `Suspenso`.
-- Ainda não há benchmark estatístico dos dashboards; existe apenas coleta
-  controlada inicial.
-- Cache, Redis e filtros no SQL não devem ser adotados sem novas medições.
+- Existe uma baseline operacional curta, mas ainda não há teste de carga ou
+  concorrência.
+- Cache, Redis e filtros no SQL dependem da decisão técnica baseada na baseline.
 
 ## Próximo passo recomendado
 
-Caracterizar o contrato atual de `buildFamilySnapshotRmaPayload()` antes de
-criar seu teste de equivalência.
+Produzir a decisão técnica sobre filtros, consultas CECAD, conexões e cache com
+base na campanha registrada em `docs/performance/baseline.md`.

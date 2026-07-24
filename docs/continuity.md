@@ -82,7 +82,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 11 de 14 etapas, ou 78,6%.
+Progresso atual: 12 de 14 etapas, ou 85,7%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -95,7 +95,7 @@ Progresso atual: 11 de 14 etapas, ou 78,6%.
 9. Concluído — criar `PpaCadUpdateRmaPayloadBuilder`.
 10. Concluído — integrar o builder e remover o legado cadastral.
 11. Concluído — revisar as responsabilidades restantes no `PpaController`.
-12. Executar nova campanha de medição.
+12. Concluído — executar nova campanha de medição.
 13. Produzir decisão técnica baseada nas métricas.
 14. Homologar e preparar a entrega no GitHub.
 
@@ -156,8 +156,14 @@ Sincronização de catálogo, configuração visual e orquestração das respost
 candidatos futuros, condicionados a benefício mensurável. Helpers sem chamadas
 foram registrados para uma limpeza posterior isolada.
 
-Próxima etapa: executar a campanha de medição dos fluxos representativos e
-registrar a baseline pós-refatoração.
+A campanha pós-refatoração registrou três amostras por fluxo. As medianas foram
+740,2 ms para consulta simples, 71,6 ms para mensal por unidade, 618,7 ms para
+progresso familiar, 4.041,3 ms para atualização cadastral ativa e 12.997,9 ms
+para a simulação somente leitura da fotografia familiar. O detalhamento,
+limitações e métricas por consulta estão em `docs/performance/baseline.md`.
+
+Próxima etapa: produzir a decisão técnica sobre filtros, SQL, conexões e cache
+com base na campanha registrada.
 
 ## Regra documental para cada incremento
 

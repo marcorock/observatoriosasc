@@ -6,9 +6,9 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 ## Medição do progresso
 
 - Total: 14 etapas.
-- Concluídas: 11.
-- Restantes: 3.
-- Progresso: 78,6%.
+- Concluídas: 12.
+- Restantes: 2.
+- Progresso: 85,7%.
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
@@ -39,7 +39,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] 9. Criar `PpaCadUpdateRmaPayloadBuilder`.
 - [x] 10. Integrar o builder e remover o legado cadastral.
 - [x] 11. Revisar responsabilidades restantes no `PpaController`.
-- [ ] 12. Coletar métricas controladas dos dashboards representativos.
+- [x] 12. Coletar métricas controladas dos dashboards representativos.
 - [ ] 13. Produzir decisão sobre filtros, conexões e cache com base nas métricas.
 - [ ] 14. Homologar e preparar o pull request da branch `update-repository`.
 
