@@ -16,7 +16,8 @@ class PpaLinkedQueryService
     public function __construct(
         ?ExternalQueryModel $queryModel = null,
         ?ExternalDataSourceModel $sourceModel = null,
-        ?Closure $queryRunner = null
+        ?Closure $queryRunner = null,
+        private ?PpaQueryFileCache $fileCache = null
     ) {
         $this->queryModel = $queryModel;
         $this->sourceModel = $sourceModel;
@@ -44,6 +45,22 @@ class PpaLinkedQueryService
             return $source;
         }
 
+        $cache = $this->fileCache ??= new PpaQueryFileCache();
+        $cached = $cache->read($source, $query, $limit);
+
+        if ($cached !== null) {
+            return [
+                'rows' => $cached['rows'],
+                'query' => $query,
+                'source' => $source,
+                'cache' => [
+                    'hit' => true,
+                    'generated_at' => $cached['generated_at'],
+                    'row_count' => $cached['row_count'],
+                ],
+            ];
+        }
+
         $runner = $this->queryRunner
             ?? static fn (object $source, object $query, int $limit, array $context): array =>
                 ExternalDatabaseRuntime::runRegisteredQuery($source, $query, $limit, $context);
@@ -60,6 +77,9 @@ class PpaLinkedQueryService
             'rows' => $preview['rows'] ?? [],
             'query' => $query,
             'source' => $source,
+            'cache' => [
+                'hit' => false,
+            ],
         ];
     }
 }

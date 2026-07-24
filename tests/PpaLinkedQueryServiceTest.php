@@ -5,6 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Models\ExternalDataSourceModel;
 use App\Models\ExternalQueryModel;
 use App\Services\PpaLinkedQueryService;
+use App\Services\PpaQueryFileCache;
 
 final class FakeExternalQueryModel extends ExternalQueryModel
 {
@@ -90,6 +91,7 @@ $assertSame(
     $captured['context'] ?? null,
     'forwards performance context'
 );
+$assertSame(false, $success['cache']['hit'] ?? null, 'reports an external cache miss');
 
 $runtimeError = (new PpaLinkedQueryService(
     new FakeExternalQueryModel($query),
@@ -98,9 +100,53 @@ $runtimeError = (new PpaLinkedQueryService(
 ))->run($link, 500);
 $assertSame('Falha controlada.', $runtimeError, 'preserves runtime errors');
 
+$cacheDirectory = sys_get_temp_dir() . '/ppa-linked-query-cache-test-' . bin2hex(random_bytes(8));
+$fileCache = new PpaQueryFileCache($cacheDirectory);
+$cachedRows = [['total' => 99]];
+$fileCache->write($source, $query, 5000, $cachedRows, new DateTimeImmutable('2026-07-24T12:00:00-03:00'));
+$externalCalls = 0;
+$cacheHit = (new PpaLinkedQueryService(
+    new FakeExternalQueryModel($query),
+    new FakeExternalDataSourceModel($source),
+    static function () use (&$externalCalls): array {
+        $externalCalls++;
+
+        return ['success' => true, 'rows' => [['total' => 1]]];
+    },
+    $fileCache
+))->run($link, 5000);
+
+$assertSame($cachedRows, $cacheHit['rows'] ?? null, 'returns rows from a compatible file cache');
+$assertSame(true, $cacheHit['cache']['hit'] ?? null, 'reports a file cache hit');
+$assertSame(
+    '2026-07-24T12:00:00-03:00',
+    $cacheHit['cache']['generated_at'] ?? null,
+    'reports cache generation time'
+);
+$assertSame(0, $externalCalls, 'does not execute the external query on cache hit');
+
+$cacheMiss = (new PpaLinkedQueryService(
+    new FakeExternalQueryModel($query),
+    new FakeExternalDataSourceModel($source),
+    static function () use (&$externalCalls): array {
+        $externalCalls++;
+
+        return ['success' => true, 'rows' => [['total' => 2]]];
+    },
+    $fileCache
+))->run($link, 500);
+
+$assertSame([['total' => 2]], $cacheMiss['rows'] ?? null, 'falls back when the limit is incompatible');
+$assertSame(1, $externalCalls, 'executes the external query on cache miss');
+
+foreach (glob($cacheDirectory . '/*') ?: [] as $file) {
+    unlink($file);
+}
+rmdir($cacheDirectory);
+
 if ($failures !== []) {
     fwrite(STDERR, implode("\n\n", $failures) . "\n");
     exit(1);
 }
 
-fwrite(STDOUT, "OK (8 assertions)\n");
+fwrite(STDOUT, "OK (15 assertions)\n");
