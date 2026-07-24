@@ -36,6 +36,8 @@ mensurável do PPA.
 - Cache local em arquivo aprovado como próxima otimização; Redis fora do escopo.
 - Armazenamento isolado em arquivo implementado e testado, ainda sem integração
   com os dashboards.
+- Comando manual para um indicador implementado e validado, sem escrita no
+  banco.
 
 ## Última tarefa trabalhada
 
@@ -48,7 +50,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-24, os dez testes locais passaram com 157 assertions.
+Em 2026-07-24, os onze testes locais passaram com 167 assertions.
 
 ## Configuração local
 
@@ -68,5 +70,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Criar o comando manual de sincronização do cache para um indicador, sem ainda
-integrar sua leitura aos dashboards.
+Integrar leitura cache-first ao serviço de consultas, preservando fallback
+externo e proibindo atualização durante requisições públicas.

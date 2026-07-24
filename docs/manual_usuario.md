@@ -294,3 +294,23 @@ php bin/ppa-sync-preview.php <slug-ou-codigo> --commit
 - Nunca disparar sincronização automaticamente por uma rota pública.
 - Processar um indicador por vez.
 - O indicador de visão geral encerra sem consultar a fonte externa.
+
+## Cache manual dos dashboards PPA
+
+Para atualizar os arquivos locais das consultas ativas de um indicador:
+
+```bash
+php bin/ppa-dashboard-cache.php <slug-ou-codigo>
+```
+
+O comando:
+
+- processa somente um indicador;
+- executa todas as consultas antes de iniciar a gravação;
+- não altera `ppa_resultados`, `ppa_sincronizacoes` ou outras tabelas;
+- mantém os arquivos fora do diretório público e do Git;
+- informa entradas, linhas e tempo total;
+- não oferece `--all` nesta etapa.
+
+Os dashboards ainda não leem esses arquivos. Até a integração cache-first, o
+comando serve apenas para preparar e validar as entradas locais.

@@ -101,6 +101,15 @@
 - Adicionado `PpaQueryFileCacheTest.php` com 16 assertions; suíte ampliada para
   dez testes e 157 assertions.
 - Armazenamento publicado no commit `b66a4c0`, ainda sem integração ao runtime.
+- Criados `PpaQueryCacheSynchronizer` e
+  `bin/ppa-dashboard-cache.php` para atualizar manualmente o cache de um
+  indicador.
+- Validado o comando com `PPA-CREAS-MULHERES-F1`: uma entrada, 13 linhas e
+  65,729 ms, sem escrita no banco.
+- Adicionado teste do sincronizador com 10 assertions; suíte ampliada para onze
+  testes e 167 assertions.
+- Comando manual publicado no commit `4df0c63`; dashboards continuam sem ler o
+  cache nesta etapa.
 
 ## 2026-07-23
 

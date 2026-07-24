@@ -60,7 +60,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na última verificação, os dez arquivos de teste passaram:
+Na última verificação, os onze arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -72,9 +72,10 @@ Na última verificação, os dez arquivos de teste passaram:
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 8 |
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
+| `PpaQueryCacheSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **157** |
+| **Total** | **167** |
 
 ## Próxima sequência aprovada
 
@@ -177,9 +178,15 @@ O armazenamento isolado `PpaQueryFileCache` foi criado no commit `b66a4c0`,
 com validação, trava, escrita atômica e 16 assertions. Ele ainda não possui
 consumidores e não altera os dashboards.
 
+O comando manual `bin/ppa-dashboard-cache.php` e
+`PpaQueryCacheSynchronizer` foram criados no commit `4df0c63`. A validação real
+de `PPA-CREAS-MULHERES-F1` gravou uma entrada com 13 linhas em 65,729 ms. O
+arquivo é local, ignorado pelo Git, e ainda não é lido pelo runtime.
+
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-Antes da homologação final, o próximo incremento é criar o comando manual de
-sincronização do cache para apenas um indicador.
+Antes da homologação final, o próximo incremento é integrar a leitura
+cache-first ao serviço de consultas, com fallback externo e sem renovação em
+requisições públicas.
 
 ## Regra documental para cada incremento
 

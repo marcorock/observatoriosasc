@@ -1,8 +1,8 @@
 # Decisão de cache em arquivo para dashboards PPA
 
 Decisão registrada em 2026-07-24. O armazenamento isolado foi implementado no
-commit `b66a4c0`; comando de sincronização e integração com dashboards ainda
-não estão implementados.
+commit `b66a4c0` e o comando manual para um indicador no commit `4df0c63`.
+A integração com os dashboards ainda não está implementada.
 
 ## Estado da implementação
 
@@ -20,7 +20,36 @@ O diretório `storage/cache/` foi incluído no `.gitignore`. O serviço ainda n�
 possui consumidores no runtime e, portanto, não altera o comportamento atual.
 
 `PpaQueryFileCacheTest.php` cobre 16 assertions. Na verificação de 2026-07-24,
-os dez testes do projeto passaram com 157 assertions.
+o armazenamento e o sincronizador possuem 26 assertions; os onze testes do
+projeto passaram com 167 assertions.
+
+`PpaQueryCacheSynchronizer`:
+
+- recebe apenas os vínculos ativos do indicador selecionado;
+- executa todas as consultas antes de iniciar as gravações;
+- usa limite 500 para bases e fotografias e 5.000 para as demais séries;
+- não grava nenhuma entrada quando uma consulta falha antes da etapa de escrita;
+- relata chaves, IDs, limites, linhas e horário das entradas gravadas.
+
+O comando disponível é:
+
+```bash
+php bin/ppa-dashboard-cache.php <slug-ou-codigo>
+```
+
+Ele aceita somente um indicador. `--all` ainda não existe.
+
+Validação real em 2026-07-24:
+
+```text
+indicador: PPA-CREAS-MULHERES-F1
+entradas gravadas: 1
+linhas: 13
+tempo total: 65,729 ms
+```
+
+Essa validação criou somente arquivos locais ignorados pelo Git e não alterou
+o banco de dados.
 
 ## Decisão
 
@@ -202,8 +231,9 @@ aplicação de instância única sem métricas de concorrência.
    atômica.
 2. Concluído — criar testes unitários de hit, ausência, corrupção e
    substituição.
-3. Próximo — criar comando manual para um indicador.
-4. Integrar leitura cache-first com fallback externo, sem renovação pública.
+3. Concluído — criar comando manual para um indicador.
+4. Próximo — integrar leitura cache-first com fallback externo, sem renovação
+   pública.
 5. Medir novamente e homologar filtros e equivalência.
 6. Adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.

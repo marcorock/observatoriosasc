@@ -324,6 +324,10 @@ fica fora do escopo atual.
 validação, trava e escrita atômica. Ele ainda não está conectado ao serviço de
 consultas nem ao controller.
 
+`PpaQueryCacheSynchronizer` e `bin/ppa-dashboard-cache.php` permitem preencher
+manualmente as entradas de um indicador. O comando usa somente vínculos ativos,
+não grava no banco e ainda não muda a leitura dos dashboards.
+
 ## Limites da etapa atual
 
 - não introduzir cache ou Redis;
