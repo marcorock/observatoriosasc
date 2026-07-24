@@ -3,6 +3,7 @@
 
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
+use App\Services\PpaQueryCacheBatchSynchronizer;
 use App\Services\PpaQueryCacheSynchronizer;
 use Dotenv\Dotenv;
 
@@ -28,36 +29,46 @@ $arguments = array_slice($argv, 1);
 $target = trim((string) ($arguments[0] ?? ''));
 
 if ($target === '' || in_array($target, ['-h', '--help'], true)) {
-    fwrite(STDOUT, "Uso: php bin/ppa-dashboard-cache.php <slug-ou-codigo>\n");
-    fwrite(STDOUT, "Atualiza o cache das consultas ativas de um unico indicador.\n");
+    fwrite(STDOUT, "Uso: php bin/ppa-dashboard-cache.php <slug-ou-codigo|--all>\n");
+    fwrite(STDOUT, "Atualiza um indicador ou todos os indicadores publicos, sequencialmente.\n");
     exit($target === '' ? 1 : 0);
 }
 
-if (count($arguments) !== 1 || str_starts_with($target, '--')) {
-    fwrite(STDERR, "Informe somente um slug ou codigo de indicador. A opcao --all ainda nao esta disponivel.\n");
+if (count($arguments) !== 1 || (str_starts_with($target, '--') && $target !== '--all')) {
+    fwrite(STDERR, "Informe um slug, um codigo de indicador ou a opcao --all.\n");
     exit(1);
 }
 
 $startedAt = microtime(true);
-$indicator = (new PpaIndicatorModel())->readPublicBySlug($target);
+$indicatorModel = new PpaIndicatorModel();
 
-if (is_string($indicator)) {
-    $result = [
-        'success' => false,
-        'error' => $indicator,
-    ];
+if ($target === '--all') {
+    $indicators = $indicatorModel->readPublicCatalog();
+
+    $result = is_string($indicators)
+        ? ['success' => false, 'error' => $indicators]
+        : (new PpaQueryCacheBatchSynchronizer())->synchronize($indicators);
 } else {
-    $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+    $indicator = $indicatorModel->readPublicBySlug($target);
 
-    if (is_string($links)) {
+    if (is_string($indicator)) {
         $result = [
             'success' => false,
-            'indicator_id' => (int) $indicator->id,
-            'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
-            'error' => $links,
+            'error' => $indicator,
         ];
     } else {
-        $result = (new PpaQueryCacheSynchronizer())->synchronize($indicator, $links);
+        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+
+        if (is_string($links)) {
+            $result = [
+                'success' => false,
+                'indicator_id' => (int) $indicator->id,
+                'indicator_code' => (string) ($indicator->codigo_indicador ?? ''),
+                'error' => $links,
+            ];
+        } else {
+            $result = (new PpaQueryCacheSynchronizer())->synchronize($indicator, $links);
+        }
     }
 }
 
