@@ -27,6 +27,8 @@
 - Ambientes Docker ou remotos devem configurar a conexão no `.env`.
 - Checklist atualizado para 2 de 14 etapas concluídas, ou 14,3%.
 - Checkpoint documental registrado no commit `651e652`.
+- Caracterizado o contrato completo do payload de fotografia familiar.
+- Checklist avançado para 3 de 14 etapas concluídas, ou 21,4%.
 
 ## 2026-07-23
 

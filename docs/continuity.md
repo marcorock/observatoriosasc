@@ -77,11 +77,11 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 2 de 14 etapas, ou 14,3%.
+Progresso atual: 3 de 14 etapas, ou 21,4%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
-3. Caracterizar o payload de fotografia familiar.
+3. Concluído — caracterizar o payload de fotografia familiar.
 4. Criar seu teste de equivalência.
 5. Criar `PpaFamilySnapshotRmaPayloadBuilder`.
 6. Integrar o builder e remover o legado de fotografia.
@@ -104,6 +104,15 @@ Não existe configuração Docker Compose versionada no repositório. O
 defaults de desenvolvimento. Por isso, `DataConect.php` foi mantido exatamente
 como estava no Git. Ambientes Docker ou remotos devem declarar host e senha no
 `.env`, que não é versionado.
+
+## Contrato caracterizado para a próxima extração
+
+O fluxo `family_snapshot_rma_progress` usado por
+`PPA-CRAS-ATUALIZACAO-C3` depende de base familiar, fotografia de famílias
+atualizadas e série RMA. Entradas, filtros, aliases, cálculos, ordenação e
+campos de saída estão registrados em `docs/architecture/ppa-module.md`.
+
+Próxima etapa: criar o teste de equivalência antes do novo builder.
 
 ## Regra documental para cada incremento
 

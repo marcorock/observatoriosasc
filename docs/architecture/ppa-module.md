@@ -94,6 +94,90 @@ A ordem aprovada é extrair primeiro a fotografia familiar, criar teste de
 equivalência e somente então remover o método legado. O fluxo de atualização
 cadastral será tratado em incremento posterior.
 
+### Contrato atual da fotografia familiar
+
+Caracterizado em 2026-07-24 antes da extração.
+
+O tipo `family_snapshot_rma_progress` é selecionado quando existem três vínculos
+ativos:
+
+- `base_familias_*`;
+- `familias_atualizadas_*`;
+- `serie_mensal_unidade_*`.
+
+O indicador conhecido que exercita o fluxo é
+`PPA-CRAS-ATUALIZACAO-C3`. A resposta executa as consultas de base e atualizadas
+com limite 500 e a série RMA com limite 5000.
+
+Entradas do builder:
+
+- `baseRows`: `cras`, `regiao`, `total_familias_pbf` ou `total_familias`,
+  `ref_cad_referencia` ou `ref_cad`;
+- `updatedRows`: `cras`, `total_familias_atualizadas` ou
+  `total_familias_acompanhadas`, `ref_cad_referencia` ou `mes_referencia`;
+- `rmaRows`: `cras`, `unidade` ou `nome_unidade`, `mes_referencia`,
+  `total_inseridos` ou `total_familias_acompanhadas`;
+- `indicator`: `indice_futuro`, interpretado como percentual e com fallback
+  de 85%;
+- `filters`: `cras` e `mes_referencia`.
+
+Regras de filtro:
+
+- `cras` filtra as três fontes depois da consulta externa;
+- `mes_referencia` filtra somente a série RMA;
+- valores vazios são normalizados para `null`;
+- aliases territoriais seguem `normalizeCrasLabel()`.
+
+Cálculos preservados:
+
+- `baseTotal`: soma das famílias da base filtrada;
+- `updatedTotal`: soma das famílias atualizadas filtradas;
+- `metaFamilias = baseTotal × indice_futuro / 100`;
+- percentual total: `updatedTotal / metaFamilias × 100`;
+- série mensal: soma do RMA por mês, com acumulado e percentuais mensal e
+  acumulado sobre a meta;
+- consolidado CRAS: base, meta proporcional, atualizadas e percentual por CRAS;
+- percentual do período: quantidade de meses com leitura limitada a 12,
+  dividida por 12.
+
+Contrato de saída:
+
+- `total_geral`;
+- `meta_familias`;
+- `familias_acompanhadas_total`;
+- `percentual_alcancado_total`;
+- `percentual_periodo`;
+- `meses_periodo`;
+- `referencia`;
+- `ano_apuracao`;
+- `grafico_mensal`;
+- `grafico_cras`;
+- `grafico_meta`, atualmente vazio;
+- `tabela_mensal`;
+- `tabela_cras`;
+- `filtros_ativos` com `cras` e `mes_referencia`.
+
+Ordenação:
+
+- meses em ordem crescente da chave `mes_referencia`;
+- tabela de CRAS por famílias atualizadas em ordem decrescente e nome como
+  desempate;
+- gráfico de CRAS herda a ordem da tabela.
+
+Casos que o teste de equivalência da próxima etapa deve cobrir:
+
+- aliases de CRAS;
+- fallbacks de nomes de colunas;
+- filtro por CRAS nas três fontes;
+- filtro por mês somente no RMA;
+- mês ausente descartado da série;
+- CRAS presente apenas nas atualizações;
+- entradas vazias e valores zero;
+- meta default de 85%;
+- referência e ano com seus fallbacks;
+- ordenação mensal e territorial;
+- contrato completo das chaves retornadas.
+
 ## Testes de arquitetura e payload
 
 Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
