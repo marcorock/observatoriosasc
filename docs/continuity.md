@@ -194,9 +194,14 @@ comparados antes/depois. As prévias foram idênticas, os tempos cache-first for
 30,548 ms e 31,560 ms e cada fluxo passou de duas consultas externas para zero.
 Existem cinco entradas locais válidas no ambiente de homologação.
 
+Catálogo, HTML e JSON dos três indicadores sincronizados responderam HTTP 200.
+Filtros representativos de unidade/CRAS e mês retornaram um mês e um território,
+sem erro e sem consulta externa. Os endpoints filtrados responderam entre
+36,721 ms e 44,228 ms.
+
 Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
-Antes da homologação final, o próximo incremento é validar filtros e endpoints
-HTTP representativos usando as entradas já sincronizadas.
+Antes da homologação final, o próximo incremento é adicionar atualização em
+lote e documentar o agendamento, reutilizando o comando manual já homologado.
 
 ## Regra documental para cada incremento
 

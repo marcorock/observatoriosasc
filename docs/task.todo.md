@@ -74,7 +74,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Integrar leitura cache-first com fallback externo.
 - [x] Homologar equivalência e tempos cache-first do progresso familiar e da
   atualização cadastral.
-- [ ] Homologar filtros e endpoints HTTP representativos com cache.
+- [x] Homologar filtros e endpoints HTTP representativos com cache.
 - [ ] Adicionar atualização em lote e documentar agendamento somente após
   homologar o fluxo manual.
 

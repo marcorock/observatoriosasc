@@ -41,6 +41,8 @@ mensurável do PPA.
 - Leitura cache-first integrada com fallback externo e sem renovação pública.
 - Progresso familiar e atualização cadastral homologados sem filtros, com
   equivalência das prévias e zero consultas externas em hits.
+- Catálogo, HTML, JSON e filtros representativos homologados com HTTP 200 e zero
+  consultas externas nos hits.
 
 ## Última tarefa trabalhada
 
@@ -73,5 +75,4 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Homologar filtros e endpoints HTTP representativos com as cinco entradas locais
-já sincronizadas.
+Adicionar atualização em lote e documentar agendamento seguro do comando.

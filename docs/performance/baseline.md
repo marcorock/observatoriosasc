@@ -158,3 +158,14 @@ Ainda em 2026-07-24:
 
 Os tempos sem cache continuam sujeitos à variação da fonte. A equivalência foi
 determinada pelo conteúdo completo da prévia, excluindo apenas o tempo.
+
+### Endpoints filtrados
+
+Na homologação HTTP cache-first:
+
+- mensal por unidade: 37,702 ms;
+- progresso familiar: 44,228 ms;
+- atualização cadastral: 36,721 ms.
+
+As três respostas filtradas retornaram HTTP 200, um mês e um território, sem
+erro e sem consultas externas.

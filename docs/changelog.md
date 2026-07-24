@@ -126,6 +126,12 @@
 - Progresso familiar passou de 11.508,229 ms para 30,548 ms; atualização
   cadastral passou de 4.069,384 ms para 31,560 ms.
 - Cada fluxo passou de duas consultas externas para zero no cache hit.
+- Homologados catálogo, HTML e JSON dos indicadores mensal, familiar e
+  cadastral com HTTP 200.
+- Homologados filtros de unidade/CRAS e mês, com uma linha territorial e um mês
+  por resposta, sem erro.
+- Endpoints filtrados responderam entre 36,721 ms e 44,228 ms, com zero
+  consultas externas registradas.
 
 ## 2026-07-23
 

@@ -277,7 +277,31 @@ aplicação de instância única sem métricas de concorrência.
 3. Concluído — criar comando manual para um indicador.
 4. Concluído — integrar leitura cache-first com fallback externo, sem renovação
    pública.
-5. Em andamento — equivalência sem filtros e tempos homologados; ainda faltam
-   filtros e endpoints HTTP representativos.
-6. Adicionar `--all` e documentar exemplo de agendamento.
+5. Concluído — equivalência, tempos, filtros e endpoints HTTP representativos
+   homologados.
+6. Próximo — adicionar `--all` e documentar exemplo de agendamento.
 7. Revisar os planos das consultas CECAD como frente independente.
+
+## Homologação HTTP e filtros
+
+Em 2026-07-24, uma instância PHP local temporária validou:
+
+- catálogo `/ppa`;
+- HTML e endpoint JSON do indicador mensal;
+- HTML e endpoint JSON do progresso familiar;
+- HTML e endpoint JSON da atualização cadastral;
+- filtro por unidade e mês no mensal;
+- filtro por CRAS e mês nos dois fluxos familiares.
+
+Todas as sete respostas sem filtro e as três respostas filtradas retornaram HTTP
+200. Nos endpoints filtrados, `error` permaneceu `null` e cada resposta conteve
+um mês e um território.
+
+| Endpoint filtrado | Tempo | Consultas externas |
+| --- | ---: | ---: |
+| Mensal por unidade | 37,702 ms | 0 |
+| Progresso familiar | 44,228 ms | 0 |
+| Atualização cadastral | 36,721 ms | 0 |
+
+O logger permaneceu sem registros de consultas externas durante toda a
+homologação cache-first. O servidor temporário foi encerrado ao final.
