@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Controllers\PpaController;
 use App\Services\PpaFamilySnapshotRmaPayloadBuilder;
 
 $failures = [];
@@ -16,10 +15,6 @@ $assertSame = static function ($expected, $actual, string $label) use (&$failure
         );
     }
 };
-
-$controller = (new ReflectionClass(PpaController::class))->newInstanceWithoutConstructor();
-$method = new ReflectionMethod(PpaController::class, 'buildFamilySnapshotRmaPayload');
-$method->setAccessible(true);
 
 $indicator = (object) [
     'codigo_indicador' => 'PPA-CRAS-ATUALIZACAO-C3',
@@ -90,12 +85,7 @@ $rmaRows = [
     ],
 ];
 
-$payload = $method->invoke($controller, $baseRows, $updatedRows, $rmaRows, $indicator, []);
-$assertSame(
-    $payload,
-    PpaFamilySnapshotRmaPayloadBuilder::build($baseRows, $updatedRows, $rmaRows, $indicator, []),
-    'new builder matches the complete unfiltered legacy payload'
-);
+$payload = PpaFamilySnapshotRmaPayloadBuilder::build($baseRows, $updatedRows, $rmaRows, $indicator, []);
 
 $assertSame(
     [
@@ -135,20 +125,12 @@ $assertSame('CRAS PARQUE SANTA RITA', $payload['tabela_cras'][1]['cras'], 'norma
 $assertSame(0, $payload['tabela_cras'][2]['base_familias_pbf'], 'keeps CRAS present only in updated rows');
 $assertSame(0, $payload['tabela_cras'][3]['familias_acompanhadas'], 'keeps valid zero values');
 
-$filtered = $method->invoke($controller, $baseRows, $updatedRows, $rmaRows, $indicator, [
-    'cras' => 'CRAS MARIANA',
-    'mes_referencia' => '2026-02-01',
-]);
-$assertSame(
-    $filtered,
-    PpaFamilySnapshotRmaPayloadBuilder::build(
-        $baseRows,
-        $updatedRows,
-        $rmaRows,
-        $indicator,
-        ['cras' => 'CRAS MARIANA', 'mes_referencia' => '2026-02-01']
-    ),
-    'new builder matches the filtered legacy payload'
+$filtered = PpaFamilySnapshotRmaPayloadBuilder::build(
+    $baseRows,
+    $updatedRows,
+    $rmaRows,
+    $indicator,
+    ['cras' => 'CRAS MARIANA', 'mes_referencia' => '2026-02-01']
 );
 $assertSame(100, $filtered['total_geral'], 'filters the base snapshot by CRAS');
 $assertSame(60, $filtered['familias_acompanhadas_total'], 'filters updated rows by CRAS');
@@ -159,33 +141,16 @@ $assertSame(
     'returns normalized active filters'
 );
 
-$defaultTarget = $method->invoke(
-    $controller,
+$defaultTarget = PpaFamilySnapshotRmaPayloadBuilder::build(
     [['cras' => 'CRAS TESTE', 'total_familias_pbf' => 100]],
     [],
     [],
     (object) [],
     []
 );
-$assertSame(
-    $defaultTarget,
-    PpaFamilySnapshotRmaPayloadBuilder::build(
-        [['cras' => 'CRAS TESTE', 'total_familias_pbf' => 100]],
-        [],
-        [],
-        (object) [],
-        []
-    ),
-    'new builder matches the legacy default target payload'
-);
 $assertSame(85.0, $defaultTarget['meta_familias'], 'uses 85 percent as the legacy default target');
 
-$empty = $method->invoke($controller, [], [], [], $indicator, []);
-$assertSame(
-    $empty,
-    PpaFamilySnapshotRmaPayloadBuilder::build([], [], [], $indicator, []),
-    'new builder matches the empty legacy payload'
-);
+$empty = PpaFamilySnapshotRmaPayloadBuilder::build([], [], [], $indicator, []);
 $assertSame(0, $empty['total_geral'], 'supports an empty base');
 $assertSame(0, $empty['percentual_alcancado_total'], 'avoids division by zero');
 $assertSame(null, $empty['ano_apuracao'], 'keeps an empty assessment year');
@@ -195,4 +160,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (30 assertions)\n");
+fwrite(STDOUT, "OK (26 assertions)\n");
