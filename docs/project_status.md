@@ -17,7 +17,7 @@ mensurável do PPA.
 | Home e navegação | Funcional | Homologação visual contínua |
 | Administração | Login, sessão e CRUD funcionais | Homologar fluxos sensíveis |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
-| PPA público | Catálogo, dashboards, filtros e builders funcionais | Decidir otimizações pelas métricas |
+| PPA público | Catálogo, dashboards, filtros e builders funcionais | Implementar cache em arquivo incremental |
 | PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
 | CadÚnico | Tela inicial | Definir fluxo funcional mínimo |
 | SASC-SA, OSC e POPWEB | Planejados | Levantar requisitos e fontes |
@@ -33,6 +33,7 @@ mensurável do PPA.
 - Um indicador classificado como visão geral.
 - Serviços e builders extraídos com cobertura mínima de testes.
 - Baseline pós-refatoração coletada com três amostras por fluxo representativo.
+- Cache local em arquivo aprovado como próxima otimização; Redis fora do escopo.
 
 ## Última tarefa trabalhada
 
@@ -60,9 +61,10 @@ devem configurar suas credenciais no `.env`.
 - O BSC mantém a divergência `cancelado` x `Suspenso`.
 - Existe uma baseline operacional curta, mas ainda não há teste de carga ou
   concorrência.
-- Cache, Redis e filtros no SQL dependem da decisão técnica baseada na baseline.
+- O cache em arquivo ainda não está implementado; até lá, dashboards detalhados
+  continuam consultando as fontes externas.
 
 ## Próximo passo recomendado
 
-Produzir a decisão técnica sobre filtros, consultas CECAD, conexões e cache com
-base na campanha registrada em `docs/performance/baseline.md`.
+Implementar primeiro o armazenamento seguro do cache em arquivo, com testes,
+sem ainda integrar sua leitura aos dashboards.

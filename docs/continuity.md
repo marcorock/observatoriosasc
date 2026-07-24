@@ -82,7 +82,7 @@ interativo está no Notion:
 
 `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-Progresso atual: 12 de 14 etapas, ou 85,7%.
+Progresso atual: 13 de 14 etapas, ou 92,9%.
 
 1. Concluído — decidir os defaults de conexão em `DataConect.php`.
 2. Concluído — consolidar o checkpoint documental no Git.
@@ -96,7 +96,7 @@ Progresso atual: 12 de 14 etapas, ou 85,7%.
 10. Concluído — integrar o builder e remover o legado cadastral.
 11. Concluído — revisar as responsabilidades restantes no `PpaController`.
 12. Concluído — executar nova campanha de medição.
-13. Produzir decisão técnica baseada nas métricas.
+13. Concluído — produzir decisão técnica baseada nas métricas.
 14. Homologar e preparar a entrega no GitHub.
 
 Cada etapa vale um ponto. O percentual é calculado por
@@ -162,8 +162,19 @@ progresso familiar, 4.041,3 ms para atualização cadastral ativa e 12.997,9 ms
 para a simulação somente leitura da fotografia familiar. O detalhamento,
 limitações e métricas por consulta estão em `docs/performance/baseline.md`.
 
-Próxima etapa: produzir a decisão técnica sobre filtros, SQL, conexões e cache
-com base na campanha registrada.
+Decisão técnica: implementar em incremento próprio um cache local em arquivo
+para as linhas agregadas das consultas vinculadas. A atualização será manual
+por CLI e poderá ser programada posteriormente; requisições públicas apenas
+leem o cache e mantêm fallback para a consulta externa. Redis não será adotado
+neste momento.
+
+O desenho, riscos, invalidação e ordem de implementação estão em
+`docs/performance/dashboard-file-cache.md`. A revisão do SQL CECAD continua
+recomendada como frente independente.
+
+Próxima etapa do checklist original: homologar e preparar a entrega no GitHub.
+A implementação do cache deve ser organizada em pequenos commits antes da
+homologação final, preservando a documentação a cada incremento.
 
 ## Regra documental para cada incremento
 
@@ -189,6 +200,8 @@ Nenhum incremento é considerado concluído sem:
 - `docs/performance/baseline.md`: baseline e medições.
 - `docs/performance/query-monitoring.md`: operação do monitoramento.
 - `docs/performance/catalog-metrics.md`: catálogo local e sincronizações.
+- `docs/performance/dashboard-file-cache.md`: decisão e desenho do cache dos
+  dashboards.
 - `docs/manual_usuario.md`: uso das telas e comandos disponíveis.
 - `docs/plano_inicial_modulo_ppa.md`: plano histórico; não usar como status.
 - `docs/Plano Inicial do Módulo PPA - Observatório SASC.docx`: artefato

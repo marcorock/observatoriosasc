@@ -315,9 +315,10 @@ Esses métodos não possuem chamadas no controller após a extração dos builde
 A remoção não faz parte desta revisão para manter a etapa apenas documental e
 evitar combinar limpeza estrutural com a campanha de medição.
 
-Decisão: não criar novos serviços antes da medição. A etapa seguinte deve
-medir os fluxos representativos e usar os resultados para priorizar filtros em
-SQL, conexão e eventual cache.
+Após a medição, foi decidido adotar cache local em arquivo para as linhas
+agregadas das consultas vinculadas, com sincronização fora da requisição
+pública. O desenho está em `docs/performance/dashboard-file-cache.md`. Redis
+fica fora do escopo atual.
 
 ## Limites da etapa atual
 

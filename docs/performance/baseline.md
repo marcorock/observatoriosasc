@@ -123,8 +123,12 @@ significa ausência absoluta de alocações.
 - otimizar ou evitar o processamento das consultas CECAD deve ser avaliado
   antes de cache de aplicação ou novas extrações do controller.
 
-## Próxima decisão
+## Decisão posterior à campanha
 
-Comparar pushdown de filtros, revisão do SQL CECAD, reutilização de conexão e
-cache a partir desses resultados. Qualquer adoção de Redis continua dependendo
-de aprovação explícita.
+Foi escolhido um cache local em arquivo, atualizado por comando manual e
+posteriormente por agendamento. Redis não será adotado neste momento. A decisão,
+os controles e a ordem de implementação estão em
+`docs/performance/dashboard-file-cache.md`.
+
+A revisão do SQL CECAD continua recomendada como frente independente. Pushdown
+de filtros e reutilização de conexões ficam com prioridade posterior.

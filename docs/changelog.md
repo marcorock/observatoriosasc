@@ -87,6 +87,13 @@
 - Confirmado que as consultas CECAD dominam os fluxos mais lentos, enquanto
   conexão, RMA e builders têm participação menor.
 - Checklist avançado para 12 de 14 etapas concluídas, ou 85,7%.
+- Aprovado cache local em arquivo para as linhas agregadas das consultas dos
+  dashboards, com sincronização manual e possibilidade de agendamento.
+- Definidos escrita atômica, trava por chave, identidade por hash da consulta,
+  preservação do último arquivo válido e fallback externo.
+- Redis removido do escopo atual; revisão do SQL CECAD mantida como frente
+  independente.
+- Checklist avançado para 13 de 14 etapas concluídas, ou 92,9%.
 
 ## 2026-07-23
 
