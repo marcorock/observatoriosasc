@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter quatorze testes locais, com 197 assertions na verificação de 2026-07-28.
+- [x] Manter quinze testes locais, com 201 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -85,7 +85,9 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Completar smoke tests para `/ppa/{slug}`:
   - [x] slug inexistente;
   - [x] indicador válido sem vínculos ativos.
-- [ ] Criar smoke tests para `/ppa/{slug}/data`.
+- [x] Criar smoke tests de erro para `/ppa/{slug}/data`:
+  - [x] slug inexistente;
+  - [x] indicador sem vínculos.
 - [ ] Cobrir filtros representativos e cache hit/miss nos testes HTTP.
 - [ ] Fluxos administrativos do PPA.
 - [ ] Catálogo e dashboards públicos em desktop e mobile.

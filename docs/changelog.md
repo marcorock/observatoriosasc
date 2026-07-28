@@ -28,8 +28,12 @@
   catálogo e mensagem controlada.
 - Ampliado o mesmo teste para indicador válido sem vínculos, estado
   `Em Preparacao` e mensagem explicativa.
-- Suíte mantida com quatorze testes e ampliada para 197 assertions.
-- Próximo incremento definido: endpoint JSON com indicador inexistente.
+- Tornado o emissor JSON substituível em testes, sem alterar resposta ou
+  encerramento no runtime.
+- Criado `PpaDashboardJsonSmokeTest.php` para os erros 404 de indicador
+  inexistente e indicador sem vínculos.
+- Suíte ampliada para quinze testes e 201 assertions.
+- Próximo incremento definido: filtros representativos e cache hit/miss.
 
 ## 2026-07-24
 

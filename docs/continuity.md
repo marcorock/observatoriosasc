@@ -62,7 +62,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os quatorze arquivos de teste passaram:
+Na verificação de 2026-07-28, os quinze arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -72,6 +72,7 @@ Na verificação de 2026-07-28, os quatorze arquivos de teste passaram:
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
+| `PpaDashboardJsonSmokeTest.php` | 4 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 17 |
@@ -80,7 +81,7 @@ Na verificação de 2026-07-28, os quatorze arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **197** |
+| **Total** | **201** |
 
 ## Sequência concluída
 
@@ -222,8 +223,8 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Adicionar smoke tests do endpoint JSON para indicador inexistente e indicador
-sem vínculos. Catálogo e dashboard HTML já possuem cobertura inicial. Os novos
+Cobrir filtros representativos e cache hit/miss no pipeline usado pelo endpoint
+JSON. Catálogo, dashboard HTML e erros JSON já possuem cobertura inicial. Os
 testes não devem acessar banco ou fonte externa reais.
 
 ## Regra documental para cada incremento

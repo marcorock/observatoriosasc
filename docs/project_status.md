@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os quatorze testes locais passaram com 197 assertions. O
+Em 2026-07-28, os quinze testes locais passaram com 201 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -81,5 +81,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Adicionar smoke tests para `/ppa/{slug}/data`, começando por indicador
-inexistente e ausência de vínculos. Depois, cobrir filtros e hit/miss do cache.
+Cobrir filtros representativos e cache hit/miss no pipeline do endpoint JSON,
+sem acessar fontes reais.
