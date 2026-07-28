@@ -17,6 +17,17 @@ use App\Services\PpaSingleQueryPayloadBuilder;
 class PpaController extends BaseController
 {
     private ?PpaLinkedQueryService $linkedQueryService = null;
+    private ?PpaIndicatorModel $indicatorModel;
+    private ?PpaCatalogService $catalogService;
+
+    public function __construct(
+        ?PpaIndicatorModel $indicatorModel = null,
+        ?PpaCatalogService $catalogService = null
+    ) {
+        parent::__construct();
+        $this->indicatorModel = $indicatorModel;
+        $this->catalogService = $catalogService;
+    }
 
     /**
      * Configuração básica da página PPA.
@@ -58,7 +69,7 @@ class PpaController extends BaseController
      */
     public function index()
     {
-        $indicators = (new PpaIndicatorModel())->readPublicCatalog();
+        $indicators = $this->indicatorModel()->readPublicCatalog();
 
         return $this->renderCatalog(is_array($indicators) ? $indicators : [], is_string($indicators) ? $indicators : null);
     }
@@ -79,10 +90,10 @@ class PpaController extends BaseController
      */
     public function show(string $slug)
     {
-        $indicator = (new PpaIndicatorModel())->readPublicBySlug($slug);
+        $indicator = $this->indicatorModel()->readPublicBySlug($slug);
 
         if (is_string($indicator)) {
-            $indicators = (new PpaIndicatorModel())->readPublicCatalog();
+            $indicators = $this->indicatorModel()->readPublicCatalog();
 
             return $this->renderCatalog(
                 is_array($indicators) ? $indicators : [],
@@ -136,7 +147,7 @@ class PpaController extends BaseController
      */
     public function dashboardData(string $slug): void
     {
-        $indicator = (new PpaIndicatorModel())->readPublicBySlug($slug);
+        $indicator = $this->indicatorModel()->readPublicBySlug($slug);
 
         if (is_string($indicator)) {
             http_response_code(404);
@@ -184,7 +195,7 @@ class PpaController extends BaseController
 
     public function buildCatalogSyncPreview(string $slug): array
     {
-        $indicator = (new PpaIndicatorModel())->readPublicBySlug($slug);
+        $indicator = $this->indicatorModel()->readPublicBySlug($slug);
 
         if (is_string($indicator)) {
             return [
@@ -1173,7 +1184,7 @@ class PpaController extends BaseController
      */
     private function renderCatalog(array $indicators, ?string $message = null)
     {
-        $catalog = (new PpaCatalogService())->build($indicators);
+        $catalog = $this->catalogService()->build($indicators);
 
         return $this->renderPage('ppa/catalog.html', [
             'indicators' => $catalog['indicators'],
@@ -1183,6 +1194,16 @@ class PpaController extends BaseController
             'name' => 'PPA - Indicadores',
             'description' => 'Selecione um indicador do Plano Plurianual',
         ]);
+    }
+
+    private function indicatorModel(): PpaIndicatorModel
+    {
+        return $this->indicatorModel ??= new PpaIndicatorModel();
+    }
+
+    private function catalogService(): PpaCatalogService
+    {
+        return $this->catalogService ??= new PpaCatalogService();
     }
 
     private function firstNumericMetric(array $values): ?float
