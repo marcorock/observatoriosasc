@@ -9,13 +9,28 @@ use App\Models\PpaIndicatorQueryModel;
 
 class PpaAdminController extends Template
 {
+    private ?PpaIndicatorModel $indicatorModel;
+    private ?PpaIndicatorQueryModel $linkModel;
+    private ?ExternalQueryModel $externalQueryModel;
+
+    public function __construct(
+        ?PpaIndicatorModel $indicatorModel = null,
+        ?PpaIndicatorQueryModel $linkModel = null,
+        ?ExternalQueryModel $externalQueryModel = null
+    ) {
+        parent::__construct();
+        $this->indicatorModel = $indicatorModel;
+        $this->linkModel = $linkModel;
+        $this->externalQueryModel = $externalQueryModel;
+    }
+
     public function dashboard()
     {
         adminRequireAuth('admin');
         adminEnsureSession();
 
-        $indicatorCount = (new PpaIndicatorModel())->readAll();
-        $linkCount = (new PpaIndicatorQueryModel())->readAll();
+        $indicatorCount = $this->indicatorModel()->readAll();
+        $linkCount = $this->linkModel()->readAll();
         $feedback = $_SESSION['ppa_admin_feedback'] ?? null;
         unset($_SESSION['ppa_admin_feedback']);
 
@@ -31,7 +46,7 @@ class PpaAdminController extends Template
         adminRequireAuth('admin');
         adminEnsureSession();
 
-        $dados = (new PpaIndicatorModel())->readAll();
+        $dados = $this->indicatorModel()->readAll();
         $feedback = $_SESSION['ppa_admin_feedback'] ?? null;
         unset($_SESSION['ppa_admin_feedback']);
 
@@ -84,7 +99,7 @@ class PpaAdminController extends Template
         }
 
         $data = $this->indicatorDataFromRequest();
-        $result = (new PpaIndicatorModel())->create($data);
+        $result = $this->indicatorModel()->create($data);
 
         if ($result !== true) {
             echo $this->render('admin/ppa/indicadores/create.html', array_merge([
@@ -103,7 +118,7 @@ class PpaAdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $dados = (new PpaIndicatorModel())->readById((int) $id);
+        $dados = $this->indicatorModel()->readById((int) $id);
 
         if (is_string($dados)) {
             header('Location: ' . url('admin/ppa/indicadores'));
@@ -127,7 +142,7 @@ class PpaAdminController extends Template
         }
 
         $data = $this->indicatorDataFromRequest();
-        $result = (new PpaIndicatorModel())->updateById($id, $data);
+        $result = $this->indicatorModel()->updateById($id, $data);
 
         if ($result !== true) {
             echo $this->render('admin/ppa/indicadores/edit.html', array_merge([
@@ -152,7 +167,7 @@ class PpaAdminController extends Template
             exit;
         }
 
-        $result = (new PpaIndicatorModel())->deleteById($id);
+        $result = $this->indicatorModel()->deleteById($id);
 
         $this->setFeedback($result === true ? 'success' : 'danger', $result === true ? 'Indicador do PPA excluido com sucesso.' : $result);
 
@@ -165,7 +180,7 @@ class PpaAdminController extends Template
         adminRequireAuth('admin');
         adminEnsureSession();
 
-        $dados = (new PpaIndicatorQueryModel())->readAll();
+        $dados = $this->linkModel()->readAll();
         $feedback = $_SESSION['ppa_admin_feedback'] ?? null;
         unset($_SESSION['ppa_admin_feedback']);
 
@@ -205,8 +220,8 @@ class PpaAdminController extends Template
         echo $this->render('admin/ppa/vinculos/create.html', array_merge([
             'erro' => null,
             'dados' => $this->defaultLinkData(),
-            'indicators' => (new PpaIndicatorModel())->readActiveOptions(),
-            'queries' => (new ExternalQueryModel())->readActiveOptions(),
+            'indicators' => $this->indicatorModel()->readActiveOptions(),
+            'queries' => $this->externalQueryModel()->readActiveOptions(),
         ], $this->pageDefaults('Novo Vinculo PPA', 'Associe um indicador do PPA a uma consulta externa')));
     }
 
@@ -220,14 +235,14 @@ class PpaAdminController extends Template
         }
 
         $data = $this->linkDataFromRequest();
-        $result = (new PpaIndicatorQueryModel())->create($data);
+        $result = $this->linkModel()->create($data);
 
         if ($result !== true) {
             echo $this->render('admin/ppa/vinculos/create.html', array_merge([
                 'erro' => $result,
                 'dados' => (object) $data,
-                'indicators' => (new PpaIndicatorModel())->readActiveOptions(),
-                'queries' => (new ExternalQueryModel())->readActiveOptions(),
+                'indicators' => $this->indicatorModel()->readActiveOptions(),
+                'queries' => $this->externalQueryModel()->readActiveOptions(),
             ], $this->pageDefaults('Novo Vinculo PPA', 'Associe um indicador do PPA a uma consulta externa')));
             return;
         }
@@ -241,7 +256,7 @@ class PpaAdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $dados = (new PpaIndicatorQueryModel())->readById((int) $id);
+        $dados = $this->linkModel()->readById((int) $id);
 
         if (is_string($dados)) {
             header('Location: ' . url('admin/ppa/vinculos'));
@@ -251,8 +266,8 @@ class PpaAdminController extends Template
         echo $this->render('admin/ppa/vinculos/edit.html', array_merge([
             'erro' => null,
             'dados' => $dados,
-            'indicators' => (new PpaIndicatorModel())->readActiveOptions(),
-            'queries' => (new ExternalQueryModel())->readActiveOptions(),
+            'indicators' => $this->indicatorModel()->readActiveOptions(),
+            'queries' => $this->externalQueryModel()->readActiveOptions(),
         ], $this->pageDefaults('Editar Vinculo PPA', 'Atualize o relacionamento entre indicador e consulta externa')));
     }
 
@@ -267,14 +282,14 @@ class PpaAdminController extends Template
         }
 
         $data = $this->linkDataFromRequest();
-        $result = (new PpaIndicatorQueryModel())->updateById($id, $data);
+        $result = $this->linkModel()->updateById($id, $data);
 
         if ($result !== true) {
             echo $this->render('admin/ppa/vinculos/edit.html', array_merge([
                 'erro' => $result,
                 'dados' => (object) array_merge($data, ['id' => $id]),
-                'indicators' => (new PpaIndicatorModel())->readActiveOptions(),
-                'queries' => (new ExternalQueryModel())->readActiveOptions(),
+                'indicators' => $this->indicatorModel()->readActiveOptions(),
+                'queries' => $this->externalQueryModel()->readActiveOptions(),
             ], $this->pageDefaults('Editar Vinculo PPA', 'Atualize o relacionamento entre indicador e consulta externa')));
             return;
         }
@@ -294,7 +309,7 @@ class PpaAdminController extends Template
             exit;
         }
 
-        $result = (new PpaIndicatorQueryModel())->deleteById($id);
+        $result = $this->linkModel()->deleteById($id);
 
         $this->setFeedback($result === true ? 'success' : 'danger', $result === true ? 'Vinculo excluido com sucesso.' : $result);
 
@@ -414,5 +429,20 @@ class PpaAdminController extends Template
             'type' => $type,
             'message' => $message,
         ];
+    }
+
+    private function indicatorModel(): PpaIndicatorModel
+    {
+        return $this->indicatorModel ??= new PpaIndicatorModel();
+    }
+
+    private function linkModel(): PpaIndicatorQueryModel
+    {
+        return $this->linkModel ??= new PpaIndicatorQueryModel();
+    }
+
+    private function externalQueryModel(): ExternalQueryModel
+    {
+        return $this->externalQueryModel ??= new ExternalQueryModel();
     }
 }
