@@ -37,8 +37,11 @@
   cache hit e ausência de chamada externa.
 - Ampliado o mesmo teste para cache miss, uma chamada externa controlada e
   preservação dos filtros no fallback.
-- Suíte mantida com dezesseis testes e ampliada para 212 assertions.
-- Próximo incremento definido: homologação visual e proteção administrativa.
+- Criado `AdminRouteProtectionTest.php` para painel, usuários, bases, consultas,
+  PPA administrativo, indicadores, vínculos e registros BSC.
+- Confirmado que as oito ações exigem autenticação antes de acessar models.
+- Suíte ampliada para dezessete testes e 220 assertions.
+- Próximo incremento definido: homologação visual, login e logout.
 
 ## 2026-07-24
 

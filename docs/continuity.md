@@ -62,10 +62,11 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os dezesseis arquivos de teste passaram:
+Na verificação de 2026-07-28, os dezessete arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
+| `AdminRouteProtectionTest.php` | 8 |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
@@ -82,7 +83,7 @@ Na verificação de 2026-07-28, os dezesseis arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **212** |
+| **Total** | **220** |
 
 ## Sequência concluída
 
@@ -224,9 +225,8 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente catálogo, filtros e respostas JSON no ambiente local.
-Depois, iniciar a cobertura dos fluxos administrativos sensíveis, começando
-pela proteção de acesso anônimo.
+Homologar visualmente catálogo, filtros e proteção administrativa no ambiente
+local. Depois, cobrir login e logout sem usar credenciais ou banco reais.
 
 ## Regra documental para cada incremento
 
