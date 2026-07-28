@@ -68,6 +68,18 @@
 - Suíte ampliada para dezenove testes e 239 assertions.
 - Próximo incremento definido: validações dos CRUDs administrativos.
 
+### Validações do CRUD de usuários
+
+- Reutilizado o `AdminModel` injetável em todas as operações de usuários.
+- Centralizados os redirecionamentos do CRUD no método testável do controller,
+  sem alterar os destinos no runtime.
+- Criado `AdminUserCrudValidationTest.php` sem persistência real.
+- Cobertos criação com senha em hash, CPF normalizado, CPF duplicado, edição
+  sem troca de senha, bloqueio de autodesativação, bloqueio de autoexclusão e
+  exclusão de outra conta.
+- Suíte ampliada para vinte testes e 255 assertions.
+- Próximo incremento definido: CRUDs de fontes e consultas externas.
+
 ## 2026-07-24
 
 ### Documentação
