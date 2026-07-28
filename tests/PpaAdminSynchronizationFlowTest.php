@@ -110,7 +110,7 @@ $controller = new PpaAdminSynchronizationTestController(
 
 $_POST = [
     'indicador_id' => '7',
-    '_form_token' => formToken('ppa_indicator_synchronize'),
+    '_form_token' => formToken('ppa_indicator_synchronize_7'),
 ];
 $redirect = $captureRedirect($controller->synchronizeIndicator(...));
 $feedback = $_SESSION['ppa_admin_feedback'] ?? [];
@@ -165,7 +165,7 @@ $failureController = new PpaAdminSynchronizationTestController(
 );
 $_POST = [
     'indicador_id' => '7',
-    '_form_token' => formToken('ppa_indicator_synchronize'),
+    '_form_token' => formToken('ppa_indicator_synchronize_7'),
 ];
 $failureRedirect = $captureRedirect($failureController->synchronizeIndicator(...));
 
@@ -191,7 +191,10 @@ $assertSame(
 );
 $assertSame(
     true,
-    is_string($view) && str_contains($view, "form_token_input('ppa_indicator_synchronize')"),
+    is_string($view) && str_contains(
+        $view,
+        "form_token_input('ppa_indicator_synchronize_' ~ indicator.id)"
+    ),
     'o formulário deve incluir o token de segurança'
 );
 $assertSame(
@@ -243,6 +246,12 @@ $assertSame(
     substr_count($renderedDashboard, 'class="ppa-synchronization-button btn btn-sm btn-primary"'),
     'cada indicador deve possuir seu próprio botão'
 );
+preg_match_all('/name="_form_token" value="([^"]+)"/', $renderedDashboard, $renderedTokens);
+$assertSame(
+    3,
+    count(array_unique($renderedTokens[1] ?? [])),
+    'cada linha e o logout devem possuir tokens de segurança exclusivos'
+);
 
 $_POST = [];
 $_SESSION = [];
@@ -252,4 +261,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (21 assertions)\n");
+fwrite(STDOUT, "OK (22 assertions)\n");

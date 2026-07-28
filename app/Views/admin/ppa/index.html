@@ -118,7 +118,7 @@
                                                             action="{{ url('admin/ppa/sincronizar') }}"
                                                             data-indicator="{{ indicator.codigo_indicador }}"
                                                         >
-                                                            {{ form_token_input('ppa_indicator_synchronize') }}
+                                                            {{ form_token_input('ppa_indicator_synchronize_' ~ indicator.id) }}
                                                             <input type="hidden" name="indicador_id" value="{{ indicator.id }}">
                                                             <button type="submit" class="ppa-synchronization-button btn btn-sm btn-primary">
                                                                 <i class="bi bi-arrow-repeat" aria-hidden="true"></i>

@@ -72,13 +72,12 @@ class PpaAdminController extends Template
     public function synchronizeIndicator()
     {
         adminRequireAuth('admin');
+        $indicatorId = (int) ($_POST['indicador_id'] ?? 0);
 
-        if (!validateFormToken('ppa_indicator_synchronize')) {
+        if (!validateFormToken('ppa_indicator_synchronize_' . $indicatorId)) {
             $this->setFeedback('danger', 'A confirmacao de seguranca expirou. Tente novamente.');
             $this->redirect('admin/ppa');
         }
-
-        $indicatorId = (int) ($_POST['indicador_id'] ?? 0);
 
         try {
             $result = $this->synchronizationService()->synchronizeIndicator($indicatorId);
