@@ -62,7 +62,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os quinze arquivos de teste passaram:
+Na verificação de 2026-07-28, os dezesseis arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -73,6 +73,7 @@ Na verificação de 2026-07-28, os quinze arquivos de teste passaram:
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
 | `PpaDashboardJsonSmokeTest.php` | 4 |
+| `PpaDashboardFilterCacheSmokeTest.php` | 7 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 17 |
@@ -81,7 +82,7 @@ Na verificação de 2026-07-28, os quinze arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **201** |
+| **Total** | **208** |
 
 ## Sequência concluída
 
@@ -223,9 +224,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Cobrir filtros representativos e cache hit/miss no pipeline usado pelo endpoint
-JSON. Catálogo, dashboard HTML e erros JSON já possuem cobertura inicial. Os
-testes não devem acessar banco ou fonte externa reais.
+Cobrir cache miss no pipeline do endpoint JSON, confirmando o fallback externo
+controlado. Filtros com cache hit já estão protegidos. Os testes não devem
+acessar banco ou fonte externa reais.
 
 ## Regra documental para cada incremento
 

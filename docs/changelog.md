@@ -32,8 +32,11 @@
   encerramento no runtime.
 - Criado `PpaDashboardJsonSmokeTest.php` para os erros 404 de indicador
   inexistente e indicador sem vínculos.
-- Suíte ampliada para quinze testes e 201 assertions.
-- Próximo incremento definido: filtros representativos e cache hit/miss.
+- Permitida a injeção opcional de `PpaLinkedQueryService` no controller.
+- Criado `PpaDashboardFilterCacheSmokeTest.php` para filtro por CRAS e região,
+  cache hit e ausência de chamada externa.
+- Suíte ampliada para dezesseis testes e 208 assertions.
+- Próximo incremento definido: cache miss com fallback externo controlado.
 
 ## 2026-07-24
 

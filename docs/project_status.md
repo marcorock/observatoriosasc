@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os quinze testes locais passaram com 201 assertions. O
+Em 2026-07-28, os dezesseis testes locais passaram com 208 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -81,5 +81,4 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Cobrir filtros representativos e cache hit/miss no pipeline do endpoint JSON,
-sem acessar fontes reais.
+Cobrir cache miss e fallback externo controlado no pipeline do endpoint JSON.
