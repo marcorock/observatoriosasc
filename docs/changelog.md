@@ -141,7 +141,11 @@
   nativos ou rastros técnicos na tela.
 - Documentada a necessidade de o usuário do servidor web escrever em
   `storage/cache/ppa/queries`.
-- Suíte ampliada para vinte e seis testes e 344 assertions.
+- Substituído o seletor por uma tabela responsiva com indicador, situação,
+  última atualização concluída e botão individual de sincronização.
+- Indicadores sem histórico concluído passam a aparecer como `Pendente` e
+  `Nunca sincronizado`.
+- Suíte ampliada para vinte e seis testes e 349 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 

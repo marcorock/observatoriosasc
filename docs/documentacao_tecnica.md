@@ -230,7 +230,8 @@ etapa é proteger os fluxos públicos com smoke tests HTTP.
 ### PpaAdminController
 
 - Responsabilidade: concentrar o painel administrativo do módulo PPA e os
-  CRUDs de indicadores e vínculos com consultas externas
+  CRUDs de indicadores e vínculos com consultas externas, além da tabela de
+  sincronização com o último término concluído por indicador
 - Metodos principais:
   - `dashboard()`
   - `synchronizeIndicator()`

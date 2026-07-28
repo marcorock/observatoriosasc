@@ -265,8 +265,9 @@ Permitir abrir um indicador específico a partir do dashboard do PPA para consul
 ### Como usar
 
 1. Acesse `/admin/ppa`.
-2. Na área `Sincronizar um indicador`, escolha um indicador ativo.
-3. Clique em `Sincronizar agora`.
+2. Na tabela `Sincronização dos indicadores`, confira a situação e a data da
+   última atualização de cada linha.
+3. Na linha desejada, clique em `Sincronizar`.
 4. Confirme a operação e aguarde sem fechar a página.
 5. Confira a mensagem de sucesso ou erro exibida no painel.
 6. Abra o catálogo e o dashboard do indicador para validar os dados.
@@ -275,6 +276,10 @@ Essa ação consulta a fonte externa, renova o cache detalhado do dashboard e
 depois grava o resultado consolidado do catálogo. Se a consulta externa falhar,
 o último cache válido é preservado. Indicadores inativos ou sem vínculos ativos
 não são sincronizados.
+
+Uma linha com situação `Pendente` e texto `Nunca sincronizado` ainda não possui
+uma sincronização concluída registrada. A data exibida representa o término da
+última sincronização bem-sucedida, mesmo quando os números permaneceram iguais.
 
 O usuário que executa o servidor web precisa ter permissão de escrita em
 `storage/cache/ppa/queries`. Em instalações novas, configure o diretório para o
