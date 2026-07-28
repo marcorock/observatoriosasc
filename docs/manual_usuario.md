@@ -1,6 +1,6 @@
 # Manual do Usuario
 
-Atualizado em 2026-07-24. O catálogo e os dashboards PPA descritos abaixo já
+Atualizado em 2026-07-28. O catálogo e os dashboards PPA descritos abaixo já
 estão funcionais; a sincronização é uma operação técnica controlada.
 
 ## Funcionalidade
@@ -131,11 +131,12 @@ Permitir cadastrar, editar, inativar e excluir acessos administrativos pela prop
 
 ## Funcionalidade
 
-Configuracao de fontes de dados do PPA
+Configuração de fontes e consultas externas
 
 ## Objetivo
 
-Permitir que usuarios autenticados na area administrativa cadastrem e mantenham as origens de dados que alimentarao o modulo PPA.
+Permitir que usuários autenticados cadastrem, testem e mantenham as conexões e
+consultas que alimentam o módulo PPA.
 
 ## Quem Pode Usar
 
@@ -144,17 +145,18 @@ Permitir que usuarios autenticados na area administrativa cadastrem e mantenham 
 ## Como Acessar
 
 - `/admin/painel`
-- `/admin/ppa/fontes`
+- `/admin/bases-externas`
+- `/admin/bases-externas/consultas`
 
 ## Como Usar
 
 1. Entre em `/admin` e autentique-se.
-2. No painel administrativo, clique em `Configurar fontes PPA`.
-3. Use `Nova fonte` para abrir o formulario de cadastro.
-4. Informe nome, tipo da fonte, status e, quando existir, banco e tabela/origem.
-5. Salve o cadastro e revise a listagem.
-6. Use o botao de lapis para editar uma fonte existente.
-7. Use o botao de lixeira para excluir um cadastro de teste ou obsoleto.
+2. No painel administrativo, abra `Bases externas`.
+3. Use `Nova fonte` para cadastrar a conexão e teste-a antes de vinculá-la.
+4. Abra `Consultas` para cadastrar ou revisar o SQL permitido.
+5. Teste a consulta e confirme o limite e as colunas retornadas.
+6. Use a área `PPA > Vínculos` para relacionar indicador e consulta.
+7. Exclua apenas cadastros sem dependências e depois de validar os consumidores.
 
 ## Resultado Esperado
 
@@ -311,7 +313,7 @@ php bin/ppa-dashboard-cache.php --all
 
 O comando:
 
-- processa somente um indicador;
+- no modo individual, processa somente o indicador informado;
 - executa todas as consultas antes de iniciar a gravação;
 - não altera `ppa_resultados`, `ppa_sincronizacoes` ou outras tabelas;
 - mantém os arquivos fora do diretório público e do Git;

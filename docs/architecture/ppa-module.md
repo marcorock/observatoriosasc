@@ -1,6 +1,6 @@
 # Módulo PPA
 
-Atualizado em 2026-07-24. O ponto de retomada está em
+Atualizado em 2026-07-28. O ponto de retomada está em
 `docs/continuity.md`.
 
 ## Catálogo
@@ -280,8 +280,9 @@ e a duplicação foi removida. A suíte completa passou com 113 assertions.
 ## Testes de arquitetura e payload
 
 Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
-dashboard, consultas vinculadas e os cinco builders extraídos. Em 2026-07-24,
-nove arquivos passaram com 141 assertions.
+dashboard, consultas vinculadas, sincronização e armazenamento do cache e os
+cinco builders extraídos. Em 2026-07-28, doze arquivos passaram com 186
+assertions.
 
 ## Responsabilidades restantes no controller
 
@@ -321,8 +322,8 @@ pública. O desenho está em `docs/performance/dashboard-file-cache.md`. Redis
 fica fora do escopo atual.
 
 `PpaQueryFileCache` implementa o armazenamento isolado, com identidade por hash,
-validação, trava e escrita atômica. Ele ainda não está conectado ao serviço de
-consultas nem ao controller.
+validação, trava e escrita atômica. `PpaLinkedQueryService` consulta uma entrada
+compatível antes de recorrer à fonte externa.
 
 `PpaQueryCacheSynchronizer` e `bin/ppa-dashboard-cache.php` permitem preencher
 manualmente as entradas de um indicador. O comando usa somente vínculos ativos,
@@ -336,11 +337,12 @@ exit code.
 Miss, corrupção ou mudança de SQL/limite preservam o fallback original. A
 requisição pública não possui caminho de escrita ou renovação.
 
-## Limites da etapa atual
+## Limites da próxima etapa
 
-- não introduzir cache ou Redis;
+- não introduzir Redis;
 - não alterar fórmulas;
 - não alterar nomes do payload;
 - não alterar rotas, templates ou comportamento AJAX;
 - não mover filtros para SQL sem medição e estratégia de parâmetros;
-- atualizar documentação local e Notion em cada extração.
+- priorizar smoke tests HTTP antes de nova extração estrutural;
+- atualizar documentação local e Notion em cada incremento.

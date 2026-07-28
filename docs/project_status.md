@@ -1,6 +1,6 @@
 # Status do Projeto
 
-Atualizado em 2026-07-24. Para retomar o trabalho, começar por
+Atualizado em 2026-07-28. Para retomar o trabalho, começar por
 `docs/continuity.md`.
 
 ## Visão geral
@@ -17,7 +17,7 @@ mensurável do PPA.
 | Home e navegação | Funcional | Homologação visual contínua |
 | Administração | Login, sessão e CRUD funcionais | Homologar fluxos sensíveis |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
-| PPA público | Catálogo, dashboards, filtros e builders funcionais | Implementar cache em arquivo incremental |
+| PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Criar smoke tests HTTP |
 | PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
 | CadÚnico | Tela inicial | Definir fluxo funcional mínimo |
 | SASC-SA, OSC e POPWEB | Planejados | Levantar requisitos e fontes |
@@ -33,9 +33,8 @@ mensurável do PPA.
 - Um indicador classificado como visão geral.
 - Serviços e builders extraídos com cobertura mínima de testes.
 - Baseline pós-refatoração coletada com três amostras por fluxo representativo.
-- Cache local em arquivo aprovado como próxima otimização; Redis fora do escopo.
-- Armazenamento isolado em arquivo implementado e testado, ainda sem integração
-  com os dashboards.
+- Cache local em arquivo implementado, testado e integrado aos dashboards;
+  Redis permanece fora do escopo.
 - Comando manual para um indicador implementado e validado, sem escrita no
   banco.
 - Leitura cache-first integrada com fallback externo e sem renovação pública.
@@ -46,18 +45,20 @@ mensurável do PPA.
 - Renovação corrigida para sempre consultar a fonte; lote sequencial e exemplo
   de agendamento com trava disponíveis.
 
-## Última tarefa trabalhada
+## Último marco concluído
 
-- Data: 2026-07-23
-- Commit: `0fcef27`
-- Tarefa: remover o builder familiar regular legado depois da extração para
-  `PpaFamilyRmaPayloadBuilder`
-- Resultado: implementação duplicada removida e testes preservados
-- Próxima extração: fotografia familiar + atualização + RMA
+- Data: 2026-07-24
+- Commit: `405e648`
+- Tarefa: concluir a entrega da refatoração do PPA na branch de integração
+- Resultado: plano de 14 etapas concluído, cache homologado, atualização em
+  lote disponível e PR draft #2 preparada
+- Próximo incremento: smoke tests HTTP dos fluxos públicos do PPA
 
 ## Validação técnica
 
-Em 2026-07-24, os doze testes locais passaram com 186 assertions.
+Em 2026-07-28, os doze testes locais passaram com 186 assertions. O
+`composer.json` e os arquivos PHP centrais da integração do cache também foram
+validados.
 
 ## Configuração local
 
@@ -74,8 +75,13 @@ devem configurar suas credenciais no `.env`.
   concorrência.
 - Somente indicadores previamente sincronizados usam cache; os demais
   continuam consultando as fontes externas.
+- Os testes atuais se concentram nos serviços e builders; rotas HTTP, templates
+  e fluxos administrativos ainda precisam de cobertura automatizada.
+- Alguns models ainda executam `CREATE TABLE IF NOT EXISTS` durante o runtime.
 
 ## Próximo passo recomendado
 
-Revisar a PR #2, aplicar eventuais ajustes em commits pequenos, marcar como
-pronta para revisão e realizar merge somente após aprovação.
+Adicionar smoke tests HTTP para `/ppa`, `/ppa/{slug}` e
+`/ppa/{slug}/data`, cobrindo filtros e hit/miss do cache. Depois, revisar a PR
+#2, aplicar eventuais ajustes em commits pequenos e realizar merge somente após
+aprovação.

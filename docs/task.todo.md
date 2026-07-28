@@ -1,6 +1,6 @@
 # Task TODO
 
-Atualizado em 2026-07-24. O contexto completo de retomada está em
+Atualizado em 2026-07-28. O contexto completo de retomada está em
 `docs/continuity.md`.
 
 ## Medição do progresso
@@ -12,7 +12,7 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 - Checklist interativo:
   `https://app.notion.com/p/3a70c14a2c49813489dfc18b8478734d`
 
-## Próximo incremento
+## Plano histórico concluído
 
 - [x] 1. Decidir o destino da alteração local em `app/Database/DataConect.php`
   - confirmar se host `database` e senha `root` são defaults oficiais do Docker;
@@ -21,14 +21,8 @@ Atualizado em 2026-07-24. O contexto completo de retomada está em
 - [x] 2. Consolidar o checkpoint documental no Git
   - revisar os arquivos Markdown liberados pelo `.gitignore`;
   - validar formatação sem misturar a mudança funcional de conexão.
-Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 
-  - criar `PpaFamilySnapshotRmaPayloadBuilder`;
-  - cobrir base, atualizações, série RMA, CRAS e mês;
-  - validar equivalência antes de remover o método legado;
-  - atualizar documentação local e Notion no mesmo incremento.
-
-## Sequência seguinte
+## Sequência concluída
 
 - [x] 3. Caracterizar o payload de fotografia familiar.
 - [x] 4. Criar o teste de equivalência da fotografia familiar.
@@ -64,7 +58,7 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter doze testes locais, com 186 assertions na verificação de 2026-07-24.
+- [x] Manter doze testes locais, com 186 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -81,6 +75,16 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 - [x] Criar a pull request draft
   `https://github.com/marcorock/observatoriosasc/pull/2`.
 
+## Próxima frente — proteção da integração
+
+- [x] Reconciliar documentação canônica com
+  `integration/update-repository`.
+- [x] Remover briefing de auditoria concluído e `.docx` duplicado, preservando
+  o plano histórico em Markdown.
+- [ ] Criar smoke tests para `/ppa`.
+- [ ] Criar smoke tests para `/ppa/{slug}`.
+- [ ] Criar smoke tests para `/ppa/{slug}/data`.
+- [ ] Cobrir filtros representativos e cache hit/miss nos testes HTTP.
 - [ ] Fluxos administrativos do PPA.
 - [ ] Catálogo e dashboards públicos em desktop e mobile.
 - [ ] Login, logout e CRUD de usuários administrativos.
@@ -98,10 +102,10 @@ Preparação das etapas 3 a 6 de `buildFamilySnapshotRmaPayload()`:
 
 Para cada mudança:
 
-- [ ] atualizar `docs/continuity.md`;
-- [ ] atualizar `docs/changelog.md`;
-- [ ] atualizar o documento técnico específico;
-- [ ] registrar testes e métricas;
-- [ ] atualizar este TODO;
+- [x] atualizar `docs/continuity.md`;
+- [x] atualizar `docs/changelog.md`;
+- [x] atualizar o documento técnico específico;
+- [x] registrar testes e métricas;
+- [x] atualizar este TODO;
 - [ ] atualizar as páginas relacionadas no Notion;
-- [ ] registrar o próximo incremento.
+- [x] registrar o próximo incremento.

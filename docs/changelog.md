@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-28
+
+### Consolidação documental
+
+- Alinhados `continuity.md`, `project_status.md`, `roadmap.md` e `task.todo.md`
+  com a branch `integration/update-repository` e o checkpoint `405e648`.
+- Registrada a conclusão do plano original de 14 etapas e definido smoke tests
+  HTTP como próximo incremento.
+- Corrigidos em `documentacao_tecnica.md` os nomes atuais de rotas, controllers,
+  models, serviços e views do PPA.
+- Atualizado `architecture/ppa-module.md` para registrar a integração
+  cache-first e a suíte atual de doze testes com 186 assertions.
+- Removidos o briefing de auditoria já executado e o `.docx` duplicado do plano
+  inicial.
+- Mantido `plano_inicial_modulo_ppa.md` como registro histórico pesquisável e
+  versionável.
+- Nenhum comportamento da aplicação foi alterado.
+
 ## 2026-07-24
 
 ### Documentação

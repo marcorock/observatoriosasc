@@ -1,6 +1,6 @@
 # Continuidade do Projeto
 
-Atualizado em 2026-07-24.
+Atualizado em 2026-07-28.
 
 Este é o ponto de entrada obrigatório para retomar o desenvolvimento. O estado
 executável deve ser confirmado pelo código e pelo Git; os demais documentos
@@ -9,11 +9,13 @@ detalham arquitetura, operação e histórico.
 ## Contexto de trabalho
 
 - Repositório: `marcorock/observatoriosasc`
-- Branch ativa: `update-repository`
-- Último checkpoint publicado antes desta revisão: `f2cf6e8`
-- Situação: sincronizada com `origin/update-repository` e 23 commits à frente
-  de `main` na última verificação
-- Pull request da branch: inexistente na última verificação
+- Branch ativa: `integration/update-repository`
+- Último checkpoint publicado: `405e648`
+- Situação: sincronizada com `origin/integration/update-repository`, oito
+  commits à frente de `origin/update-repository` e 58 commits à frente de
+  `origin/main` na verificação de 2026-07-28
+- Pull request: draft #2, aberta contra `main` e registrada como mergeável na
+  última verificação documentada
 - Issues abertas: nenhuma na última verificação
 - Defaults de conexão: mantidos como `localhost` e senha vazia no código; cada
   ambiente deve configurar valores diferentes em seu `.env`
@@ -60,7 +62,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na última verificação, os onze arquivos de teste passaram:
+Na verificação de 2026-07-28, os doze arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -78,7 +80,7 @@ Na última verificação, os onze arquivos de teste passaram:
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
 | **Total** | **186** |
 
-## Próxima sequência aprovada
+## Sequência concluída
 
 O plano possui 14 etapas mensuráveis, organizadas em cinco fases. O checklist
 interativo está no Notion:
@@ -118,7 +120,7 @@ variáveis `DB_*` no caso padrão. Antes, o `default` atribuía `NULL` e fazia a
 conexão ignorar o `.env`. A correção foi validada por sintaxe PHP e pelos sete
 testes, e publicada no commit `e17ee07`.
 
-## Contrato caracterizado para a próxima extração
+## Histórico das extrações e otimizações
 
 O fluxo `family_snapshot_rma_progress` usado por
 `PPA-CRAS-ATUALIZACAO-C3` depende de base familiar, fotografia de famílias
@@ -176,8 +178,8 @@ O desenho, riscos, invalidação e ordem de implementação estão em
 recomendada como frente independente.
 
 O armazenamento isolado `PpaQueryFileCache` foi criado no commit `b66a4c0`,
-com validação, trava, escrita atômica e 16 assertions. Ele ainda não possui
-consumidores e não altera os dashboards.
+com validação, trava, escrita atômica e 16 assertions. Posteriormente, ele foi
+integrado ao runtime por `PpaLinkedQueryService`.
 
 O comando manual `bin/ppa-dashboard-cache.php` e
 `PpaQueryCacheSynchronizer` foram criados no commit `4df0c63`. A validação real
@@ -214,9 +216,13 @@ Pull request draft:
 
 `https://github.com/marcorock/observatoriosasc/pull/2`
 
-A PR está aberta, mergeável e aponta para `main`. Próximo fluxo: revisão humana
-da PR, eventuais ajustes em pequenos commits, conversão para pronta para revisão
-e merge somente após aprovação.
+A PR está aberta, mergeável e aponta para `main`.
+
+## Próximo incremento
+
+Adicionar smoke tests HTTP para o catálogo, dashboards, endpoint JSON, filtros
+representativos e fallback do cache. Não iniciar nova extração estrutural antes
+de proteger esses fluxos.
 
 ## Regra documental para cada incremento
 
@@ -246,5 +252,3 @@ Nenhum incremento é considerado concluído sem:
   dashboards.
 - `docs/manual_usuario.md`: uso das telas e comandos disponíveis.
 - `docs/plano_inicial_modulo_ppa.md`: plano histórico; não usar como status.
-- `docs/Plano Inicial do Módulo PPA - Observatório SASC.docx`: artefato
-  histórico; a versão Markdown e os documentos atuais prevalecem.

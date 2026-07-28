@@ -1,6 +1,6 @@
 # Documentacao Tecnica
 
-Atualizado em 2026-07-24. Para estado da branch, testes e sequência de retomada,
+Atualizado em 2026-07-28. Para estado da branch, testes e sequência de retomada,
 consultar `docs/continuity.md`.
 
 ## Arquitetura Geral
@@ -54,36 +54,18 @@ Dependencias identificadas em `composer.json`:
 | POST | `/admin/usuarios/delete/{id}` | `AdminController@deleteUser` | sessao admin com token | Exclui usuario administrativo |
 | POST | `/admin/logout` | `AdminController@logout` | sessao admin com token | Encerra a sessao administrativa |
 | GET | `/admin/ppa` | `PpaAdminController@dashboard` | sessao admin | Painel administrativo proprio do modulo PPA |
-| GET | `/admin/ppa/fontes` | `PpaAdminController@dataSources` | sessao admin | Lista as fontes de dados do modulo PPA |
-| GET | `/admin/ppa/fontes/novo` | `PpaAdminController@createDataSource` | sessao admin | Formulario de cadastro de fonte PPA |
-| POST | `/admin/ppa/fontes/store` | `PpaAdminController@storeDataSource` | sessao admin com token | Persiste fonte de dados do PPA |
-| GET | `/admin/ppa/fontes/editar/{id}` | `PpaAdminController@editDataSource` | sessao admin | Formulario de edicao de fonte PPA |
-| POST | `/admin/ppa/fontes/update/{id}` | `PpaAdminController@updateDataSource` | sessao admin com token | Atualiza fonte de dados do PPA |
-| POST | `/admin/ppa/fontes/delete/{id}` | `PpaAdminController@deleteDataSource` | sessao admin com token | Exclui fonte de dados do PPA |
+| GET | `/admin/bases-externas` | `ExternalDatabaseAdminController@sources` | sessao admin | Lista fontes externas |
+| GET/POST | `/admin/bases-externas/*` | `ExternalDatabaseAdminController` | sessao admin e token nas mutações | CRUD e teste de fontes externas |
+| GET | `/admin/bases-externas/consultas` | `ExternalDatabaseAdminController@queries` | sessao admin | Lista consultas externas |
+| GET/POST | `/admin/bases-externas/consultas/*` | `ExternalDatabaseAdminController` | sessao admin e token nas mutações | CRUD e teste de consultas externas |
 | GET | `/admin/ppa/indicadores` | `PpaAdminController@indicators` | sessao admin | Lista os indicadores do modulo PPA |
 | GET | `/admin/ppa/indicadores/novo` | `PpaAdminController@createIndicator` | sessao admin | Formulario de cadastro de indicador PPA |
 | POST | `/admin/ppa/indicadores/store` | `PpaAdminController@storeIndicator` | sessao admin com token | Persiste indicador do PPA |
 | GET | `/admin/ppa/indicadores/editar/{id}` | `PpaAdminController@editIndicator` | sessao admin | Formulario de edicao de indicador PPA |
 | POST | `/admin/ppa/indicadores/update/{id}` | `PpaAdminController@updateIndicator` | sessao admin com token | Atualiza indicador do PPA |
 | POST | `/admin/ppa/indicadores/delete/{id}` | `PpaAdminController@deleteIndicator` | sessao admin com token | Exclui indicador do PPA |
-| GET | `/admin/ppa/relacoes` | `PpaAdminController@indicatorSources` | sessao admin | Lista relacoes entre indicadores e fontes do PPA |
-| GET | `/admin/ppa/relacoes/novo` | `PpaAdminController@createIndicatorSource` | sessao admin | Formulario de cadastro de relacao indicador x fonte |
-| POST | `/admin/ppa/relacoes/store` | `PpaAdminController@storeIndicatorSource` | sessao admin com token | Persiste relacao indicador x fonte |
-| GET | `/admin/ppa/relacoes/editar/{id}` | `PpaAdminController@editIndicatorSource` | sessao admin | Formulario de edicao de relacao indicador x fonte |
-| POST | `/admin/ppa/relacoes/update/{id}` | `PpaAdminController@updateIndicatorSource` | sessao admin com token | Atualiza relacao indicador x fonte |
-| POST | `/admin/ppa/relacoes/delete/{id}` | `PpaAdminController@deleteIndicatorSource` | sessao admin com token | Exclui relacao indicador x fonte |
-| GET | `/admin/ppa/variaveis` | `PpaAdminController@variables` | sessao admin | Lista variaveis dos indicadores do PPA |
-| GET | `/admin/ppa/variaveis/novo` | `PpaAdminController@createVariable` | sessao admin | Formulario de cadastro de variavel PPA |
-| POST | `/admin/ppa/variaveis/store` | `PpaAdminController@storeVariable` | sessao admin com token | Persiste variavel do PPA |
-| GET | `/admin/ppa/variaveis/editar/{id}` | `PpaAdminController@editVariable` | sessao admin | Formulario de edicao de variavel PPA |
-| POST | `/admin/ppa/variaveis/update/{id}` | `PpaAdminController@updateVariable` | sessao admin com token | Atualiza variavel do PPA |
-| POST | `/admin/ppa/variaveis/delete/{id}` | `PpaAdminController@deleteVariable` | sessao admin com token | Exclui variavel do PPA |
-| GET | `/admin/ppa/resultados` | `PpaAdminController@results` | sessao admin | Lista resultados manuais e consolidados do PPA |
-| GET | `/admin/ppa/resultados/novo` | `PpaAdminController@createResult` | sessao admin | Formulario de lancamento manual de resultado |
-| POST | `/admin/ppa/resultados/store` | `PpaAdminController@storeResult` | sessao admin com token | Persiste resultado manual do PPA |
-| GET | `/admin/ppa/resultados/editar/{id}` | `PpaAdminController@editResult` | sessao admin | Formulario de edicao de resultado do PPA |
-| POST | `/admin/ppa/resultados/update/{id}` | `PpaAdminController@updateResult` | sessao admin com token | Atualiza resultado do PPA |
-| POST | `/admin/ppa/resultados/delete/{id}` | `PpaAdminController@deleteResult` | sessao admin com token | Exclui resultado do PPA |
+| GET | `/admin/ppa/vinculos` | `PpaAdminController@links` | sessao admin | Lista vínculos entre indicadores e consultas |
+| GET/POST | `/admin/ppa/vinculos/*` | `PpaAdminController` | sessao admin e token nas mutações | CRUD de vínculos |
 | GET | `/` | `IndexController@index` | publica/local | Menu principal do sistema |
 | GET | `/bsc` | `BscController@index` | publica/local | Dashboard principal do BSC |
 | GET | `/ppa` | `PpaController@index` | publica/local | Dashboard geral inicial do modulo PPA |
@@ -210,77 +192,63 @@ Dependencias identificadas em `composer.json`:
   - `PpaSingleQueryPayloadBuilder`
   - `PpaMonthlyUnitPayloadBuilder`
   - `PpaFamilyRmaPayloadBuilder`
+  - `PpaFamilySnapshotRmaPayloadBuilder`
+  - `PpaCadUpdateRmaPayloadBuilder`
 - Views renderizadas:
   - `ppa/catalog.html`
   - templates específicos em `ppa/`
 - Observacoes:
   - `/ppa` não executa consultas externas
   - dashboards detalhados executam de uma a três consultas conforme o tipo
-  - filtros AJAX repetem as consultas do dashboard correspondente
-  - os builders especializados de fotografia familiar e atualização cadastral
-    ainda permanecem no controller
+  - filtros AJAX reutilizam o pipeline do dashboard correspondente
+  - consultas vinculadas tentam o cache antes do fallback externo
 
 ### Serviços do PPA
 
 - `PpaCatalogService`: compõe métricas e resumo do catálogo usando resultados
   locais em lote.
-- `PpaLinkedQueryService`: resolve e executa consultas externas vinculadas.
+- `PpaLinkedQueryService`: resolve consultas vinculadas, lê cache compatível e
+  mantém fallback externo.
 - `PpaDashboardResolver`: classifica o tipo de dashboard e seus vínculos.
 - `PpaSingleQueryPayloadBuilder`: payload de consulta simples.
 - `PpaMonthlyUnitPayloadBuilder`: payload mensal por unidade.
 - `PpaFamilyRmaPayloadBuilder`: payload de progresso familiar regular.
+- `PpaFamilySnapshotRmaPayloadBuilder`: payload de fotografia familiar.
+- `PpaCadUpdateRmaPayloadBuilder`: payload de atualização cadastral.
+- `PpaQueryFileCache`: armazenamento validado e atômico.
+- `PpaQueryCacheSynchronizer`: atualização de um indicador.
+- `PpaQueryCacheBatchSynchronizer`: atualização sequencial em lote.
 
-As extrações preservam rotas, templates, nomes dos campos e fórmulas. O próximo
-serviço será `PpaFamilySnapshotRmaPayloadBuilder`.
+As extrações preservam rotas, templates, nomes dos campos e fórmulas. A próxima
+etapa é proteger os fluxos públicos com smoke tests HTTP.
 
 ### PpaAdminController
 
-- Responsabilidade: concentrar o painel administrativo do modulo PPA e os CRUDs manuais de fontes, indicadores, relacoes, variaveis e resultados
+- Responsabilidade: concentrar o painel administrativo do módulo PPA e os
+  CRUDs de indicadores e vínculos com consultas externas
 - Metodos principais:
   - `dashboard()`
-  - `dataSources()`
-  - `createDataSource()`
-  - `storeDataSource()`
-  - `editDataSource($id)`
-  - `updateDataSource($id)`
-  - `deleteDataSource($id)`
   - `indicators()`
   - `createIndicator()`
   - `storeIndicator()`
   - `editIndicator($id)`
   - `updateIndicator($id)`
   - `deleteIndicator($id)`
-  - `indicatorSources()`
-  - `createIndicatorSource()`
-  - `storeIndicatorSource()`
-  - `editIndicatorSource($id)`
-  - `updateIndicatorSource($id)`
-  - `deleteIndicatorSource($id)`
-  - `variables()`
-  - `createVariable()`
-  - `storeVariable()`
-  - `editVariable($id)`
-  - `updateVariable($id)`
-  - `deleteVariable($id)`
-  - `results()`
-  - `createResult()`
-  - `storeResult()`
-  - `editResult($id)`
-  - `updateResult($id)`
-  - `deleteResult($id)`
+  - `links()`
+  - `createLink()`
+  - `storeLink()`
+  - `editLink($id)`
+  - `updateLink($id)`
+  - `deleteLink($id)`
 - Models utilizados:
-  - `PpaFonteDadosModel`
-  - `PpaIndicadorModel`
-  - `PpaIndicadorFonteModel`
-  - `PpaIndicadorVariavelModel`
-  - `PpaResultadoModel`
+  - `PpaIndicatorModel`
+  - `PpaIndicatorQueryModel`
+  - `ExternalDataSourceModel`
+  - `ExternalQueryModel`
 - Views renderizadas:
   - `admin/ppa/index.html`
-  - `admin/ppa/fontes/*`
   - `admin/ppa/indicadores/*`
-  - `admin/ppa/relacoes/*`
-  - `admin/ppa/variaveis/*`
-  - `admin/ppa/resultados/*`
+  - `admin/ppa/vinculos/*`
 
 ## Models
 
@@ -327,42 +295,26 @@ serviço será `PpaFamilySnapshotRmaPayloadBuilder`.
   - cria a tabela automaticamente se ela ainda nao existir
   - grava sempre o registro `id = 1`
 
-### PpaFonteDadosModel
-
-- Tabela principal: `ppa_fontes_dados`
-- Responsabilidade: listar, cadastrar, editar, excluir e validar fontes de dados do modulo PPA
-- Metodos principais:
-  - `readAll()`
-  - `readById(int $id)`
-  - `countAll()`
-  - `create(array $data)`
-  - `updateById(int $id, array $data)`
-  - `deleteById(int $id)`
-  - `nomeExists(string $nome, ?int $ignoreId = null)`
-- Regras identificadas:
-  - garante a existencia do schema PPA ao inicializar o model
-  - restringe `tipo_fonte` aos valores previstos no schema
-  - valida a unicidade do nome da fonte
-
-### PpaIndicadorModel
+### PpaIndicatorModel
 
 - Tabela principal: `ppa_indicadores`
-- Responsabilidade: CRUD do cadastro principal dos indicadores do modulo PPA
+- Responsabilidade: catálogo público e CRUD dos indicadores do PPA
 
-### PpaIndicadorFonteModel
+### PpaIndicatorQueryModel
 
-- Tabela principal: `ppa_indicador_fontes`
-- Responsabilidade: CRUD das relacoes entre indicadores e fontes com o papel funcional de cada origem
+- Tabela principal: `ppa_indicador_queries`
+- Responsabilidade: vínculos ativos entre indicadores e consultas externas
 
-### PpaIndicadorVariavelModel
-
-- Tabela principal: `ppa_indicador_variaveis`
-- Responsabilidade: CRUD das variaveis tecnicas que compoem os calculos do modulo PPA
-
-### PpaResultadoModel
+### PpaResultModel
 
 - Tabela principal: `ppa_resultados`
-- Responsabilidade: CRUD dos lancamentos manuais e resultados consolidados do modulo PPA
+- Responsabilidade: leitura em lote dos resultados do catálogo e persistência
+  explícita de prévias validadas
+
+### ExternalDataSourceModel e ExternalQueryModel
+
+- Tabelas principais: `external_data_sources` e `external_data_queries`
+- Responsabilidade: CRUD de fontes e SQL externos usados pelos vínculos do PPA
 
 ### Outros models presentes
 
@@ -481,26 +433,24 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
   - `dados`
   - `header_menu_items`
 
-### `app/Views/ppa/index.html`
+### `app/Views/ppa/catalog.html`
 
-- Tela: dashboard geral inicial do modulo PPA
-- Escopo: entrada pública do modulo e listagem inicial dos indicadores cadastrados
+- Tela: catálogo público do PPA
+- Escopo: indicadores, métricas consolidadas e resumo de execução
 - Dados recebidos:
   - `header_menu_items`
-  - `totais`
-  - `ultimos_indicadores`
-  - `tem_indicadores`
+  - `indicadores`
+  - `resumo`
+  - `mensagem`
 
-### `app/Views/ppa/show.html`
+### `app/Views/ppa/detail*.html`
 
-- Tela: página pública individual do indicador do PPA
-- Escopo: visualização pública detalhada de um indicador
-- Dados recebidos:
-  - `header_menu_items`
-  - `indicador`
-  - `resultado_atual`
-  - `historico`
-  - `tem_historico`
+- Telas: dashboards públicos por tipo de indicador
+- Escopo: cards, gráficos, tabelas e filtros interativos
+- Templates atuais:
+  - `detail.html`
+  - `detail_family_rma.html`
+  - `detail_unit_rma.html`
 
 ### `app/Views/admin/login.html`
 
@@ -547,34 +497,6 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
   - `erro`
   - `dados`
 
-### `app/Views/admin/ppa/fontes/index.html`
-
-- Tela: listagem de fontes de dados do PPA
-- Escopo: configuracao administrativa do modulo PPA
-- Dados recebidos:
-  - `admin`
-  - `erro`
-  - `fontes`
-  - `tipos_map`
-
-### `app/Views/admin/ppa/fontes/create.html`
-
-- Tela: cadastro de fonte de dados do PPA
-- Escopo: configuracao administrativa do modulo PPA
-- Dados recebidos:
-  - `erro`
-  - `dados`
-  - `tipos_map`
-
-### `app/Views/admin/ppa/fontes/edit.html`
-
-- Tela: edicao de fonte de dados do PPA
-- Escopo: configuracao administrativa do modulo PPA
-- Dados recebidos:
-  - `erro`
-  - `dados`
-  - `tipos_map`
-
 ### `app/Views/admin/ppa/index.html`
 
 - Tela: painel administrativo proprio do modulo PPA
@@ -585,20 +507,15 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 - Tela: listagem, cadastro e edicao de indicadores do PPA
 - Escopo: cadastro principal dos indicadores
 
-### `app/Views/admin/ppa/relacoes/*`
+### `app/Views/admin/ppa/vinculos/*`
 
-- Tela: listagem, cadastro e edicao das relacoes indicador x fonte
-- Escopo: mapeamento funcional das fontes do PPA
+- Tela: listagem, cadastro e edição de vínculos indicador x consulta
+- Escopo: mapeamento das consultas usadas por cada dashboard
 
-### `app/Views/admin/ppa/variaveis/*`
+### `app/Views/admin/external_databases/*`
 
-- Tela: listagem, cadastro e edicao das variaveis dos indicadores
-- Escopo: configuracao tecnica dos calculos do PPA
-
-### `app/Views/admin/ppa/resultados/*`
-
-- Tela: listagem, cadastro e edicao de resultados manuais do PPA
-- Escopo: manutencao do resultado consolidado
+- Tela: CRUD e teste de fontes e consultas externas
+- Escopo: configuração técnica das integrações usadas pelo PPA
 
 ### `app/Utils/AdminAuth.php`
 
@@ -688,7 +605,26 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
   - `codigo` unico por indicador
   - contem os campos institucionais e tecnicos descritos no plano do modulo
 
-### `ppa_fontes_dados`
+### Estrutura histórica não versionada
+
+As tabelas `ppa_fontes_dados`, `ppa_indicador_fontes`,
+`ppa_indicador_variaveis` e `ppa_resultado_variaveis` pertencem ao plano
+inicial e não possuem scripts nem models no runtime atual. Foram substituídas,
+na integração externa, por:
+
+- `external_data_sources`;
+- `external_data_queries`;
+- `ppa_indicador_queries`.
+
+O runtime também depende de `ppa_resultados` e `ppa_sincronizacoes` para
+catálogo e histórico de sincronização, mas seus scripts de criação ainda não
+estão formalizados na pasta `database/`. Essa lacuna deve ser resolvida na
+frente futura de instalação/migrations.
+
+Os detalhes das tabelas planejadas abaixo são preservados apenas como histórico
+do desenho original e não devem orientar novos CRUDs.
+
+#### `ppa_fontes_dados` — histórico
 
 - Finalidade: catalogar as fontes de dados que alimentam os indicadores PPA
 - Campos principais:
@@ -705,9 +641,10 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
   - 1:N com `ppa_sincronizacoes`
 - Observacoes:
   - `nome` unico para evitar cadastros duplicados da mesma fonte
-  - possui tela administrativa protegida em `/admin/ppa/fontes`
+  - o schema pertence ao plano inicial histórico; no runtime atual, fontes
+    externas são administradas em `/admin/bases-externas`
 
-### `ppa_indicador_fontes`
+#### `ppa_indicador_fontes` — histórico
 
 - Finalidade: relacionar cada indicador a uma ou mais fontes com papel funcional no calculo
 - Campos principais:
@@ -724,7 +661,7 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 - Observacoes:
   - a combinacao `indicador_id + fonte_id + papel_fonte` e unica
 
-### `ppa_indicador_variaveis`
+#### `ppa_indicador_variaveis` — histórico
 
 - Finalidade: armazenar as variaveis de calculo de cada indicador
 - Campos principais:
@@ -743,7 +680,7 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 - Observacoes:
   - a chave da variavel e unica dentro de cada indicador
 
-### `ppa_resultados`
+### `ppa_resultados` — dependência atual sem script versionado
 
 - Finalidade: guardar o resultado consolidado do indicador por periodo e recortes de analise
 - Campos principais:
@@ -772,7 +709,7 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
   - preparado para resultados manuais, automaticos e hibridos
   - inclui indices para os filtros previstos na pagina do indicador
 
-### `ppa_resultado_variaveis`
+#### `ppa_resultado_variaveis` — histórico
 
 - Finalidade: detalhar os valores usados no calculo de cada resultado consolidado
 - Campos principais:
@@ -790,7 +727,7 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 - Observacoes:
   - evita a criacao de colunas especificas para cada novo tipo de indicador
 
-### `ppa_sincronizacoes`
+### `ppa_sincronizacoes` — dependência atual sem script versionado
 
 - Finalidade: registrar historico de importacoes, calculos e reprocessamentos do modulo PPA
 - Campos principais:
@@ -823,7 +760,8 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 - O backend normaliza o CPF para somente numeros antes da autenticacao.
 - O acesso ao painel administrativo depende de sessao ativa.
 - O CRUD de usuarios administrativos depende de sessao ativa.
-- O cadastro de fontes de dados do PPA depende de sessao administrativa ativa.
+- O cadastro de fontes e consultas externas depende de sessao administrativa
+  ativa.
 - A rota `/bsc/registros` depende de sessao administrativa ativa.
 - O usuario autenticado nao pode excluir nem inativar a propria conta na mesma sessao.
 - A rota raiz `/` funciona como menu principal do sistema.
@@ -840,7 +778,9 @@ Observacao: esses models ainda nao aparecem ligados a rotas ativas no estado atu
 ## Permissoes e Escopos
 
 - Perfil: `admin`
-  - O que pode acessar: dashboard BSC, painel administrativo, CRUD de usuarios admins, configuracao de fontes PPA, rota protegida `/bsc/registros` e persistir filtro global
+  - O que pode acessar: dashboard BSC, painel administrativo, CRUD de usuários,
+    fontes e consultas externas, indicadores e vínculos PPA, rota protegida
+    `/bsc/registros` e persistência do filtro global
   - O que nao pode acessar: nao ha restricoes adicionais mapeadas no codigo atual
 
 - Perfil: nao admin
