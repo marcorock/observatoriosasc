@@ -83,7 +83,7 @@
                                     method="post"
                                     action="{{ url('admin/ppa/sincronizar') }}"
                                 >
-                                    <input type="hidden" name="_form_token" value="{{ formToken('ppa_indicator_synchronize') }}">
+                                    {{ form_token_input('ppa_indicator_synchronize') }}
 
                                     <div class="row g-3 align-items-end">
                                         <div class="col-12 col-lg">

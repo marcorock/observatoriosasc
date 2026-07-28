@@ -8,6 +8,7 @@ require_once __DIR__ . '/../app/Utils/FormToken.php';
 require_once __DIR__ . '/../app/Utils/AdminAuth.php';
 
 use App\Controllers\PpaAdminController;
+use App\Core\Template;
 use App\Services\PpaAdminSynchronizationService;
 
 final class PpaAdminSynchronizationRedirect extends RuntimeException
@@ -23,6 +24,31 @@ final class PpaAdminSynchronizationTestController extends PpaAdminController
     protected function redirect(string $path): never
     {
         throw new PpaAdminSynchronizationRedirect($path);
+    }
+}
+
+final class PpaAdminSynchronizationTemplate extends Template
+{
+    public function renderDashboard(): string
+    {
+        return $this->render('admin/ppa/index.html', [
+            'feedback' => null,
+            'indicadores_total' => 1,
+            'vinculos_total' => 1,
+            'indicators' => [
+                (object) [
+                    'id' => 7,
+                    'codigo_indicador' => 'PPA-TESTE',
+                    'nome' => 'Indicador de teste',
+                ],
+            ],
+            'system' => 'Observatório',
+            'name' => 'PPA',
+            'description' => 'Teste',
+            'header_title' => 'Observatório',
+            'header_subtitle' => 'Teste',
+            'header_menu_items' => [],
+        ]);
     }
 }
 
@@ -156,7 +182,7 @@ $assertSame(
 );
 $assertSame(
     true,
-    is_string($view) && str_contains($view, "formToken('ppa_indicator_synchronize')"),
+    is_string($view) && str_contains($view, "form_token_input('ppa_indicator_synchronize')"),
     'o formulário deve incluir o token de segurança'
 );
 $assertSame(
@@ -177,6 +203,12 @@ $assertSame(
     ),
     'a sincronização deve estar exposta somente por uma rota POST'
 );
+$renderedDashboard = (new PpaAdminSynchronizationTemplate())->renderDashboard();
+$assertSame(
+    true,
+    str_contains($renderedDashboard, 'name="_form_token"'),
+    'o template completo deve compilar e renderizar o token de segurança'
+);
 
 $_POST = [];
 $_SESSION = [];
@@ -186,4 +218,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (15 assertions)\n");
+fwrite(STDOUT, "OK (16 assertions)\n");
