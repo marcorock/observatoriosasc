@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e seis testes locais passaram com 342 assertions. O
+Em 2026-07-28, os vinte e seis testes locais passaram com 344 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 

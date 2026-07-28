@@ -90,9 +90,9 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaMonthlyUnitPayloadBuilderTest.php` | 11 |
 | `PpaQueryCacheSynchronizerTest.php` | 10 |
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
-| `PpaQueryFileCacheTest.php` | 16 |
+| `PpaQueryFileCacheTest.php` | 18 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **342** |
+| **Total** | **344** |
 
 ## Sequência concluída
 

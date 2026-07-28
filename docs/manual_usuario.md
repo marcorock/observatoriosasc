@@ -276,6 +276,10 @@ depois grava o resultado consolidado do catálogo. Se a consulta externa falhar,
 o último cache válido é preservado. Indicadores inativos ou sem vínculos ativos
 não são sincronizados.
 
+O usuário que executa o servidor web precisa ter permissão de escrita em
+`storage/cache/ppa/queries`. Em instalações novas, configure o diretório para o
+usuário ou grupo do servidor web sem conceder acesso público ao conteúdo.
+
 O processo ainda não é automático. O agendamento será implementado somente
 depois da homologação desta ação administrativa.
 

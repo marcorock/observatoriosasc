@@ -137,7 +137,11 @@
   acesso anônimo também foi ampliada.
 - Corrigida a geração do token no Twig com a função registrada
   `form_token_input`, incluindo renderização real do template no teste.
-- Suíte ampliada para vinte e seis testes e 342 assertions.
+- Tratada a ausência de escrita no diretório do cache sem expor warnings
+  nativos ou rastros técnicos na tela.
+- Documentada a necessidade de o usuário do servidor web escrever em
+  `storage/cache/ppa/queries`.
+- Suíte ampliada para vinte e seis testes e 344 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 
