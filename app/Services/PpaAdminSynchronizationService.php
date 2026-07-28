@@ -15,8 +15,10 @@ final class PpaAdminSynchronizationService
         private ?Closure $linksLoader = null,
         private ?Closure $cacheSynchronizer = null,
         private ?Closure $catalogPreview = null,
-        private ?Closure $resultPersister = null
+        private ?Closure $resultPersister = null,
+        private string $executionType = 'manual'
     ) {
+        $this->executionType = $executionType === 'automatico' ? 'automatico' : 'manual';
     }
 
     public function synchronizeIndicator(int $indicatorId): array
@@ -144,9 +146,9 @@ final class PpaAdminSynchronizationService
     private function persistResult(array $preview): array
     {
         if ($this->resultPersister !== null) {
-            return ($this->resultPersister)($preview);
+            return ($this->resultPersister)($preview, $this->executionType);
         }
 
-        return (new PpaResultModel())->storeValidatedPreview($preview);
+        return (new PpaResultModel())->storeValidatedPreview($preview, $this->executionType);
     }
 }

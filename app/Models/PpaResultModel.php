@@ -109,9 +109,10 @@ class PpaResultModel
         }
     }
 
-    public function storeValidatedPreview(array $preview): array
+    public function storeValidatedPreview(array $preview, string $executionType = 'manual'): array
     {
         $payload = self::normalizeSyncPreview($preview);
+        $executionType = $executionType === 'automatico' ? 'automatico' : 'manual';
 
         if (is_string($payload)) {
             throw new RuntimeException($payload);
@@ -119,7 +120,7 @@ class PpaResultModel
 
         try {
             $this->pdo->beginTransaction();
-            $syncId = $this->createSynchronization($payload);
+            $syncId = $this->createSynchronization($payload, $executionType);
             $existingId = $this->findEquivalentResultId($payload);
 
             if ($existingId !== null) {
@@ -202,21 +203,24 @@ class PpaResultModel
         ];
     }
 
-    private function createSynchronization(array $payload): int
+    private function createSynchronization(array $payload, string $executionType): int
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO ppa_sincronizacoes
                 (indicador_id, ano_referencia, competencia, tipo_execucao, status,
                  total_lidos, total_processados, total_inseridos, total_atualizados, mensagem)
              VALUES
-                (:indicador_id, :ano_referencia, :competencia, 'manual', 'processando',
+                (:indicador_id, :ano_referencia, :competencia, :tipo_execucao, 'processando',
                  1, 0, 0, 0, :mensagem)"
         );
         $stmt->execute([
             ':indicador_id' => $payload['indicator_id'],
             ':ano_referencia' => $payload['year'],
             ':competencia' => $payload['competence'],
-            ':mensagem' => 'Sincronizacao CLI iniciada apos previa validada.',
+            ':tipo_execucao' => $executionType,
+            ':mensagem' => $executionType === 'automatico'
+                ? 'Sincronizacao automatica iniciada.'
+                : 'Sincronizacao manual iniciada apos previa validada.',
         ]);
 
         return (int) $this->pdo->lastInsertId();

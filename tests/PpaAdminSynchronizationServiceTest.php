@@ -42,8 +42,8 @@ $service = new PpaAdminSynchronizationService(
         $calls[] = 'preview:' . $code;
         return ['success' => true, 'indicator_code' => $code, 'valor_resultado' => 12];
     },
-    resultPersister: static function (array $preview) use (&$calls): array {
-        $calls[] = 'persist:' . $preview['indicator_code'];
+    resultPersister: static function (array $preview, string $executionType) use (&$calls): array {
+        $calls[] = 'persist:' . $preview['indicator_code'] . ':' . $executionType;
         return ['inserted' => true, 'message' => 'Resultado gravado.'];
     }
 );
@@ -54,7 +54,7 @@ $assertSame(true, $result['success'], 'a sincronização completa deve terminar 
 $assertSame(2, $result['entries_written'], 'deve informar quantas entradas de cache foram gravadas');
 $assertSame(true, $result['result_inserted'], 'deve informar que um resultado novo foi consolidado');
 $assertSame(
-    ['indicator:7', 'links:7', 'cache:7:1', 'preview:PPA-TESTE', 'persist:PPA-TESTE'],
+    ['indicator:7', 'links:7', 'cache:7:1', 'preview:PPA-TESTE', 'persist:PPA-TESTE:manual'],
     $calls,
     'cache, prévia e persistência devem acontecer na ordem segura'
 );
@@ -109,5 +109,20 @@ $previewFailureService = new PpaAdminSynchronizationService(
 $previewFailure = $previewFailureService->synchronizeIndicator(7);
 $assertSame(false, $previewFailure['success'], 'uma falha no resumo deve ser informada');
 $assertSame(1, $previewFailure['cache']['entries_written'], 'deve informar que o cache já foi atualizado');
+
+$automaticExecutionType = null;
+$automaticService = new PpaAdminSynchronizationService(
+    indicatorLoader: static fn (): object => $indicator,
+    linksLoader: static fn (): array => $links,
+    cacheSynchronizer: static fn (): array => ['success' => true, 'entries_written' => 1],
+    catalogPreview: static fn (): array => ['success' => true],
+    resultPersister: static function (array $preview, string $executionType) use (&$automaticExecutionType): array {
+        $automaticExecutionType = $executionType;
+        return ['inserted' => false, 'message' => 'Resultado já atualizado.'];
+    },
+    executionType: 'automatico'
+);
+$automaticService->synchronizeIndicator(7);
+$assertSame('automatico', $automaticExecutionType, 'a execução programada deve ser registrada como automática');
 
 fwrite(STDOUT, "OK ({$assertions} assertions)\n");
