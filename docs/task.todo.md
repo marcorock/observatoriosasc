@@ -83,11 +83,12 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Criar branch de integração conectando os históricos independentes.
 - [x] Criar a pull request draft
   `https://github.com/marcorock/observatoriosasc/pull/2`.
+- [x] Integrar a PR #2 em `main` e remover
+  `integration/update-repository`.
 
 ## Próxima frente — proteção da integração
 
-- [x] Reconciliar documentação canônica com
-  `integration/update-repository`.
+- [x] Reconciliar documentação canônica com `main`.
 - [x] Remover briefing de auditoria concluído e `.docx` duplicado, preservando
   o plano histórico em Markdown.
 - [x] Criar smoke test para `/ppa`, incluindo erro controlado de leitura.

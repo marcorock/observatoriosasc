@@ -23,7 +23,7 @@ Resultados consolidados:
 - sincronização automática completa em lote, com comando e receita diária;
 - instalador idempotente e instruções de entrega ao sysadmin;
 - vinte e nove testes locais com 386 assertions;
-- branch de integração e PR draft #2 preparadas.
+- PR #2 integrada em `main` com o histórico dos pequenos commits preservado.
 
 ## Marco atual — proteção da integração
 
@@ -35,8 +35,8 @@ Resultados consolidados:
 3. Concluído — filtros, cache hit e cache miss cobertos.
 4. Concluído — acesso, login, logout, usuários, fontes, consultas, indicadores
    e vínculos cobertos.
-5. Revisar a PR #2 e tratar observações em commits pequenos.
-6. Marcar a PR como pronta e realizar merge somente após aprovação.
+5. Concluído — revisar e publicar os incrementos em commits pequenos.
+6. Concluído — integrar a PR #2 em `main` e remover a branch de integração.
 
 ### Critérios de conclusão
 

@@ -47,12 +47,12 @@ mensurável do PPA.
 
 ## Último marco concluído
 
-- Data: 2026-07-24
-- Commit: `405e648`
-- Tarefa: concluir a entrega da refatoração do PPA na branch de integração
-- Resultado: plano de 14 etapas concluído, cache homologado, atualização em
-  lote disponível e PR draft #2 preparada
-- Próximo incremento: smoke tests HTTP dos fluxos públicos do PPA
+- Data: 2026-07-28
+- Commit: `1cde072`
+- Tarefa: integrar a refatoração do PPA em `main`
+- Resultado: PR #2 integrada com 116 commits, suíte verde e branch de
+  integração removida
+- Próximo incremento: instalar e monitorar o cron no servidor real
 
 ## Validação técnica
 
@@ -68,7 +68,6 @@ devem configurar suas credenciais no `.env`.
 
 ## Bloqueios e riscos
 
-- A PR draft #2 reúne a refatoração e aguarda revisão humana.
 - O Notion estava defasado em relação ao código até a atualização de 2026-07-24.
 - O BSC mantém a divergência `cancelado` x `Suspenso`.
 - Existe uma baseline operacional curta, mas ainda não há teste de carga ou

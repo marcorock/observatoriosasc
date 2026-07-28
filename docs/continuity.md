@@ -9,13 +9,12 @@ detalham arquitetura, operação e histórico.
 ## Contexto de trabalho
 
 - Repositório: `marcorock/observatoriosasc`
-- Branch ativa: `integration/update-repository`
-- Último checkpoint publicado: `405e648`
-- Situação: sincronizada com `origin/integration/update-repository`, oito
-  commits à frente de `origin/update-repository` e 58 commits à frente de
-  `origin/main` na verificação de 2026-07-28
-- Pull request: draft #2, aberta contra `main` e registrada como mergeável na
-  última verificação documentada
+- Branch ativa: `main`
+- Último checkpoint publicado: `1cde072`
+- Situação: `main` local e `origin/main` sincronizadas na verificação de
+  2026-07-28
+- Pull request: #2 integrada com 116 commits; a branch
+  `integration/update-repository` foi removida após o merge
 - Issues abertas: nenhuma na última verificação
 - Defaults de conexão: mantidos como `localhost` e senha vazia no código; cada
   ambiente deve configurar valores diferentes em seu `.env`
@@ -225,15 +224,14 @@ externa. O lote sequencial `--all` foi publicado em `359a269`, com continuação
 após falhas individuais e exit code de falha parcial. O exemplo de agendamento
 usa `flock` para impedir sobreposição.
 
-O checklist original foi concluído. A branch de integração
-`integration/update-repository` conectou os históricos independentes preservando
-a árvore de `update-repository`.
+O checklist original foi concluído. A antiga branch de integração conectou os
+históricos independentes preservando a árvore de `update-repository`.
 
-Pull request draft:
+Pull request integrada:
 
 `https://github.com/marcorock/observatoriosasc/pull/2`
 
-A PR está aberta, mergeável e aponta para `main`.
+A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 

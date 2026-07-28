@@ -167,6 +167,15 @@
 - O ambiente de desenvolvimento atual não possui daemon `cron`; a receita
   ainda precisa ser instalada no servidor real.
 - Suíte ampliada para vinte e nove testes e 386 assertions.
+
+### Integração final em main
+
+- Publicados os 58 commits locais restantes em
+  `integration/update-repository`.
+- Confirmado que a branch estava 116 commits à frente e zero atrás de `main`.
+- Avançada `main` por fast-forward até `1cde072`, sem reescrita de histórico.
+- PR #2 reconhecida pelo GitHub como integrada.
+- Removida a branch `integration/update-repository` local e remota.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 
