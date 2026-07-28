@@ -26,8 +26,10 @@
   e falha controlada de leitura.
 - Criado `PpaDashboardHtmlSmokeTest.php` para slug inexistente, fallback ao
   catálogo e mensagem controlada.
-- Suíte ampliada para quatorze testes e 194 assertions.
-- Próximo incremento definido: indicador válido sem vínculos.
+- Ampliado o mesmo teste para indicador válido sem vínculos, estado
+  `Em Preparacao` e mensagem explicativa.
+- Suíte mantida com quatorze testes e ampliada para 197 assertions.
+- Próximo incremento definido: endpoint JSON com indicador inexistente.
 
 ## 2026-07-24
 
