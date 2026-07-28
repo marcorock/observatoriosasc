@@ -11,10 +11,10 @@
 {% block main %}
 <style>
     .home-shell {
-        background:
-            radial-gradient(circle at top center, rgba(255, 255, 255, 0.18), transparent 24%),
-            linear-gradient(180deg, #f5f7fb 0%, #edf2f8 100%);
-        color: #12355b;
+        min-height: calc(100vh - 190px);
+        background-color: var(--app-bg);
+        color: var(--app-text);
+        transition: background-color 0.25s ease, color 0.25s ease;
     }
 
     .home-section-title {
@@ -27,7 +27,8 @@
     }
 
     .module-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        color: var(--app-text);
+        transition: color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .module-card:hover {
@@ -48,18 +49,24 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #111827;
-        background: rgba(255, 255, 255, 0.88);
+        color: var(--app-text);
+        background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
+        transition:
+            background-color 0.25s ease,
+            border-color 0.25s ease,
+            color 0.25s ease,
+            box-shadow 0.2s ease;
     }
 
     .module-figure i {
         font-size: 6rem;
         line-height: 1;
-        color: #111827;
+        color: currentColor;
     }
 
     .module-figure.module-figure-light {
-        background: #ffffff !important;
+        background-color: var(--card-bg);
     }
 
     .module-figure.module-figure-light span {
@@ -114,6 +121,10 @@
     }
 
     @media (max-width: 991.98px) {
+        .home-shell {
+            min-height: auto;
+        }
+
         .module-figure {
             width: 185px;
             height: 145px;
