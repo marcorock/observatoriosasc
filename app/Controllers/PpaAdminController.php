@@ -6,6 +6,7 @@ use App\Core\Template;
 use App\Models\ExternalQueryModel;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
+use App\Models\PpaResultModel;
 use App\Services\PpaAdminSynchronizationService;
 
 class PpaAdminController extends Template
@@ -14,18 +15,21 @@ class PpaAdminController extends Template
     private ?PpaIndicatorQueryModel $linkModel;
     private ?ExternalQueryModel $externalQueryModel;
     private ?PpaAdminSynchronizationService $synchronizationService;
+    private ?PpaResultModel $resultModel;
 
     public function __construct(
         ?PpaIndicatorModel $indicatorModel = null,
         ?PpaIndicatorQueryModel $linkModel = null,
         ?ExternalQueryModel $externalQueryModel = null,
-        ?PpaAdminSynchronizationService $synchronizationService = null
+        ?PpaAdminSynchronizationService $synchronizationService = null,
+        ?PpaResultModel $resultModel = null
     ) {
         parent::__construct();
         $this->indicatorModel = $indicatorModel;
         $this->linkModel = $linkModel;
         $this->externalQueryModel = $externalQueryModel;
         $this->synchronizationService = $synchronizationService;
+        $this->resultModel = $resultModel;
     }
 
     public function dashboard()
@@ -35,6 +39,25 @@ class PpaAdminController extends Template
 
         $indicatorCount = $this->indicatorModel()->readAll();
         $linkCount = $this->linkModel()->readAll();
+        $activeIndicators = is_array($indicatorCount)
+            ? array_values(array_filter(
+                $indicatorCount,
+                static fn (object $indicator): bool => (int) ($indicator->ativo ?? 0) === 1
+            ))
+            : [];
+        $latestSynchronizations = $this->resultModel()->readLatestCompletedSynchronizationByIndicatorIds(
+            array_map(
+                static fn (object $indicator): int => (int) ($indicator->id ?? 0),
+                $activeIndicators
+            )
+        );
+
+        foreach ($activeIndicators as $indicator) {
+            $synchronization = $latestSynchronizations[(int) ($indicator->id ?? 0)] ?? null;
+            $indicator->ultima_sincronizacao_em = $synchronization->finished_at ?? null;
+            $indicator->sincronizacao_status = $synchronization !== null ? 'Atualizado' : 'Pendente';
+        }
+
         $feedback = $_SESSION['ppa_admin_feedback'] ?? null;
         unset($_SESSION['ppa_admin_feedback']);
 
@@ -42,12 +65,7 @@ class PpaAdminController extends Template
             'feedback' => $feedback,
             'indicadores_total' => is_array($indicatorCount) ? count($indicatorCount) : 0,
             'vinculos_total' => is_array($linkCount) ? count($linkCount) : 0,
-            'indicators' => is_array($indicatorCount)
-                ? array_values(array_filter(
-                    $indicatorCount,
-                    static fn (object $indicator): bool => (int) ($indicator->ativo ?? 0) === 1
-                ))
-                : [],
+            'indicators' => $activeIndicators,
         ], $this->pageDefaults('Modulo PPA', 'Cadastro de indicadores e vinculos com consultas externas')));
     }
 
@@ -492,5 +510,10 @@ class PpaAdminController extends Template
     private function synchronizationService(): PpaAdminSynchronizationService
     {
         return $this->synchronizationService ??= new PpaAdminSynchronizationService();
+    }
+
+    private function resultModel(): PpaResultModel
+    {
+        return $this->resultModel ??= new PpaResultModel();
     }
 }

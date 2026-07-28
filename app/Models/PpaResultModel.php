@@ -65,6 +65,50 @@ class PpaResultModel
         }
     }
 
+    public function readLatestCompletedSynchronizationByIndicatorIds(array $indicatorIds): array
+    {
+        $indicatorIds = array_values(array_unique(array_filter(
+            array_map('intval', $indicatorIds),
+            static fn (int $id): bool => $id > 0
+        )));
+
+        if ($indicatorIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($indicatorIds), '?'));
+
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT sync.indicador_id, sync.status, sync.finished_at, sync.mensagem
+                 FROM ppa_sincronizacoes sync
+                 INNER JOIN (
+                    SELECT indicador_id, MAX(id) AS sync_id
+                    FROM ppa_sincronizacoes
+                    WHERE status = 'concluido'
+                      AND indicador_id IN ({$placeholders})
+                    GROUP BY indicador_id
+                 ) latest ON latest.sync_id = sync.id"
+            );
+
+            foreach ($indicatorIds as $index => $indicatorId) {
+                $stmt->bindValue($index + 1, $indicatorId, PDO::PARAM_INT);
+            }
+
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_OBJ) ?: [];
+            $synchronizations = [];
+
+            foreach ($rows as $row) {
+                $synchronizations[(int) $row->indicador_id] = $row;
+            }
+
+            return $synchronizations;
+        } catch (PDOException) {
+            return [];
+        }
+    }
+
     public function storeValidatedPreview(array $preview): array
     {
         $payload = self::normalizeSyncPreview($preview);
