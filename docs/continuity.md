@@ -62,7 +62,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os treze arquivos de teste passaram:
+Na verificação de 2026-07-28, os quatorze arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -71,6 +71,7 @@ Na verificação de 2026-07-28, os treze arquivos de teste passaram:
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
+| `PpaDashboardHtmlSmokeTest.php` | 3 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 17 |
@@ -79,7 +80,7 @@ Na verificação de 2026-07-28, os treze arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **191** |
+| **Total** | **194** |
 
 ## Sequência concluída
 
@@ -221,10 +222,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Adicionar smoke tests para o dashboard HTML e endpoint JSON, incluindo
-indicador inexistente e ausência de vínculos. O catálogo público já possui
-cobertura inicial. Não iniciar nova extração estrutural antes de proteger esses
-fluxos.
+Adicionar cobertura do dashboard HTML sem vínculos ativos. Catálogo público e
+slug inexistente já possuem smoke tests. Depois, cobrir o endpoint JSON sem
+introduzir acesso real a banco ou fonte externa.
 
 ## Regra documental para cada incremento
 

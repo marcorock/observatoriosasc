@@ -24,9 +24,10 @@
   `PpaController`, mantendo criação tardia das dependências no runtime.
 - Criado `PpaCatalogHttpSmokeTest.php` para renderização normal, catálogo vazio
   e falha controlada de leitura.
-- Suíte ampliada para treze testes e 191 assertions.
-- Próximo incremento definido: dashboard HTML com indicador inexistente e sem
-  vínculos.
+- Criado `PpaDashboardHtmlSmokeTest.php` para slug inexistente, fallback ao
+  catálogo e mensagem controlada.
+- Suíte ampliada para quatorze testes e 194 assertions.
+- Próximo incremento definido: indicador válido sem vínculos.
 
 ## 2026-07-24
 
