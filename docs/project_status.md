@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os dezoito testes locais passaram com 228 assertions. O
+Em 2026-07-28, os dezenove testes locais passaram com 239 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -81,5 +81,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Homologar visualmente catálogo, dashboards, filtros e redirecionamento das
-rotas administrativas. Depois, cobrir login e logout.
+Homologar visualmente login, logout e retorno às rotas protegidas. Depois,
+cobrir validações dos CRUDs administrativos.

@@ -62,10 +62,11 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os dezoito arquivos de teste passaram:
+Na verificação de 2026-07-28, os dezenove arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
+| `AdminAuthenticationFlowTest.php` | 11 |
 | `AdminRouteProtectionTest.php` | 8 |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
 | `NavigationLoaderMarkupTest.php` | 8 |
@@ -84,7 +85,7 @@ Na verificação de 2026-07-28, os dezoito arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **228** |
+| **Total** | **239** |
 
 ## Sequência concluída
 
@@ -226,8 +227,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente catálogo, filtros e proteção administrativa no ambiente
-local. Depois, cobrir login e logout sem usar credenciais ou banco reais.
+Homologar visualmente login, logout e retorno às rotas protegidas. Depois,
+iniciar os testes dos CRUDs administrativos por operações de validação que não
+gravem no banco real.
 
 ## Regra documental para cada incremento
 

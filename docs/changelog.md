@@ -56,6 +56,18 @@
 - Criado `NavigationLoaderMarkupTest.php` com 8 assertions.
 - Suíte ampliada para dezoito testes e 228 assertions.
 
+### Autenticação administrativa
+
+- Permitida a injeção opcional do model de autenticação no `AdminController`.
+- Centralizados os redirecionamentos de login e logout em método substituível
+  durante testes, sem alterar headers ou encerramento no runtime.
+- Criado `AdminAuthenticationFlowTest.php` com usuário e senha exclusivamente
+  locais ao teste.
+- Cobertos login válido, senha inválida, criação da sessão, logout válido e
+  rejeição de logout com token inválido.
+- Suíte ampliada para dezenove testes e 239 assertions.
+- Próximo incremento definido: validações dos CRUDs administrativos.
+
 ## 2026-07-24
 
 ### Documentação
