@@ -76,6 +76,7 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `NavigationLoaderMarkupTest.php` | 8 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
+| `PpaCronInstallerScriptTest.php` | 14 |
 | `PpaAdminCrudFlowTest.php` | 18 |
 | `PpaAdminSynchronizationFlowTest.php` | 22 |
 | `PpaAdminSynchronizationServiceTest.php` | 12 |
@@ -94,7 +95,7 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaScheduledSynchronizationBatchServiceTest.php` | 11 |
 | `PpaScheduledSynchronizationCommandTest.php` | 10 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **372** |
+| **Total** | **386** |
 
 ## Sequência concluída
 

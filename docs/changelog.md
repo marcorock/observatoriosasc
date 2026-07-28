@@ -160,9 +160,13 @@
   JSON e código de saída para monitoramento.
 - Adicionada receita diária em `deploy/cron/observatoriosasc-ppa`, às 04:15 no
   horário de São Paulo.
+- Criado `deploy/cron/install-ppa-sync-cron.sh`, sem credenciais, para validar
+  cron, PHP, usuário web, projeto e escrita no cache antes da instalação.
+- Adicionado `deploy/cron/README.md` com instalação, verificação e remoção da
+  regra para entrega ao sysadmin.
 - O ambiente de desenvolvimento atual não possui daemon `cron`; a receita
   ainda precisa ser instalada no servidor real.
-- Suíte ampliada para vinte e oito testes e 372 assertions.
+- Suíte ampliada para vinte e nove testes e 386 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 

@@ -311,10 +311,11 @@ com o usuário `www-data`. Em um servidor Linux com cron, a instalação deve se
 feita por uma pessoa com permissão administrativa:
 
 ```bash
-sudo install -o root -g root -m 0644 \
-  deploy/cron/observatoriosasc-ppa \
-  /etc/cron.d/observatoriosasc-ppa
+sudo bash deploy/cron/install-ppa-sync-cron.sh \
+  /var/www/projects/observatoriosasc
 ```
+
+As instruções completas para o sysadmin estão em `deploy/cron/README.md`.
 
 O comando deve executar com o mesmo usuário do PHP web, ou com um grupo que
 tenha escrita nos arquivos existentes em `storage/cache/ppa/queries`. Executar

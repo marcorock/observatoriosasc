@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte e oito testes locais, com 372 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e nove testes locais, com 386 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -71,6 +71,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
   sincronização.
 - [x] Implementar sincronização automática completa em lote com trava e resumo.
 - [x] Preparar receita diária para 04:15 em `America/Sao_Paulo`.
+- [x] Criar instalador validado e instruções para o sysadmin.
 - [ ] Instalar a receita no agendador do servidor real e monitorar a primeira
   execução.
 - [x] Integrar leitura cache-first com fallback externo.

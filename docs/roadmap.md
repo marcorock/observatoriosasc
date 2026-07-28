@@ -21,7 +21,8 @@ Resultados consolidados:
 - sincronização individual e em lote disponível;
 - sincronização completa de um indicador disponível no painel administrativo;
 - sincronização automática completa em lote, com comando e receita diária;
-- vinte e oito testes locais com 372 assertions;
+- instalador idempotente e instruções de entrega ao sysadmin;
+- vinte e nove testes locais com 386 assertions;
 - branch de integração e PR draft #2 preparadas.
 
 ## Marco atual — proteção da integração
