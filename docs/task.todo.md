@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte e seis testes locais, com 349 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e seis testes locais, com 350 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 

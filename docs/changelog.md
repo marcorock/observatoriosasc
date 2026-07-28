@@ -145,7 +145,9 @@
   última atualização concluída e botão individual de sincronização.
 - Indicadores sem histórico concluído passam a aparecer como `Pendente` e
   `Nunca sincronizado`.
-- Suíte ampliada para vinte e seis testes e 349 assertions.
+- Corrigidos os formulários da tabela para usar um token de segurança exclusivo
+  por indicador, evitando que uma linha invalide o botão das anteriores.
+- Suíte ampliada para vinte e seis testes e 350 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 
