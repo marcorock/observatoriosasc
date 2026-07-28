@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte e seis testes locais, com 350 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e oito testes locais, com 372 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -69,8 +69,10 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
   administrativo, com confirmação, feedback e proteção por token.
 - [x] Exibir situação, última atualização e ação individual em uma tabela de
   sincronização.
-- [ ] Agendar a sincronização automática somente após homologar o botão
-  administrativo.
+- [x] Implementar sincronização automática completa em lote com trava e resumo.
+- [x] Preparar receita diária para 04:15 em `America/Sao_Paulo`.
+- [ ] Instalar a receita no agendador do servidor real e monitorar a primeira
+  execução.
 - [x] Integrar leitura cache-first com fallback externo.
 - [x] Homologar equivalência e tempos cache-first do progresso familiar e da
   atualização cadastral.

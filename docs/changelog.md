@@ -148,6 +148,21 @@
 - Corrigidos os formulários da tabela para usar um token de segurança exclusivo
   por indicador, evitando que uma linha invalide o botão das anteriores.
 - Suíte ampliada para vinte e seis testes e 350 assertions.
+
+### Sincronização automática programada
+
+- Execuções passam a ser registradas como `manual` ou `automatico`.
+- Criado `PpaScheduledSynchronizationBatchService` para processar indicadores
+  elegíveis sequencialmente e continuar a fila após falhas individuais.
+- Indicadores sem vínculos e o indicador de visão geral são ignorados de forma
+  explícita, sem transformar o lote em falha.
+- Criado `bin/ppa-scheduled-sync.php --all` com trava não bloqueante, resumo
+  JSON e código de saída para monitoramento.
+- Adicionada receita diária em `deploy/cron/observatoriosasc-ppa`, às 04:15 no
+  horário de São Paulo.
+- O ambiente de desenvolvimento atual não possui daemon `cron`; a receita
+  ainda precisa ser instalada no servidor real.
+- Suíte ampliada para vinte e oito testes e 372 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 

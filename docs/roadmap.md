@@ -20,7 +20,8 @@ Resultados consolidados:
 - cache em arquivo implementado, integrado e homologado;
 - sincronização individual e em lote disponível;
 - sincronização completa de um indicador disponível no painel administrativo;
-- vinte e seis testes locais com 350 assertions;
+- sincronização automática completa em lote, com comando e receita diária;
+- vinte e oito testes locais com 372 assertions;
 - branch de integração e PR draft #2 preparadas.
 
 ## Marco atual — proteção da integração

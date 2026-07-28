@@ -18,7 +18,7 @@ mensurável do PPA.
 | Administração | Login, sessão e CRUD cobertos por testes locais | Homologar indicadores e vínculos |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
 | PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Ampliar smoke tests HTTP |
-| PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
+| PPA administrativo | CRUDs e sincronização manual homologados; rotina automática pronta | Ativar o agendamento no servidor |
 | CadÚnico | Tela inicial | Definir fluxo funcional mínimo |
 | SASC-SA, OSC e POPWEB | Planejados | Levantar requisitos e fontes |
 
@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e seis testes locais passaram com 350 assertions. O
+Em 2026-07-28, os vinte e oito testes locais passaram com 372 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -79,8 +79,10 @@ devem configurar suas credenciais no `.env`.
   autenticação e os CRUDs administrativos principais; ainda falta homologação
   visual completa.
 - Alguns models ainda executam `CREATE TABLE IF NOT EXISTS` durante o runtime.
+- O ambiente de desenvolvimento não possui daemon `cron`; a receita automática
+  precisa ser instalada no host e executada pelo mesmo usuário do cache.
 
 ## Próximo passo recomendado
 
-Homologar a sincronização administrativa de um indicador real. Depois,
-implementar o processo automático reutilizando o serviço já testado.
+Instalar a receita de agendamento no servidor real e monitorar a primeira
+sincronização automática diária.

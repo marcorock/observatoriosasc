@@ -285,8 +285,46 @@ O usuário que executa o servidor web precisa ter permissão de escrita em
 `storage/cache/ppa/queries`. Em instalações novas, configure o diretório para o
 usuário ou grupo do servidor web sem conceder acesso público ao conteúdo.
 
-O processo ainda não é automático. O agendamento será implementado somente
-depois da homologação desta ação administrativa.
+A ação desta tela continua sendo manual. O processo automático correspondente
+é descrito na seção seguinte e precisa ser ativado no agendador do servidor.
+
+## Sincronização automática diária
+
+O projeto possui o comando:
+
+```bash
+php bin/ppa-scheduled-sync.php --all
+```
+
+Ele processa um indicador elegível por vez, atualiza dashboard e catálogo,
+ignora indicadores sem vínculo ou de visão geral e continua os demais quando
+uma fonte individual falha. Uma trava impede duas execuções simultâneas.
+
+A receita versionada está em:
+
+```text
+deploy/cron/observatoriosasc-ppa
+```
+
+Ela está preparada para executar diariamente às 04:15 no horário de São Paulo
+com o usuário `www-data`. Em um servidor Linux com cron, a instalação deve ser
+feita por uma pessoa com permissão administrativa:
+
+```bash
+sudo install -o root -g root -m 0644 \
+  deploy/cron/observatoriosasc-ppa \
+  /etc/cron.d/observatoriosasc-ppa
+```
+
+O comando deve executar com o mesmo usuário do PHP web, ou com um grupo que
+tenha escrita nos arquivos existentes em `storage/cache/ppa/queries`. Executar
+com outro usuário pode permitir criar a pasta, mas impedir a atualização das
+travas e caches que já pertencem ao servidor web.
+
+O ambiente de desenvolvimento atual não possui serviço `cron`; portanto, ter o
+arquivo no projeto não significa que o horário já esteja ativo. Em hospedagens
+com painel próprio, cadastre o mesmo comando e selecione o fuso
+`America/Sao_Paulo`.
 
 ## Sincronização técnica pelo terminal
 

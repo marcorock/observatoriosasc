@@ -223,9 +223,22 @@ Dependencias identificadas em `composer.json`:
 - `PpaQueryCacheBatchSynchronizer`: atualização sequencial em lote.
 - `PpaAdminSynchronizationService`: coordena cache detalhado e resultado
   consolidado para a ação administrativa.
+- `PpaScheduledSynchronizationBatchService`: percorre indicadores elegíveis e
+  coordena a execução automática individual sem interromper toda a fila.
 
 As extrações preservam rotas, templates, nomes dos campos e fórmulas. A próxima
 etapa é proteger os fluxos públicos com smoke tests HTTP.
+
+### Comando programado do PPA
+
+- Comando: `php bin/ppa-scheduled-sync.php --all`
+- Trava padrão: diretório temporário do sistema, arquivo
+  `observatoriosasc-ppa-scheduled-sync.lock`
+- Tipo registrado: `automatico`
+- Saída: resumo JSON em stdout; falhas totais ou parciais usam código de saída
+  diferente de zero
+- Receita: `deploy/cron/observatoriosasc-ppa`
+- Horário preparado: diariamente às 04:15 em `America/Sao_Paulo`
 
 ### PpaAdminController
 

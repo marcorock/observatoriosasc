@@ -78,7 +78,7 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaAdminCrudFlowTest.php` | 18 |
 | `PpaAdminSynchronizationFlowTest.php` | 22 |
-| `PpaAdminSynchronizationServiceTest.php` | 11 |
+| `PpaAdminSynchronizationServiceTest.php` | 12 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
@@ -91,8 +91,10 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaQueryCacheSynchronizerTest.php` | 10 |
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 18 |
+| `PpaScheduledSynchronizationBatchServiceTest.php` | 11 |
+| `PpaScheduledSynchronizationCommandTest.php` | 10 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **350** |
+| **Total** | **372** |
 
 ## Sequência concluída
 
@@ -234,9 +236,11 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente a sincronização de um indicador pelo painel
-administrativo. Depois da homologação, implementar o agendamento automático
-reutilizando o mesmo serviço.
+Instalar `deploy/cron/observatoriosasc-ppa` no agendador do servidor real e
+acompanhar a primeira execução automática das 04:15 no horário de São Paulo.
+O processo deve usar `www-data` ou outro usuário com acesso de escrita aos
+caches existentes; uma execução local como `developer` foi corretamente
+rejeitada na gravação e preservou todos os arquivos atuais.
 
 ## Regra documental para cada incremento
 
