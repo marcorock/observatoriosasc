@@ -141,10 +141,10 @@ $externalCalls = 0;
 $linkedQueryService = new PpaLinkedQueryService(
     new PpaFilterCacheQueryModel($query),
     new PpaFilterCacheSourceModel($source),
-    static function () use (&$externalCalls): array {
+    static function () use (&$externalCalls, $cachedRows): array {
         $externalCalls++;
 
-        return ['success' => true, 'rows' => []];
+        return ['success' => true, 'rows' => $cachedRows];
     },
     $cache
 );
@@ -180,6 +180,31 @@ $assertSame(
 );
 $assertSame(0, $externalCalls, 'does not query the external source on cache hit');
 
+foreach (glob($cacheDirectory . '/*') ?: [] as $file) {
+    unlink($file);
+}
+$_GET = [
+    'cras' => 'CRAS NORTE',
+    'regiao' => 'Norte',
+];
+http_response_code(200);
+
+try {
+    $controller->dashboardData($indicator->slug);
+    throw new RuntimeException('The controller did not emit a JSON response.');
+} catch (PpaFilterCacheResponseCaptured $response) {
+    $missPayload = $response->payload;
+}
+
+$assertSame(200, http_response_code(), 'keeps HTTP 200 after a controlled cache miss');
+$assertSame(1, $externalCalls, 'queries the external source once on cache miss');
+$assertSame(8, $missPayload['dados']['total_geral'] ?? null, 'filters external fallback rows');
+$assertSame(
+    ['cras' => 'CRAS NORTE', 'regiao' => 'Norte'],
+    $missPayload['dados']['filtros_ativos'] ?? null,
+    'reports filters after the external fallback'
+);
+
 $_GET = [];
 foreach (glob($cacheDirectory . '/*') ?: [] as $file) {
     unlink($file);
@@ -191,4 +216,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (7 assertions)\n");
+fwrite(STDOUT, "OK (11 assertions)\n");
