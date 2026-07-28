@@ -1491,7 +1491,7 @@ class PpaController extends BaseController
      * @param array $payload Array de dados a codificar e enviar como JSON
      * @return void Encerra a execução
      */
-    private function json(array $payload): void
+    protected function json(array $payload): void
     {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($payload, JSON_UNESCAPED_UNICODE);
