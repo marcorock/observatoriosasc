@@ -1,0 +1,2 @@
+CRON_TZ=America/Sao_Paulo
+15 4 * * * www-data cd /var/www/projects/observatoriosasc && /usr/bin/php bin/ppa-scheduled-sync.php --all
