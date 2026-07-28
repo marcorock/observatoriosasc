@@ -282,8 +282,9 @@ e a duplicação foi removida. A suíte completa passou com 113 assertions.
 Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
 dashboard, consultas vinculadas, sincronização e armazenamento do cache e os
 cinco builders extraídos. O catálogo, o dashboard HTML sem vínculos, os erros
-404 do endpoint JSON e o filtro com cache hit possuem smoke tests sem acesso a
-bancos reais. Em 2026-07-28, dezesseis arquivos passaram com 208 assertions.
+404 do endpoint JSON e os filtros com cache hit/miss possuem smoke tests sem
+acesso a bancos reais. Em 2026-07-28, dezesseis arquivos passaram com 212
+assertions.
 
 ## Responsabilidades restantes no controller
 

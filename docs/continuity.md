@@ -73,7 +73,7 @@ Na verificação de 2026-07-28, os dezesseis arquivos de teste passaram:
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
 | `PpaDashboardJsonSmokeTest.php` | 4 |
-| `PpaDashboardFilterCacheSmokeTest.php` | 7 |
+| `PpaDashboardFilterCacheSmokeTest.php` | 11 |
 | `PpaFamilyRmaPayloadBuilderTest.php` | 11 |
 | `PpaFamilySnapshotRmaPayloadBuilderTest.php` | 26 |
 | `PpaLinkedQueryServiceTest.php` | 17 |
@@ -82,7 +82,7 @@ Na verificação de 2026-07-28, os dezesseis arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **208** |
+| **Total** | **212** |
 
 ## Sequência concluída
 
@@ -224,9 +224,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Cobrir cache miss no pipeline do endpoint JSON, confirmando o fallback externo
-controlado. Filtros com cache hit já estão protegidos. Os testes não devem
-acessar banco ou fonte externa reais.
+Homologar visualmente catálogo, filtros e respostas JSON no ambiente local.
+Depois, iniciar a cobertura dos fluxos administrativos sensíveis, começando
+pela proteção de acesso anônimo.
 
 ## Regra documental para cada incremento
 

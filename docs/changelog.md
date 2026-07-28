@@ -35,8 +35,10 @@
 - Permitida a injeção opcional de `PpaLinkedQueryService` no controller.
 - Criado `PpaDashboardFilterCacheSmokeTest.php` para filtro por CRAS e região,
   cache hit e ausência de chamada externa.
-- Suíte ampliada para dezesseis testes e 208 assertions.
-- Próximo incremento definido: cache miss com fallback externo controlado.
+- Ampliado o mesmo teste para cache miss, uma chamada externa controlada e
+  preservação dos filtros no fallback.
+- Suíte mantida com dezesseis testes e ampliada para 212 assertions.
+- Próximo incremento definido: homologação visual e proteção administrativa.
 
 ## 2026-07-24
 
