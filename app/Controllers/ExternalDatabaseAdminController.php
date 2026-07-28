@@ -68,8 +68,7 @@ class ExternalDatabaseAdminController extends Template
         adminRequireAuth('admin');
 
         if (!validateFormToken('external_source_create')) {
-            header('Location: ' . url('admin/bases-externas/nova'));
-            exit;
+            $this->redirect('admin/bases-externas/nova');
         }
 
         $data = $this->sourceDataFromRequest(true);
@@ -83,8 +82,7 @@ class ExternalDatabaseAdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/bases-externas'));
-        exit;
+        $this->redirect('admin/bases-externas');
     }
 
     public function editSource($id)
@@ -94,8 +92,7 @@ class ExternalDatabaseAdminController extends Template
         $dados = $this->sourceModel()->readById((int) $id);
 
         if (is_string($dados)) {
-            header('Location: ' . url('admin/bases-externas'));
-            exit;
+            $this->redirect('admin/bases-externas');
         }
 
         echo $this->render('admin/external_databases/sources/edit.html', array_merge([
@@ -120,8 +117,7 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_source_edit_' . $id)) {
-            header('Location: ' . url('admin/bases-externas/editar/' . $id));
-            exit;
+            $this->redirect('admin/bases-externas/editar/' . $id);
         }
 
         $data = $this->sourceDataFromRequest(false);
@@ -135,8 +131,7 @@ class ExternalDatabaseAdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/bases-externas'));
-        exit;
+        $this->redirect('admin/bases-externas');
     }
 
     public function deleteSource($id)
@@ -145,8 +140,7 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_source_delete_' . $id)) {
-            header('Location: ' . url('admin/bases-externas'));
-            exit;
+            $this->redirect('admin/bases-externas');
         }
 
         $result = $this->sourceModel()->deleteById($id);
@@ -155,8 +149,7 @@ class ExternalDatabaseAdminController extends Template
             $this->setFeedback('danger', $result);
         }
 
-        header('Location: ' . url('admin/bases-externas'));
-        exit;
+        $this->redirect('admin/bases-externas');
     }
 
     public function testSource($id)
@@ -165,22 +158,19 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_source_test_' . $id)) {
-            header('Location: ' . url('admin/bases-externas'));
-            exit;
+            $this->redirect('admin/bases-externas');
         }
 
         $source = $this->sourceModel()->readById($id);
 
         if (is_string($source)) {
             $this->setFeedback('danger', $source);
-            header('Location: ' . url('admin/bases-externas'));
-            exit;
+            $this->redirect('admin/bases-externas');
         }
 
         $result = ExternalDatabaseRuntime::testConnection($source);
         $this->setFeedback($result['success'] ? 'success' : 'danger', $result['message']);
-        header('Location: ' . url('admin/bases-externas'));
-        exit;
+        $this->redirect('admin/bases-externas');
     }
 
     public function queries()
@@ -232,8 +222,7 @@ class ExternalDatabaseAdminController extends Template
         adminRequireAuth('admin');
 
         if (!validateFormToken('external_query_create')) {
-            header('Location: ' . url('admin/bases-externas/consultas/nova'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas/nova');
         }
 
         $data = $this->queryDataFromRequest();
@@ -249,8 +238,7 @@ class ExternalDatabaseAdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/bases-externas/consultas'));
-        exit;
+        $this->redirect('admin/bases-externas/consultas');
     }
 
     public function editQuery($id)
@@ -260,8 +248,7 @@ class ExternalDatabaseAdminController extends Template
         $dados = $this->queryModel()->readById((int) $id);
 
         if (is_string($dados)) {
-            header('Location: ' . url('admin/bases-externas/consultas'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas');
         }
 
         echo $this->render('admin/external_databases/queries/edit.html', array_merge([
@@ -277,8 +264,7 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_query_edit_' . $id)) {
-            header('Location: ' . url('admin/bases-externas/consultas/editar/' . $id));
-            exit;
+            $this->redirect('admin/bases-externas/consultas/editar/' . $id);
         }
 
         $data = $this->queryDataFromRequest();
@@ -294,8 +280,7 @@ class ExternalDatabaseAdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/bases-externas/consultas'));
-        exit;
+        $this->redirect('admin/bases-externas/consultas');
     }
 
     public function deleteQuery($id)
@@ -304,8 +289,7 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_query_delete_' . $id)) {
-            header('Location: ' . url('admin/bases-externas/consultas'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas');
         }
 
         $result = $this->queryModel()->deleteById($id);
@@ -314,8 +298,7 @@ class ExternalDatabaseAdminController extends Template
             $this->setFeedback('danger', $result);
         }
 
-        header('Location: ' . url('admin/bases-externas/consultas'));
-        exit;
+        $this->redirect('admin/bases-externas/consultas');
     }
 
     public function testQuery($id)
@@ -324,24 +307,21 @@ class ExternalDatabaseAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('external_query_test_' . $id)) {
-            header('Location: ' . url('admin/bases-externas/consultas'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas');
         }
 
         $query = $this->queryModel()->readById($id);
 
         if (is_string($query)) {
             $this->setFeedback('danger', $query);
-            header('Location: ' . url('admin/bases-externas/consultas'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas');
         }
 
         $source = $this->sourceModel()->readById((int) $query->source_id);
 
         if (is_string($source)) {
             $this->setFeedback('danger', $source);
-            header('Location: ' . url('admin/bases-externas/consultas'));
-            exit;
+            $this->redirect('admin/bases-externas/consultas');
         }
 
         $preview = ExternalDatabaseRuntime::runRegisteredQuery($source, $query);
@@ -445,6 +425,12 @@ class ExternalDatabaseAdminController extends Template
             'type' => $type,
             'message' => $message,
         ];
+    }
+
+    protected function redirect(string $path): never
+    {
+        header('Location: ' . url($path));
+        exit;
     }
 
     private function sourceModel(): ExternalDataSourceModel
