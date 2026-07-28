@@ -58,6 +58,8 @@ Observacao: apenas perfil configurado como `admin` pode salvar o filtro global d
 - Os campos obrigatorios no cadastro sao `Estrategia`, `Eixo` e `Situacao`.
 - O campo `Data de referencia` influencia os filtros de periodo do dashboard.
 - O nome exato do quarto status ainda esta em revisao tecnica entre `Cancelado` e `Suspenso`.
+- Ao abrir uma página interna, o sistema exibe `Carregando...` até a próxima
+  tela ficar disponível. Cliques repetidos são bloqueados durante a navegação.
 
 ## Funcionalidade
 

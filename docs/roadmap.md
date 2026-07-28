@@ -19,7 +19,7 @@ Resultados consolidados:
 - baseline pós-refatoração coletada;
 - cache em arquivo implementado, integrado e homologado;
 - sincronização individual e em lote disponível;
-- dezessete testes locais com 220 assertions;
+- dezoito testes locais com 228 assertions;
 - branch de integração e PR draft #2 preparadas.
 
 ## Marco atual — proteção da integração

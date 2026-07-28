@@ -62,12 +62,13 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os dezessete arquivos de teste passaram:
+Na verificação de 2026-07-28, os dezoito arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
 | `AdminRouteProtectionTest.php` | 8 |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
+| `NavigationLoaderMarkupTest.php` | 8 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
@@ -83,7 +84,7 @@ Na verificação de 2026-07-28, os dezessete arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **220** |
+| **Total** | **228** |
 
 ## Sequência concluída
 

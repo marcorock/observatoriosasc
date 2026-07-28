@@ -43,6 +43,19 @@
 - Suíte ampliada para dezessete testes e 220 assertions.
 - Próximo incremento definido: homologação visual, login e logout.
 
+### Feedback visual de navegação
+
+- Criado `a_modulos/navigation_loader.twig` com overlay, indicador animado e
+  mensagem de carregamento.
+- Integrado o componente a `base.twig` e `base_form.twig`, cobrindo catálogo,
+  dashboards, formulários e área administrativa.
+- Limitada a ativação a links internos que mudam de página; links externos,
+  nova aba, downloads e âncoras locais são ignorados.
+- Adicionados estado `aria-busy`, anúncio acessível e limpeza no evento
+  `pageshow` para retorno pelo navegador.
+- Criado `NavigationLoaderMarkupTest.php` com 8 assertions.
+- Suíte ampliada para dezoito testes e 228 assertions.
+
 ## 2026-07-24
 
 ### Documentação

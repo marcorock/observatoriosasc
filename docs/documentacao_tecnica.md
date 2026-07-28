@@ -15,6 +15,8 @@ Estrutura principal identificada:
 - `app/Database`: conexao e query builder
 - `app/Services`: serviços e builders extraídos do módulo PPA
 - `app/Utils`: helpers, token de formulario e autenticacao administrativa
+- `app/Views/a_modulos/navigation_loader.twig`: feedback global durante
+  navegação interna
 - `routes/web.php`: rotas web
 - `core/app.php`: bootstrap complementar da aplicacao
 - `database`: scripts SQL de referencia
