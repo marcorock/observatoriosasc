@@ -18,15 +18,18 @@ class PpaController extends BaseController
 {
     private ?PpaLinkedQueryService $linkedQueryService = null;
     private ?PpaIndicatorModel $indicatorModel;
+    private ?PpaIndicatorQueryModel $indicatorQueryModel;
     private ?PpaCatalogService $catalogService;
 
     public function __construct(
         ?PpaIndicatorModel $indicatorModel = null,
-        ?PpaCatalogService $catalogService = null
+        ?PpaCatalogService $catalogService = null,
+        ?PpaIndicatorQueryModel $indicatorQueryModel = null
     ) {
         parent::__construct();
         $this->indicatorModel = $indicatorModel;
         $this->catalogService = $catalogService;
+        $this->indicatorQueryModel = $indicatorQueryModel;
     }
 
     /**
@@ -101,7 +104,7 @@ class PpaController extends BaseController
             );
         }
 
-        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+        $links = $this->indicatorQueryModel()->readActiveLinksByIndicatorId((int) $indicator->id);
 
         if (is_string($links) || $links === []) {
             return $this->renderSingleQueryDashboard([
@@ -156,7 +159,7 @@ class PpaController extends BaseController
             ]);
         }
 
-        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+        $links = $this->indicatorQueryModel()->readActiveLinksByIndicatorId((int) $indicator->id);
 
         if (is_string($links) || $links === []) {
             http_response_code(404);
@@ -213,7 +216,7 @@ class PpaController extends BaseController
             ];
         }
 
-        $links = (new PpaIndicatorQueryModel())->readActiveLinksByIndicatorId((int) $indicator->id);
+        $links = $this->indicatorQueryModel()->readActiveLinksByIndicatorId((int) $indicator->id);
 
         if (is_string($links) || $links === []) {
             return [
@@ -1204,6 +1207,11 @@ class PpaController extends BaseController
     private function catalogService(): PpaCatalogService
     {
         return $this->catalogService ??= new PpaCatalogService();
+    }
+
+    private function indicatorQueryModel(): PpaIndicatorQueryModel
+    {
+        return $this->indicatorQueryModel ??= new PpaIndicatorQueryModel();
     }
 
     private function firstNumericMetric(array $values): ?float
