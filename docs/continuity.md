@@ -75,6 +75,7 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `NavigationLoaderMarkupTest.php` | 8 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
+| `PpaAdminCrudFlowTest.php` | 18 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
@@ -88,7 +89,7 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **289** |
+| **Total** | **307** |
 
 ## Sequência concluída
 
@@ -230,9 +231,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente criação, edição e exclusão de fonte e consulta
-descartáveis, sem executar teste de conexão. Depois, cobrir indicadores e
-vínculos PPA com models em memória.
+Homologar visualmente criação, edição e exclusão de indicador e vínculo
+descartáveis. O fluxo automatizado correspondente já está coberto com models
+em memória; depois da homologação, revisar a PR #2.
 
 ## Regra documental para cada incremento
 

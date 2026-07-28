@@ -104,6 +104,18 @@
 - Suíte ampliada para vinte e dois testes e 289 assertions.
 - Próximo incremento definido: indicadores e vínculos PPA.
 
+### CRUD de indicadores e vínculos PPA
+
+- Permitida a injeção opcional dos models de indicadores, vínculos e consultas
+  externas no controller administrativo do PPA.
+- Centralizados os redirecionamentos em método substituível durante testes,
+  preservando o comportamento do runtime.
+- Criado `PpaAdminCrudFlowTest.php` com armazenamento somente em memória.
+- Cobertas criação, edição e exclusão de indicadores e vínculos, incluindo
+  normalização dos dados e redirecionamentos.
+- Suíte ampliada para vinte e três testes e 307 assertions.
+- Próximo incremento definido: homologação visual e revisão da PR #2.
+
 ## 2026-07-24
 
 ### Documentação

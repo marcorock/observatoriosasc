@@ -15,7 +15,7 @@ mensurável do PPA.
 | Módulo | Estado | Próxima necessidade |
 | --- | --- | --- |
 | Home e navegação | Funcional | Homologação visual contínua |
-| Administração | Login, sessão e CRUD funcionais | Homologar fluxos sensíveis |
+| Administração | Login, sessão e CRUD cobertos por testes locais | Homologar indicadores e vínculos |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
 | PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Ampliar smoke tests HTTP |
 | PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e dois testes locais passaram com 289 assertions. O
+Em 2026-07-28, os vinte e três testes locais passaram com 307 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -75,11 +75,12 @@ devem configurar suas credenciais no `.env`.
   concorrência.
 - Somente indicadores previamente sincronizados usam cache; os demais
   continuam consultando as fontes externas.
-- Os testes atuais se concentram nos serviços e builders; rotas HTTP, templates
-  e fluxos administrativos ainda precisam de cobertura automatizada.
+- Os testes atuais cobrem serviços, builders, rotas HTTP representativas,
+  autenticação e os CRUDs administrativos principais; ainda falta homologação
+  visual completa.
 - Alguns models ainda executam `CREATE TABLE IF NOT EXISTS` durante o runtime.
 
 ## Próximo passo recomendado
 
-Homologar visualmente o CRUD descartável de fontes e consultas. Depois, cobrir
-indicadores e vínculos PPA.
+Homologar visualmente o CRUD descartável de indicadores e vínculos. Depois,
+revisar a PR #2 em pequenos incrementos.
