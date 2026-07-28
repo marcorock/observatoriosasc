@@ -24,12 +24,14 @@ class PpaController extends BaseController
     public function __construct(
         ?PpaIndicatorModel $indicatorModel = null,
         ?PpaCatalogService $catalogService = null,
-        ?PpaIndicatorQueryModel $indicatorQueryModel = null
+        ?PpaIndicatorQueryModel $indicatorQueryModel = null,
+        ?PpaLinkedQueryService $linkedQueryService = null
     ) {
         parent::__construct();
         $this->indicatorModel = $indicatorModel;
         $this->catalogService = $catalogService;
         $this->indicatorQueryModel = $indicatorQueryModel;
+        $this->linkedQueryService = $linkedQueryService;
     }
 
     /**
