@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte testes locais, com 255 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e um testes locais, com 273 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -92,6 +92,9 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
   - [x] filtro por CRAS e região com cache hit;
   - [x] cache miss com fallback externo controlado.
 - [ ] Fluxos administrativos do PPA.
+- [ ] CRUDs de fontes e consultas externas:
+  - [x] validação de payload, SQL SELECT e senha criptografada;
+  - [ ] fluxo de criação, edição e exclusão com models em memória.
 - [ ] Catálogo e dashboards públicos em desktop e mobile.
 - [x] Login, logout e CRUD de usuários administrativos:
   - [x] login válido e credenciais inválidas;

@@ -62,7 +62,7 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os vinte arquivos de teste passaram:
+Na verificação de 2026-07-28, os vinte e um arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
@@ -70,6 +70,7 @@ Na verificação de 2026-07-28, os vinte arquivos de teste passaram:
 | `AdminRouteProtectionTest.php` | 8 |
 | `AdminUserCrudValidationTest.php` | 16 |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
+| `ExternalAdminPayloadValidationTest.php` | 18 |
 | `NavigationLoaderMarkupTest.php` | 8 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
@@ -86,7 +87,7 @@ Na verificação de 2026-07-28, os vinte arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **255** |
+| **Total** | **273** |
 
 ## Sequência concluída
 
@@ -228,9 +229,8 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente o CRUD de usuários com um cadastro descartável. Depois,
-iniciar a cobertura dos CRUDs de fontes e consultas externas, sem abrir
-conexões reais.
+Cobrir o fluxo dos controllers de fontes e consultas com models em memória,
+sem persistência ou conexão externa real.
 
 ## Regra documental para cada incremento
 

@@ -80,6 +80,18 @@
 - Suíte ampliada para vinte testes e 255 assertions.
 - Próximo incremento definido: CRUDs de fontes e consultas externas.
 
+### Validações de fontes e consultas externas
+
+- Criado `ExternalAdminPayloadValidationTest.php` sem banco ou conexão externa.
+- Cobertos campos obrigatórios, porta, charset, senha obrigatória e preservação
+  da senha existente na edição.
+- Confirmado que a senha é criptografada e recuperável somente pela chave
+  configurada no teste.
+- Cobertos fonte obrigatória, nome da consulta, bloqueio de SQL não `SELECT`,
+  normalização do SQL e status ativo.
+- Suíte ampliada para vinte e um testes e 273 assertions.
+- Próximo incremento definido: controllers com models em memória.
+
 ## 2026-07-24
 
 ### Documentação
