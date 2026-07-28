@@ -148,8 +148,7 @@ class AdminController extends Template
         adminRequireAuth('admin');
 
         if (!validateFormToken('admin_user_create')) {
-            header('Location: ' . url('admin/usuarios/novo'));
-            exit;
+            $this->redirect('admin/usuarios/novo');
         }
 
         $data = $this->userDataFromRequest(true);
@@ -194,8 +193,7 @@ class AdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/usuarios'));
-        exit;
+        $this->redirect('admin/usuarios');
     }
 
     public function editUser($id)
@@ -205,8 +203,7 @@ class AdminController extends Template
         $usuario = $this->adminModel()->readById((int) $id);
 
         if (is_string($usuario)) {
-            header('Location: ' . url('admin/usuarios'));
-            exit;
+            $this->redirect('admin/usuarios');
         }
 
         echo $this->render('admin/users/edit.html', array_merge([
@@ -236,15 +233,13 @@ class AdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('admin_user_edit_' . $id)) {
-            header('Location: ' . url('admin/usuarios/editar/' . $id));
-            exit;
+            $this->redirect('admin/usuarios/editar/' . $id);
         }
 
         $existing = $this->adminModel()->readById($id);
 
         if (is_string($existing)) {
-            header('Location: ' . url('admin/usuarios'));
-            exit;
+            $this->redirect('admin/usuarios');
         }
 
         $data = $this->userDataFromRequest(false);
@@ -295,8 +290,7 @@ class AdminController extends Template
             return;
         }
 
-        header('Location: ' . url('admin/usuarios'));
-        exit;
+        $this->redirect('admin/usuarios');
     }
 
     public function deleteUser($id)
@@ -306,14 +300,12 @@ class AdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('admin_user_delete_' . $id)) {
-            header('Location: ' . url('admin/usuarios'));
-            exit;
+            $this->redirect('admin/usuarios');
         }
 
         if ($id === (int) $this->adminSession()->id) {
             $_SESSION['admin_users_error'] = 'Você não pode excluir o usuário que está autenticado nesta sessão.';
-            header('Location: ' . url('admin/usuarios'));
-            exit;
+            $this->redirect('admin/usuarios');
         }
 
         $result = $this->adminModel()->deleteById($id);
@@ -322,8 +314,7 @@ class AdminController extends Template
             $_SESSION['admin_users_error'] = $result;
         }
 
-        header('Location: ' . url('admin/usuarios'));
-        exit;
+        $this->redirect('admin/usuarios');
     }
 
     public function logout()
