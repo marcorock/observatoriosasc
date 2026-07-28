@@ -66,7 +66,7 @@
                             <div class="d-flex align-items-start gap-3 mb-3">
                                 <i class="bi bi-arrow-repeat fs-2 text-primary" aria-hidden="true"></i>
                                 <div>
-                                    <h2 class="h5 mb-1">Sincronizar um indicador</h2>
+                                    <h2 class="h5 mb-1">Sincronização dos indicadores</h2>
                                     <p class="text-body-secondary mb-0">
                                         Busca dados novos na fonte externa, atualiza o dashboard e depois atualiza o resumo do catálogo.
                                     </p>
@@ -78,45 +78,63 @@
                                     Cadastre e ative um indicador antes de iniciar a sincronização.
                                 </div>
                             {% else %}
-                                <form
-                                    id="ppaSynchronizationForm"
-                                    method="post"
-                                    action="{{ url('admin/ppa/sincronizar') }}"
-                                >
-                                    {{ form_token_input('ppa_indicator_synchronize') }}
+                                <div class="table-responsive border rounded">
+                                    <table class="table align-middle mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Indicador</th>
+                                                <th scope="col">Situação</th>
+                                                <th scope="col">Última atualização</th>
+                                                <th scope="col" class="text-end">Ação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for indicator in indicators %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="fw-semibold">{{ indicator.codigo_indicador }}</div>
+                                                        <div class="small text-body-secondary">{{ indicator.nome }}</div>
+                                                    </td>
+                                                    <td>
+                                                        {% if indicator.ultima_sincronizacao_em %}
+                                                            <span class="badge text-bg-success">Atualizado</span>
+                                                        {% else %}
+                                                            <span class="badge text-bg-warning">Pendente</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if indicator.ultima_sincronizacao_em %}
+                                                            <time datetime="{{ indicator.ultima_sincronizacao_em }}">
+                                                                {{ indicator.ultima_sincronizacao_em|date('d/m/Y H:i') }}
+                                                            </time>
+                                                        {% else %}
+                                                            <span class="text-body-secondary">Nunca sincronizado</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <form
+                                                            class="ppa-synchronization-form d-inline"
+                                                            method="post"
+                                                            action="{{ url('admin/ppa/sincronizar') }}"
+                                                            data-indicator="{{ indicator.codigo_indicador }}"
+                                                        >
+                                                            {{ form_token_input('ppa_indicator_synchronize') }}
+                                                            <input type="hidden" name="indicador_id" value="{{ indicator.id }}">
+                                                            <button type="submit" class="ppa-synchronization-button btn btn-sm btn-primary">
+                                                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                                                                <span>Sincronizar</span>
+                                                            </button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-12 col-lg">
-                                            <label for="synchronizationIndicatorId" class="form-label">
-                                                Indicador ativo
-                                            </label>
-                                            <select
-                                                id="synchronizationIndicatorId"
-                                                name="indicador_id"
-                                                class="form-select"
-                                                required
-                                            >
-                                                <option value="">Selecione um indicador</option>
-                                                {% for indicator in indicators %}
-                                                    <option value="{{ indicator.id }}">
-                                                        {{ indicator.codigo_indicador }} — {{ indicator.nome }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-
-                                        <div class="col-12 col-lg-auto d-grid">
-                                            <button id="ppaSynchronizationButton" type="submit" class="btn btn-primary">
-                                                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
-                                                <span>Sincronizar agora</span>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-text mt-3">
-                                        A operação pode demorar. Se ocorrer uma falha, o último cache válido será preservado.
-                                    </div>
-                                </form>
+                                <div class="form-text mt-3">
+                                    A operação pode demorar. Se ocorrer uma falha, o último cache válido será preservado.
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -144,29 +162,32 @@
 {% block js %}
 <script>
     (function () {
-        const form = document.getElementById('ppaSynchronizationForm');
-        const button = document.getElementById('ppaSynchronizationButton');
+        const forms = document.querySelectorAll('.ppa-synchronization-form');
 
-        if (!form || !button) {
+        if (!forms.length) {
             return;
         }
 
-        form.addEventListener('submit', function (event) {
-            const confirmed = window.confirm(
-                'Deseja buscar dados novos na fonte externa e atualizar este indicador?'
-            );
+        forms.forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                const indicator = form.dataset.indicator || 'selecionado';
+                const button = form.querySelector('.ppa-synchronization-button');
+                const confirmed = window.confirm(
+                    `Deseja buscar dados novos na fonte externa e atualizar ${indicator}?`
+                );
 
-            if (!confirmed) {
-                event.preventDefault();
-                return;
-            }
+                if (!confirmed) {
+                    event.preventDefault();
+                    return;
+                }
 
-            button.disabled = true;
-            button.setAttribute('aria-busy', 'true');
-            button.innerHTML = [
-                '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>',
-                '<span>Sincronizando...</span>'
-            ].join(' ');
+                button.disabled = true;
+                button.setAttribute('aria-busy', 'true');
+                button.innerHTML = [
+                    '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>',
+                    '<span>Sincronizando...</span>'
+                ].join(' ');
+            });
         });
     })();
 </script>

@@ -33,13 +33,22 @@ final class PpaAdminSynchronizationTemplate extends Template
     {
         return $this->render('admin/ppa/index.html', [
             'feedback' => null,
-            'indicadores_total' => 1,
+            'indicadores_total' => 2,
             'vinculos_total' => 1,
             'indicators' => [
                 (object) [
                     'id' => 7,
                     'codigo_indicador' => 'PPA-TESTE',
                     'nome' => 'Indicador de teste',
+                    'ultima_sincronizacao_em' => '2026-07-28 14:30:00',
+                    'sincronizacao_status' => 'Atualizado',
+                ],
+                (object) [
+                    'id' => 8,
+                    'codigo_indicador' => 'PPA-PENDENTE',
+                    'nome' => 'Indicador pendente',
+                    'ultima_sincronizacao_em' => null,
+                    'sincronizacao_status' => 'Pendente',
                 ],
             ],
             'system' => 'Observatório',
@@ -209,6 +218,31 @@ $assertSame(
     str_contains($renderedDashboard, 'name="_form_token"'),
     'o template completo deve compilar e renderizar o token de segurança'
 );
+$assertSame(
+    true,
+    str_contains($renderedDashboard, 'Última atualização'),
+    'a tabela deve identificar a coluna da última atualização'
+);
+$assertSame(
+    true,
+    str_contains($renderedDashboard, '28/07/2026 14:30'),
+    'a tabela deve formatar a data da última sincronização concluída'
+);
+$assertSame(
+    true,
+    str_contains($renderedDashboard, 'Nunca sincronizado'),
+    'a tabela deve identificar indicadores ainda pendentes'
+);
+$assertSame(
+    2,
+    substr_count($renderedDashboard, 'class="ppa-synchronization-form d-inline"'),
+    'cada indicador deve possuir seu próprio formulário de sincronização'
+);
+$assertSame(
+    2,
+    substr_count($renderedDashboard, 'class="ppa-synchronization-button btn btn-sm btn-primary"'),
+    'cada indicador deve possuir seu próprio botão'
+);
 
 $_POST = [];
 $_SESSION = [];
@@ -218,4 +252,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (16 assertions)\n");
+fwrite(STDOUT, "OK (21 assertions)\n");
