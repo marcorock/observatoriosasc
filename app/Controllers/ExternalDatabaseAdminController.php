@@ -9,12 +9,24 @@ use App\Models\ExternalQueryModel;
 
 class ExternalDatabaseAdminController extends Template
 {
+    private ?ExternalDataSourceModel $sourceModel;
+    private ?ExternalQueryModel $queryModel;
+
+    public function __construct(
+        ?ExternalDataSourceModel $sourceModel = null,
+        ?ExternalQueryModel $queryModel = null
+    ) {
+        parent::__construct();
+        $this->sourceModel = $sourceModel;
+        $this->queryModel = $queryModel;
+    }
+
     public function sources()
     {
         adminRequireAuth('admin');
         adminEnsureSession();
 
-        $dados = (new ExternalDataSourceModel())->readAll();
+        $dados = $this->sourceModel()->readAll();
         $feedback = $_SESSION['external_db_feedback'] ?? null;
         unset($_SESSION['external_db_feedback']);
 
@@ -61,7 +73,7 @@ class ExternalDatabaseAdminController extends Template
         }
 
         $data = $this->sourceDataFromRequest(true);
-        $result = (new ExternalDataSourceModel())->create($data);
+        $result = $this->sourceModel()->create($data);
 
         if ($result !== true) {
             echo $this->render('admin/external_databases/sources/create.html', array_merge([
@@ -79,7 +91,7 @@ class ExternalDatabaseAdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $dados = (new ExternalDataSourceModel())->readById((int) $id);
+        $dados = $this->sourceModel()->readById((int) $id);
 
         if (is_string($dados)) {
             header('Location: ' . url('admin/bases-externas'));
@@ -113,7 +125,7 @@ class ExternalDatabaseAdminController extends Template
         }
 
         $data = $this->sourceDataFromRequest(false);
-        $result = (new ExternalDataSourceModel())->updateById($id, $data);
+        $result = $this->sourceModel()->updateById($id, $data);
 
         if ($result !== true) {
             echo $this->render('admin/external_databases/sources/edit.html', array_merge([
@@ -137,7 +149,7 @@ class ExternalDatabaseAdminController extends Template
             exit;
         }
 
-        $result = (new ExternalDataSourceModel())->deleteById($id);
+        $result = $this->sourceModel()->deleteById($id);
 
         if ($result !== true) {
             $this->setFeedback('danger', $result);
@@ -157,7 +169,7 @@ class ExternalDatabaseAdminController extends Template
             exit;
         }
 
-        $source = (new ExternalDataSourceModel())->readById($id);
+        $source = $this->sourceModel()->readById($id);
 
         if (is_string($source)) {
             $this->setFeedback('danger', $source);
@@ -176,7 +188,7 @@ class ExternalDatabaseAdminController extends Template
         adminRequireAuth('admin');
         adminEnsureSession();
 
-        $dados = (new ExternalQueryModel())->readAll();
+        $dados = $this->queryModel()->readAll();
         $feedback = $_SESSION['external_db_feedback'] ?? null;
         unset($_SESSION['external_db_feedback']);
 
@@ -206,7 +218,7 @@ class ExternalDatabaseAdminController extends Template
     public function createQuery()
     {
         adminRequireAuth('admin');
-        $sources = (new ExternalDataSourceModel())->readActiveOptions();
+        $sources = $this->sourceModel()->readActiveOptions();
 
         echo $this->render('admin/external_databases/queries/create.html', array_merge([
             'erro' => null,
@@ -225,8 +237,8 @@ class ExternalDatabaseAdminController extends Template
         }
 
         $data = $this->queryDataFromRequest();
-        $sources = (new ExternalDataSourceModel())->readActiveOptions();
-        $result = (new ExternalQueryModel())->create($data);
+        $sources = $this->sourceModel()->readActiveOptions();
+        $result = $this->queryModel()->create($data);
 
         if ($result !== true) {
             echo $this->render('admin/external_databases/queries/create.html', array_merge([
@@ -244,8 +256,8 @@ class ExternalDatabaseAdminController extends Template
     public function editQuery($id)
     {
         adminRequireAuth('admin');
-        $sources = (new ExternalDataSourceModel())->readActiveOptions();
-        $dados = (new ExternalQueryModel())->readById((int) $id);
+        $sources = $this->sourceModel()->readActiveOptions();
+        $dados = $this->queryModel()->readById((int) $id);
 
         if (is_string($dados)) {
             header('Location: ' . url('admin/bases-externas/consultas'));
@@ -270,8 +282,8 @@ class ExternalDatabaseAdminController extends Template
         }
 
         $data = $this->queryDataFromRequest();
-        $sources = (new ExternalDataSourceModel())->readActiveOptions();
-        $result = (new ExternalQueryModel())->updateById($id, $data);
+        $sources = $this->sourceModel()->readActiveOptions();
+        $result = $this->queryModel()->updateById($id, $data);
 
         if ($result !== true) {
             echo $this->render('admin/external_databases/queries/edit.html', array_merge([
@@ -296,7 +308,7 @@ class ExternalDatabaseAdminController extends Template
             exit;
         }
 
-        $result = (new ExternalQueryModel())->deleteById($id);
+        $result = $this->queryModel()->deleteById($id);
 
         if ($result !== true) {
             $this->setFeedback('danger', $result);
@@ -316,7 +328,7 @@ class ExternalDatabaseAdminController extends Template
             exit;
         }
 
-        $query = (new ExternalQueryModel())->readById($id);
+        $query = $this->queryModel()->readById($id);
 
         if (is_string($query)) {
             $this->setFeedback('danger', $query);
@@ -324,7 +336,7 @@ class ExternalDatabaseAdminController extends Template
             exit;
         }
 
-        $source = (new ExternalDataSourceModel())->readById((int) $query->source_id);
+        $source = $this->sourceModel()->readById((int) $query->source_id);
 
         if (is_string($source)) {
             $this->setFeedback('danger', $source);
@@ -433,5 +445,15 @@ class ExternalDatabaseAdminController extends Template
             'type' => $type,
             'message' => $message,
         ];
+    }
+
+    private function sourceModel(): ExternalDataSourceModel
+    {
+        return $this->sourceModel ??= new ExternalDataSourceModel();
+    }
+
+    private function queryModel(): ExternalQueryModel
+    {
+        return $this->queryModel ??= new ExternalQueryModel();
     }
 }
