@@ -135,7 +135,9 @@
 - Mantido o último cache válido quando a consulta externa falha.
 - Criados testes do serviço e do fluxo administrativo; a proteção contra
   acesso anônimo também foi ampliada.
-- Suíte ampliada para vinte e seis testes e 341 assertions.
+- Corrigida a geração do token no Twig com a função registrada
+  `form_token_input`, incluindo renderização real do template no teste.
+- Suíte ampliada para vinte e seis testes e 342 assertions.
 - Próximo incremento definido: homologação visual e posterior agendamento
   automático.
 

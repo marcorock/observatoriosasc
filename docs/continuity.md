@@ -77,7 +77,7 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaAdminCrudFlowTest.php` | 18 |
-| `PpaAdminSynchronizationFlowTest.php` | 15 |
+| `PpaAdminSynchronizationFlowTest.php` | 16 |
 | `PpaAdminSynchronizationServiceTest.php` | 11 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
@@ -92,7 +92,7 @@ Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **341** |
+| **Total** | **342** |
 
 ## Sequência concluída
 
