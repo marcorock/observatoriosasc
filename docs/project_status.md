@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e um testes locais passaram com 273 assertions. O
+Em 2026-07-28, os vinte e dois testes locais passaram com 289 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -81,5 +81,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Cobrir criação, edição e exclusão de fontes e consultas usando models em
-memória, sem conexão externa.
+Homologar visualmente o CRUD descartável de fontes e consultas. Depois, cobrir
+indicadores e vínculos PPA.

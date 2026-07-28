@@ -92,6 +92,18 @@
 - Suíte ampliada para vinte e um testes e 273 assertions.
 - Próximo incremento definido: controllers com models em memória.
 
+### CRUD de fontes e consultas externas
+
+- Permitida a injeção opcional de `ExternalDataSourceModel` e
+  `ExternalQueryModel` no controller administrativo.
+- Centralizados os redirecionamentos do fluxo em método substituível durante
+  testes, preservando os destinos do runtime.
+- Criado `ExternalAdminCrudFlowTest.php` com armazenamento somente em memória.
+- Cobertos criação, edição e exclusão de fontes e consultas, normalização de
+  IDs e porta, senha vazia na edição e redirecionamentos.
+- Suíte ampliada para vinte e dois testes e 289 assertions.
+- Próximo incremento definido: indicadores e vínculos PPA.
+
 ## 2026-07-24
 
 ### Documentação

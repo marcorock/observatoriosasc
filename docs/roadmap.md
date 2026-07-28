@@ -19,7 +19,7 @@ Resultados consolidados:
 - baseline pós-refatoração coletada;
 - cache em arquivo implementado, integrado e homologado;
 - sincronização individual e em lote disponível;
-- vinte e um testes locais com 273 assertions;
+- vinte e dois testes locais com 289 assertions;
 - branch de integração e PR draft #2 preparadas.
 
 ## Marco atual — proteção da integração
@@ -30,8 +30,8 @@ Resultados consolidados:
    integração.
 2. Concluído — catálogo, dashboard HTML e erros do endpoint JSON cobertos.
 3. Concluído — filtros, cache hit e cache miss cobertos.
-4. Em andamento — acesso, login, logout e usuários cobertos; faltam fontes,
-   consultas, indicadores e vínculos.
+4. Em andamento — acesso, login, logout, usuários, fontes e consultas cobertos;
+   faltam indicadores e vínculos.
 5. Revisar a PR #2 e tratar observações em commits pequenos.
 6. Marcar a PR como pronta e realizar merge somente após aprovação.
 
