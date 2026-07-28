@@ -61,6 +61,68 @@
                 {% endif %}
 
                 <div class="col-12">
+                    <div class="card shadow-sm border h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start gap-3 mb-3">
+                                <i class="bi bi-arrow-repeat fs-2 text-primary" aria-hidden="true"></i>
+                                <div>
+                                    <h2 class="h5 mb-1">Sincronizar um indicador</h2>
+                                    <p class="text-body-secondary mb-0">
+                                        Busca dados novos na fonte externa, atualiza o dashboard e depois atualiza o resumo do catálogo.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {% if indicators is empty %}
+                                <div class="alert alert-warning mb-0">
+                                    Cadastre e ative um indicador antes de iniciar a sincronização.
+                                </div>
+                            {% else %}
+                                <form
+                                    id="ppaSynchronizationForm"
+                                    method="post"
+                                    action="{{ url('admin/ppa/sincronizar') }}"
+                                >
+                                    <input type="hidden" name="_form_token" value="{{ formToken('ppa_indicator_synchronize') }}">
+
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-12 col-lg">
+                                            <label for="synchronizationIndicatorId" class="form-label">
+                                                Indicador ativo
+                                            </label>
+                                            <select
+                                                id="synchronizationIndicatorId"
+                                                name="indicador_id"
+                                                class="form-select"
+                                                required
+                                            >
+                                                <option value="">Selecione um indicador</option>
+                                                {% for indicator in indicators %}
+                                                    <option value="{{ indicator.id }}">
+                                                        {{ indicator.codigo_indicador }} — {{ indicator.nome }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 col-lg-auto d-grid">
+                                            <button id="ppaSynchronizationButton" type="submit" class="btn btn-primary">
+                                                <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i>
+                                                <span>Sincronizar agora</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-text mt-3">
+                                        A operação pode demorar. Se ocorrer uma falha, o último cache válido será preservado.
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
                     <div class="card shadow-sm border-0 h-100">
                         <div class="card-body p-4">
                             <h2 class="h5 mb-3">Escopo desta fase</h2>
@@ -78,3 +140,34 @@
     </div>
 </div>
 {% endblock main %}
+
+{% block js %}
+<script>
+    (function () {
+        const form = document.getElementById('ppaSynchronizationForm');
+        const button = document.getElementById('ppaSynchronizationButton');
+
+        if (!form || !button) {
+            return;
+        }
+
+        form.addEventListener('submit', function (event) {
+            const confirmed = window.confirm(
+                'Deseja buscar dados novos na fonte externa e atualizar este indicador?'
+            );
+
+            if (!confirmed) {
+                event.preventDefault();
+                return;
+            }
+
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+            button.innerHTML = [
+                '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>',
+                '<span>Sincronizando...</span>'
+            ].join(' ');
+        });
+    })();
+</script>
+{% endblock js %}

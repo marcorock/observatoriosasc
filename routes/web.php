@@ -44,6 +44,7 @@ Route::group(["namespace" => "App\Controllers"], function(){
     Route::post('/admin/bases-externas/consultas/delete/{id}', [ExternalDatabaseAdminController::class, 'deleteQuery']);
     Route::post('/admin/bases-externas/consultas/testar/{id}', [ExternalDatabaseAdminController::class, 'testQuery']);
     Route::get('/admin/ppa', [PpaAdminController::class, 'dashboard']);
+    Route::post('/admin/ppa/sincronizar', [PpaAdminController::class, 'synchronizeIndicator']);
     Route::get('/admin/ppa/indicadores', [PpaAdminController::class, 'indicators']);
     Route::get('/admin/ppa/indicadores/novo', [PpaAdminController::class, 'createIndicator']);
     Route::post('/admin/ppa/indicadores/store', [PpaAdminController::class, 'storeIndicator']);

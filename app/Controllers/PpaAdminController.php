@@ -6,22 +6,26 @@ use App\Core\Template;
 use App\Models\ExternalQueryModel;
 use App\Models\PpaIndicatorModel;
 use App\Models\PpaIndicatorQueryModel;
+use App\Services\PpaAdminSynchronizationService;
 
 class PpaAdminController extends Template
 {
     private ?PpaIndicatorModel $indicatorModel;
     private ?PpaIndicatorQueryModel $linkModel;
     private ?ExternalQueryModel $externalQueryModel;
+    private ?PpaAdminSynchronizationService $synchronizationService;
 
     public function __construct(
         ?PpaIndicatorModel $indicatorModel = null,
         ?PpaIndicatorQueryModel $linkModel = null,
-        ?ExternalQueryModel $externalQueryModel = null
+        ?ExternalQueryModel $externalQueryModel = null,
+        ?PpaAdminSynchronizationService $synchronizationService = null
     ) {
         parent::__construct();
         $this->indicatorModel = $indicatorModel;
         $this->linkModel = $linkModel;
         $this->externalQueryModel = $externalQueryModel;
+        $this->synchronizationService = $synchronizationService;
     }
 
     public function dashboard()
@@ -38,7 +42,54 @@ class PpaAdminController extends Template
             'feedback' => $feedback,
             'indicadores_total' => is_array($indicatorCount) ? count($indicatorCount) : 0,
             'vinculos_total' => is_array($linkCount) ? count($linkCount) : 0,
+            'indicators' => is_array($indicatorCount)
+                ? array_values(array_filter(
+                    $indicatorCount,
+                    static fn (object $indicator): bool => (int) ($indicator->ativo ?? 0) === 1
+                ))
+                : [],
         ], $this->pageDefaults('Modulo PPA', 'Cadastro de indicadores e vinculos com consultas externas')));
+    }
+
+    public function synchronizeIndicator()
+    {
+        adminRequireAuth('admin');
+
+        if (!validateFormToken('ppa_indicator_synchronize')) {
+            $this->setFeedback('danger', 'A confirmacao de seguranca expirou. Tente novamente.');
+            $this->redirect('admin/ppa');
+        }
+
+        $indicatorId = (int) ($_POST['indicador_id'] ?? 0);
+
+        try {
+            $result = $this->synchronizationService()->synchronizeIndicator($indicatorId);
+        } catch (\Throwable) {
+            $result = [
+                'success' => false,
+                'error' => 'Ocorreu uma falha inesperada durante a sincronizacao.',
+            ];
+        }
+
+        if (($result['success'] ?? false) === true) {
+            $indicatorCode = trim((string) ($result['indicator_code'] ?? ''));
+            $entries = (int) ($result['entries_written'] ?? 0);
+            $catalogMessage = ($result['result_inserted'] ?? false)
+                ? 'Um novo resultado foi consolidado no catalogo.'
+                : 'O resultado consolidado do catalogo ja estava atualizado.';
+
+            $this->setFeedback(
+                'success',
+                "Indicador {$indicatorCode} sincronizado com sucesso. {$entries} entrada(s) do dashboard atualizada(s). {$catalogMessage}"
+            );
+        } else {
+            $this->setFeedback(
+                'danger',
+                (string) ($result['error'] ?? 'Nao foi possivel sincronizar o indicador.')
+            );
+        }
+
+        $this->redirect('admin/ppa');
     }
 
     public function indicators()
@@ -436,5 +487,10 @@ class PpaAdminController extends Template
     private function externalQueryModel(): ExternalQueryModel
     {
         return $this->externalQueryModel ??= new ExternalQueryModel();
+    }
+
+    private function synchronizationService(): PpaAdminSynchronizationService
+    {
+        return $this->synchronizationService ??= new PpaAdminSynchronizationService();
     }
 }

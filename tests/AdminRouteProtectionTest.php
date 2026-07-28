@@ -48,6 +48,7 @@ $assertProtected($admin->users(...), 'protects administrative users');
 $assertProtected($externalDatabases->sources(...), 'protects external data sources');
 $assertProtected($externalDatabases->queries(...), 'protects external queries');
 $assertProtected($ppa->dashboard(...), 'protects the PPA administrative panel');
+$assertProtected($ppa->synchronizeIndicator(...), 'protects PPA administrative synchronization');
 $assertProtected($ppa->indicators(...), 'protects PPA indicators');
 $assertProtected($ppa->links(...), 'protects PPA query links');
 $assertProtected($bsc->records(...), 'protects the complete BSC records');
@@ -57,4 +58,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (8 assertions)\n");
+fwrite(STDOUT, "OK (9 assertions)\n");
