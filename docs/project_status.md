@@ -14,7 +14,7 @@ mensurável do PPA.
 
 | Módulo | Estado | Próxima necessidade |
 | --- | --- | --- |
-| Home e navegação | Funcional | Homologação visual contínua |
+| Home e navegação | Fundo e cards preparados para temas claro e escuro | Homologação visual |
 | Administração | Login, sessão e CRUD cobertos por testes locais | Homologar indicadores e vínculos |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
 | PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Ampliar smoke tests HTTP |
@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e três testes locais passaram com 307 assertions. O
+Em 2026-07-28, os vinte e quatro testes locais passaram com 314 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 

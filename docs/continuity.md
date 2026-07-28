@@ -72,6 +72,7 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `ExternalDatabaseRuntimeTest.php` | 9 |
 | `ExternalAdminCrudFlowTest.php` | 16 |
 | `ExternalAdminPayloadValidationTest.php` | 18 |
+| `HomeThemeMarkupTest.php` | 7 |
 | `NavigationLoaderMarkupTest.php` | 8 |
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
@@ -89,7 +90,7 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **307** |
+| **Total** | **314** |
 
 ## Sequência concluída
 

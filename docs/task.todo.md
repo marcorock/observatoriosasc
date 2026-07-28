@@ -58,7 +58,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte e três testes locais, com 307 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e quatro testes locais, com 314 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
@@ -108,6 +108,7 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 ## Backlog fora da frente atual
 
 - [x] Exibir feedback de carregamento na navegação interna.
+- [x] Preparar fundo e cards da Home para os temas claro e escuro.
 - [ ] Corrigir `cancelado` x `Suspenso` no BSC.
 - [ ] Evoluir CadÚnico.
 - [ ] Definir o próximo módulo entre SASC-SA, OSC e POPWEB.

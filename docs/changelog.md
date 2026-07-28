@@ -116,6 +116,15 @@
 - Suíte ampliada para vinte e três testes e 307 assertions.
 - Próximo incremento definido: homologação visual e revisão da PR #2.
 
+### Padronização visual da Home
+
+- Removido o fundo gelo fixo da Home em favor da cor padrão do tema ativo.
+- Cards dos módulos passaram a usar fundo, texto e borda dos temas claro e
+  escuro.
+- Mantidas as cores de identificação e os links de BSC, PPA e CadÚnico.
+- Criado `HomeThemeMarkupTest.php` com 7 assertions.
+- Suíte ampliada para vinte e quatro testes e 314 assertions.
+
 ## 2026-07-24
 
 ### Documentação
