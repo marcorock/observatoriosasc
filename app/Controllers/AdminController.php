@@ -7,12 +7,12 @@ use App\Models\AdminModel;
 
 class AdminController extends Template
 {
-    private ?AdminModel $authenticationModel;
+    private ?AdminModel $adminModel;
 
-    public function __construct(?AdminModel $authenticationModel = null)
+    public function __construct(?AdminModel $adminModel = null)
     {
         parent::__construct();
-        $this->authenticationModel = $authenticationModel;
+        $this->adminModel = $adminModel;
     }
 
     public function login()
@@ -48,7 +48,7 @@ class AdminController extends Template
             return;
         }
 
-        $admin = $this->authenticationModel()->findActiveByCpf($cpf);
+        $admin = $this->adminModel()->findActiveByCpf($cpf);
 
         if ($admin === null || !password_verify($senha, (string) $admin->senha_hash)) {
             echo $this->render('admin/login.html', [
@@ -72,7 +72,7 @@ class AdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $model = new AdminModel();
+        $model = $this->adminModel();
         $usuarios = $model->readAll();
 
         echo $this->render('admin/panel.html', array_merge([
@@ -105,7 +105,7 @@ class AdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $model = new AdminModel();
+        $model = $this->adminModel();
         $usuarios = $model->readAll();
         $erroSessao = $_SESSION['admin_users_error'] ?? null;
         unset($_SESSION['admin_users_error']);
@@ -171,7 +171,7 @@ class AdminController extends Template
             return;
         }
 
-        $result = (new AdminModel())->create([
+        $result = $this->adminModel()->create([
             'nome' => $data['nome'],
             'cpf' => $data['cpf'],
             'senha_hash' => password_hash($data['senha'], PASSWORD_DEFAULT),
@@ -202,7 +202,7 @@ class AdminController extends Template
     {
         adminRequireAuth('admin');
 
-        $usuario = (new AdminModel())->readById((int) $id);
+        $usuario = $this->adminModel()->readById((int) $id);
 
         if (is_string($usuario)) {
             header('Location: ' . url('admin/usuarios'));
@@ -240,7 +240,7 @@ class AdminController extends Template
             exit;
         }
 
-        $existing = (new AdminModel())->readById($id);
+        $existing = $this->adminModel()->readById($id);
 
         if (is_string($existing)) {
             header('Location: ' . url('admin/usuarios'));
@@ -271,7 +271,7 @@ class AdminController extends Template
             return;
         }
 
-        $result = (new AdminModel())->updateById($id, [
+        $result = $this->adminModel()->updateById($id, [
             'nome' => $data['nome'],
             'cpf' => $data['cpf'],
             'ativo' => $data['ativo'],
@@ -316,7 +316,7 @@ class AdminController extends Template
             exit;
         }
 
-        $result = (new AdminModel())->deleteById($id);
+        $result = $this->adminModel()->deleteById($id);
 
         if ($result !== true) {
             $_SESSION['admin_users_error'] = $result;
@@ -345,9 +345,9 @@ class AdminController extends Template
         exit;
     }
 
-    private function authenticationModel(): AdminModel
+    private function adminModel(): AdminModel
     {
-        return $this->authenticationModel ??= new AdminModel();
+        return $this->adminModel ??= new AdminModel();
     }
 
     private function isAuthenticated(): bool
@@ -418,7 +418,7 @@ class AdminController extends Template
             return 'Informe um CPF válido para o usuário administrativo.';
         }
 
-        if ((new AdminModel())->cpfExists($data['cpf'], $ignoreId)) {
+        if ($this->adminModel()->cpfExists($data['cpf'], $ignoreId)) {
             return 'Já existe um usuário administrativo cadastrado com este CPF.';
         }
 
