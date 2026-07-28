@@ -169,10 +169,14 @@ final class PpaQueryFileCache
     private function ensureDirectory(): void
     {
         if (is_dir($this->directory)) {
+            if (!is_writable($this->directory)) {
+                throw new RuntimeException('O diretorio de cache do PPA nao possui permissao de escrita.');
+            }
+
             return;
         }
 
-        if (!mkdir($this->directory, 0770, true) && !is_dir($this->directory)) {
+        if (!@mkdir($this->directory, 0770, true) && !is_dir($this->directory)) {
             throw new RuntimeException('Nao foi possivel criar o diretorio de cache do PPA.');
         }
     }

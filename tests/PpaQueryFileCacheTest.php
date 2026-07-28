@@ -75,6 +75,35 @@ $assertTrue($writeFailed, 'rejects invalid rows before replacing the entry');
 $assertSame($rows, $cache->read($source, $query, 500)['rows'] ?? null, 'preserves the last valid entry');
 $assertSame([], glob($directory . '/.ppa-cache-*') ?: [], 'does not leave temporary files');
 
+$blockedDirectory = sys_get_temp_dir() . '/ppa-query-cache-blocked-' . bin2hex(random_bytes(8));
+mkdir($blockedDirectory, 0555);
+chmod($blockedDirectory, 0555);
+$warnings = [];
+$previousErrorHandler = set_error_handler(
+    static function (int $severity, string $message) use (&$warnings): bool {
+        $warnings[] = [$severity, $message];
+        return true;
+    }
+);
+$permissionMessage = null;
+
+try {
+    (new PpaQueryFileCache($blockedDirectory))->write($source, $query, 500, $rows, $generatedAt);
+} catch (RuntimeException $exception) {
+    $permissionMessage = $exception->getMessage();
+} finally {
+    restore_error_handler();
+    chmod($blockedDirectory, 0755);
+    rmdir($blockedDirectory);
+}
+
+$assertSame(
+    'O diretorio de cache do PPA nao possui permissao de escrita.',
+    $permissionMessage,
+    'returns a controlled message when the cache directory is not writable'
+);
+$assertSame([], $warnings, 'does not expose a native PHP warning when cache permissions are invalid');
+
 foreach (glob($directory . '/*') ?: [] as $file) {
     unlink($file);
 }
@@ -85,4 +114,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (16 assertions)\n");
+fwrite(STDOUT, "OK (18 assertions)\n");
