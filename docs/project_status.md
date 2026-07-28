@@ -17,7 +17,7 @@ mensurável do PPA.
 | Home e navegação | Funcional | Homologação visual contínua |
 | Administração | Login, sessão e CRUD funcionais | Homologar fluxos sensíveis |
 | BSC | Dashboard e CRUD funcionais | Resolver `cancelado` x `Suspenso` |
-| PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Criar smoke tests HTTP |
+| PPA público | Catálogo, dashboards, filtros e cache-first funcionais | Ampliar smoke tests HTTP |
 | PPA administrativo | Fontes, consultas, indicadores e vínculos funcionais | Homologação operacional |
 | CadÚnico | Tela inicial | Definir fluxo funcional mínimo |
 | SASC-SA, OSC e POPWEB | Planejados | Levantar requisitos e fontes |
@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os doze testes locais passaram com 186 assertions. O
+Em 2026-07-28, os treze testes locais passaram com 191 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -81,7 +81,6 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Adicionar smoke tests HTTP para `/ppa`, `/ppa/{slug}` e
-`/ppa/{slug}/data`, cobrindo filtros e hit/miss do cache. Depois, revisar a PR
-#2, aplicar eventuais ajustes em commits pequenos e realizar merge somente após
-aprovação.
+Adicionar smoke tests para `/ppa/{slug}` e `/ppa/{slug}/data`, cobrindo
+indicador inexistente, ausência de vínculos, filtros e hit/miss do cache. Depois,
+revisar a PR #2 e aplicar eventuais ajustes em commits pequenos.

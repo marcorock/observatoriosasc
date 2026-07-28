@@ -62,11 +62,12 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os doze arquivos de teste passaram:
+Na verificação de 2026-07-28, os treze arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
+| `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
@@ -78,7 +79,7 @@ Na verificação de 2026-07-28, os doze arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **186** |
+| **Total** | **191** |
 
 ## Sequência concluída
 
@@ -220,9 +221,10 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Adicionar smoke tests HTTP para o catálogo, dashboards, endpoint JSON, filtros
-representativos e fallback do cache. Não iniciar nova extração estrutural antes
-de proteger esses fluxos.
+Adicionar smoke tests para o dashboard HTML e endpoint JSON, incluindo
+indicador inexistente e ausência de vínculos. O catálogo público já possui
+cobertura inicial. Não iniciar nova extração estrutural antes de proteger esses
+fluxos.
 
 ## Regra documental para cada incremento
 

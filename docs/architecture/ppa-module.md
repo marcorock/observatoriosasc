@@ -281,8 +281,9 @@ e a duplicação foi removida. A suíte completa passou com 113 assertions.
 
 Os testes atuais cobrem runtime externo, métricas do catálogo, resolução de
 dashboard, consultas vinculadas, sincronização e armazenamento do cache e os
-cinco builders extraídos. Em 2026-07-28, doze arquivos passaram com 186
-assertions.
+cinco builders extraídos. O catálogo público possui um smoke test de
+renderização normal e erro controlado. Em 2026-07-28, treze arquivos passaram
+com 191 assertions.
 
 ## Responsabilidades restantes no controller
 
