@@ -62,12 +62,12 @@ para uma nova extração antes da campanha de medição.
 
 ## Testes
 
-Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
+Na verificação de 2026-07-28, os vinte e seis arquivos de teste passaram:
 
 | Teste | Assertions |
 | --- | ---: |
 | `AdminAuthenticationFlowTest.php` | 11 |
-| `AdminRouteProtectionTest.php` | 8 |
+| `AdminRouteProtectionTest.php` | 9 |
 | `AdminUserCrudValidationTest.php` | 16 |
 | `ExternalDatabaseRuntimeTest.php` | 9 |
 | `ExternalAdminCrudFlowTest.php` | 16 |
@@ -77,6 +77,8 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `PpaCatalogHttpSmokeTest.php` | 5 |
 | `PpaCatalogMetricsTest.php` | 26 |
 | `PpaAdminCrudFlowTest.php` | 18 |
+| `PpaAdminSynchronizationFlowTest.php` | 15 |
+| `PpaAdminSynchronizationServiceTest.php` | 11 |
 | `PpaCadUpdateRmaPayloadBuilderTest.php` | 28 |
 | `PpaDashboardResolverTest.php` | 10 |
 | `PpaDashboardHtmlSmokeTest.php` | 6 |
@@ -90,7 +92,7 @@ Na verificação de 2026-07-28, os vinte e dois arquivos de teste passaram:
 | `PpaQueryCacheBatchSynchronizerTest.php` | 10 |
 | `PpaQueryFileCacheTest.php` | 16 |
 | `PpaSingleQueryPayloadBuilderTest.php` | 12 |
-| **Total** | **314** |
+| **Total** | **341** |
 
 ## Sequência concluída
 
@@ -232,9 +234,9 @@ A PR está aberta, mergeável e aponta para `main`.
 
 ## Próximo incremento
 
-Homologar visualmente criação, edição e exclusão de indicador e vínculo
-descartáveis. O fluxo automatizado correspondente já está coberto com models
-em memória; depois da homologação, revisar a PR #2.
+Homologar visualmente a sincronização de um indicador pelo painel
+administrativo. Depois da homologação, implementar o agendamento automático
+reutilizando o mesmo serviço.
 
 ## Regra documental para cada incremento
 

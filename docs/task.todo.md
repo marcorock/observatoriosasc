@@ -58,13 +58,17 @@ Atualizado em 2026-07-28. O contexto completo de retomada está em
 - [x] Extrair `PpaCadUpdateRmaPayloadBuilder`.
 - [x] Classificar as responsabilidades restantes no `PpaController` sem nova
   extração prematura.
-- [x] Manter vinte e quatro testes locais, com 314 assertions na verificação de 2026-07-28.
+- [x] Manter vinte e seis testes locais, com 341 assertions na verificação de 2026-07-28.
 
 ## Homologações pendentes
 
 - [x] Implementar armazenamento de cache em arquivo com validação, trava e
   escrita atômica.
 - [x] Criar comando manual de sincronização do cache para um indicador.
+- [x] Disponibilizar sincronização completa de um indicador no painel
+  administrativo, com confirmação, feedback e proteção por token.
+- [ ] Agendar a sincronização automática somente após homologar o botão
+  administrativo.
 - [x] Integrar leitura cache-first com fallback externo.
 - [x] Homologar equivalência e tempos cache-first do progresso familiar e da
   atualização cadastral.

@@ -56,7 +56,7 @@ mensurável do PPA.
 
 ## Validação técnica
 
-Em 2026-07-28, os vinte e quatro testes locais passaram com 314 assertions. O
+Em 2026-07-28, os vinte e seis testes locais passaram com 341 assertions. O
 `composer.json` e os arquivos PHP centrais da integração do cache também foram
 validados.
 
@@ -82,5 +82,5 @@ devem configurar suas credenciais no `.env`.
 
 ## Próximo passo recomendado
 
-Homologar visualmente o CRUD descartável de indicadores e vínculos. Depois,
-revisar a PR #2 em pequenos incrementos.
+Homologar a sincronização administrativa de um indicador real. Depois,
+implementar o processo automático reutilizando o serviço já testado.

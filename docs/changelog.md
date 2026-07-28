@@ -125,6 +125,20 @@
 - Criado `HomeThemeMarkupTest.php` com 7 assertions.
 - Suíte ampliada para vinte e quatro testes e 314 assertions.
 
+### Sincronização pelo painel administrativo
+
+- Criado `PpaAdminSynchronizationService` para atualizar primeiro o cache
+  detalhado e depois persistir o resultado consolidado do catálogo.
+- Adicionada a rota protegida `POST /admin/ppa/sincronizar`.
+- Incluídos seleção de indicador ativo, confirmação e estado visual
+  `Sincronizando...` no painel PPA.
+- Mantido o último cache válido quando a consulta externa falha.
+- Criados testes do serviço e do fluxo administrativo; a proteção contra
+  acesso anônimo também foi ampliada.
+- Suíte ampliada para vinte e seis testes e 341 assertions.
+- Próximo incremento definido: homologação visual e posterior agendamento
+  automático.
+
 ## 2026-07-24
 
 ### Documentação

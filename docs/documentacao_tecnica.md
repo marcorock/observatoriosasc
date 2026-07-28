@@ -56,6 +56,7 @@ Dependencias identificadas em `composer.json`:
 | POST | `/admin/usuarios/delete/{id}` | `AdminController@deleteUser` | sessao admin com token | Exclui usuario administrativo |
 | POST | `/admin/logout` | `AdminController@logout` | sessao admin com token | Encerra a sessao administrativa |
 | GET | `/admin/ppa` | `PpaAdminController@dashboard` | sessao admin | Painel administrativo proprio do modulo PPA |
+| POST | `/admin/ppa/sincronizar` | `PpaAdminController@synchronizeIndicator` | sessao admin com token | Atualiza cache e resultado consolidado de um indicador |
 | GET | `/admin/bases-externas` | `ExternalDatabaseAdminController@sources` | sessao admin | Lista fontes externas |
 | GET/POST | `/admin/bases-externas/*` | `ExternalDatabaseAdminController` | sessao admin e token nas mutações | CRUD e teste de fontes externas |
 | GET | `/admin/bases-externas/consultas` | `ExternalDatabaseAdminController@queries` | sessao admin | Lista consultas externas |
@@ -220,6 +221,8 @@ Dependencias identificadas em `composer.json`:
 - `PpaQueryFileCache`: armazenamento validado e atômico.
 - `PpaQueryCacheSynchronizer`: atualização de um indicador.
 - `PpaQueryCacheBatchSynchronizer`: atualização sequencial em lote.
+- `PpaAdminSynchronizationService`: coordena cache detalhado e resultado
+  consolidado para a ação administrativa.
 
 As extrações preservam rotas, templates, nomes dos campos e fórmulas. A próxima
 etapa é proteger os fluxos públicos com smoke tests HTTP.
@@ -230,6 +233,7 @@ etapa é proteger os fluxos públicos com smoke tests HTTP.
   CRUDs de indicadores e vínculos com consultas externas
 - Metodos principais:
   - `dashboard()`
+  - `synchronizeIndicator()`
   - `indicators()`
   - `createIndicator()`
   - `storeIndicator()`

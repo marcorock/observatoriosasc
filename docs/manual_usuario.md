@@ -1,7 +1,8 @@
 # Manual do Usuario
 
 Atualizado em 2026-07-28. O catálogo e os dashboards PPA descritos abaixo já
-estão funcionais; a sincronização é uma operação técnica controlada.
+estão funcionais; um indicador pode ser sincronizado pelo painel administrativo
+ou por comandos técnicos controlados.
 
 ## Funcionalidade
 
@@ -255,20 +256,41 @@ Permitir abrir um indicador específico a partir do dashboard do PPA para consul
 - Cada card de indicador no dashboard deve levar para uma página pública individual.
 - A página individual deve abrir sem autenticação.
 
-## Funcionalidade
+## Sincronização pelo painel administrativo
 
-Sincronização controlada das métricas do catálogo PPA
+### Quem pode usar
 
-## Objetivo
+- administrador autenticado
 
-Permitir que uma pessoa técnica valide e persista o resultado consolidado de um
-indicador sem executar consultas externas durante o acesso público ao catálogo.
+### Como usar
 
-## Quem Pode Usar
+1. Acesse `/admin/ppa`.
+2. Na área `Sincronizar um indicador`, escolha um indicador ativo.
+3. Clique em `Sincronizar agora`.
+4. Confirme a operação e aguarde sem fechar a página.
+5. Confira a mensagem de sucesso ou erro exibida no painel.
+6. Abra o catálogo e o dashboard do indicador para validar os dados.
+
+Essa ação consulta a fonte externa, renova o cache detalhado do dashboard e
+depois grava o resultado consolidado do catálogo. Se a consulta externa falhar,
+o último cache válido é preservado. Indicadores inativos ou sem vínculos ativos
+não são sincronizados.
+
+O processo ainda não é automático. O agendamento será implementado somente
+depois da homologação desta ação administrativa.
+
+## Sincronização técnica pelo terminal
+
+### Objetivo
+
+Permitir que uma pessoa técnica execute e inspecione separadamente as mesmas
+operações pelo terminal.
+
+### Quem pode usar
 
 - pessoa técnica com acesso ao terminal e ao ambiente configurado
 
-## Como Usar
+### Como usar
 
 1. Execute a prévia de apenas um indicador:
 
