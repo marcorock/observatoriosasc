@@ -94,8 +94,7 @@ class PpaAdminController extends Template
         adminRequireAuth('admin');
 
         if (!validateFormToken('ppa_indicator_create')) {
-            header('Location: ' . url('admin/ppa/indicadores/novo'));
-            exit;
+            $this->redirect('admin/ppa/indicadores/novo');
         }
 
         $data = $this->indicatorDataFromRequest();
@@ -110,8 +109,7 @@ class PpaAdminController extends Template
         }
 
         $this->setFeedback('success', 'Indicador do PPA cadastrado com sucesso.');
-        header('Location: ' . url('admin/ppa/indicadores'));
-        exit;
+        $this->redirect('admin/ppa/indicadores');
     }
 
     public function editIndicator($id)
@@ -121,8 +119,7 @@ class PpaAdminController extends Template
         $dados = $this->indicatorModel()->readById((int) $id);
 
         if (is_string($dados)) {
-            header('Location: ' . url('admin/ppa/indicadores'));
-            exit;
+            $this->redirect('admin/ppa/indicadores');
         }
 
         echo $this->render('admin/ppa/indicadores/edit.html', array_merge([
@@ -137,8 +134,7 @@ class PpaAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('ppa_indicator_edit_' . $id)) {
-            header('Location: ' . url('admin/ppa/indicadores/editar/' . $id));
-            exit;
+            $this->redirect('admin/ppa/indicadores/editar/' . $id);
         }
 
         $data = $this->indicatorDataFromRequest();
@@ -153,8 +149,7 @@ class PpaAdminController extends Template
         }
 
         $this->setFeedback('success', 'Indicador do PPA atualizado com sucesso.');
-        header('Location: ' . url('admin/ppa/indicadores'));
-        exit;
+        $this->redirect('admin/ppa/indicadores');
     }
 
     public function deleteIndicator($id)
@@ -163,16 +158,14 @@ class PpaAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('ppa_indicator_delete_' . $id)) {
-            header('Location: ' . url('admin/ppa/indicadores'));
-            exit;
+            $this->redirect('admin/ppa/indicadores');
         }
 
         $result = $this->indicatorModel()->deleteById($id);
 
         $this->setFeedback($result === true ? 'success' : 'danger', $result === true ? 'Indicador do PPA excluido com sucesso.' : $result);
 
-        header('Location: ' . url('admin/ppa/indicadores'));
-        exit;
+        $this->redirect('admin/ppa/indicadores');
     }
 
     public function links()
@@ -230,8 +223,7 @@ class PpaAdminController extends Template
         adminRequireAuth('admin');
 
         if (!validateFormToken('ppa_link_create')) {
-            header('Location: ' . url('admin/ppa/vinculos/novo'));
-            exit;
+            $this->redirect('admin/ppa/vinculos/novo');
         }
 
         $data = $this->linkDataFromRequest();
@@ -248,8 +240,7 @@ class PpaAdminController extends Template
         }
 
         $this->setFeedback('success', 'Vinculo cadastrado com sucesso.');
-        header('Location: ' . url('admin/ppa/vinculos'));
-        exit;
+        $this->redirect('admin/ppa/vinculos');
     }
 
     public function editLink($id)
@@ -259,8 +250,7 @@ class PpaAdminController extends Template
         $dados = $this->linkModel()->readById((int) $id);
 
         if (is_string($dados)) {
-            header('Location: ' . url('admin/ppa/vinculos'));
-            exit;
+            $this->redirect('admin/ppa/vinculos');
         }
 
         echo $this->render('admin/ppa/vinculos/edit.html', array_merge([
@@ -277,8 +267,7 @@ class PpaAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('ppa_link_edit_' . $id)) {
-            header('Location: ' . url('admin/ppa/vinculos/editar/' . $id));
-            exit;
+            $this->redirect('admin/ppa/vinculos/editar/' . $id);
         }
 
         $data = $this->linkDataFromRequest();
@@ -295,8 +284,7 @@ class PpaAdminController extends Template
         }
 
         $this->setFeedback('success', 'Vinculo atualizado com sucesso.');
-        header('Location: ' . url('admin/ppa/vinculos'));
-        exit;
+        $this->redirect('admin/ppa/vinculos');
     }
 
     public function deleteLink($id)
@@ -305,16 +293,14 @@ class PpaAdminController extends Template
         $id = (int) $id;
 
         if (!validateFormToken('ppa_link_delete_' . $id)) {
-            header('Location: ' . url('admin/ppa/vinculos'));
-            exit;
+            $this->redirect('admin/ppa/vinculos');
         }
 
         $result = $this->linkModel()->deleteById($id);
 
         $this->setFeedback($result === true ? 'success' : 'danger', $result === true ? 'Vinculo excluido com sucesso.' : $result);
 
-        header('Location: ' . url('admin/ppa/vinculos'));
-        exit;
+        $this->redirect('admin/ppa/vinculos');
     }
 
     private function pageDefaults(string $title, string $subtitle, array $menuItems = []): array
@@ -429,6 +415,12 @@ class PpaAdminController extends Template
             'type' => $type,
             'message' => $message,
         ];
+    }
+
+    protected function redirect(string $path): never
+    {
+        header('Location: ' . url($path));
+        exit;
     }
 
     private function indicatorModel(): PpaIndicatorModel
