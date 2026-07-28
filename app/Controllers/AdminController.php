@@ -7,13 +7,20 @@ use App\Models\AdminModel;
 
 class AdminController extends Template
 {
+    private ?AdminModel $authenticationModel;
+
+    public function __construct(?AdminModel $authenticationModel = null)
+    {
+        parent::__construct();
+        $this->authenticationModel = $authenticationModel;
+    }
+
     public function login()
     {
         adminEnsureSession();
 
         if ($this->isAuthenticated()) {
-            header('Location: ' . url('admin/painel'));
-            exit;
+            $this->redirect('admin/painel');
         }
 
         echo $this->render('admin/login.html', [
@@ -27,8 +34,7 @@ class AdminController extends Template
         adminEnsureSession();
 
         if (!validateFormToken('admin_login')) {
-            header('Location: ' . url('admin'));
-            exit;
+            $this->redirect('admin');
         }
 
         $cpf = $this->normalizeCpf($_POST['cpf'] ?? '');
@@ -42,7 +48,7 @@ class AdminController extends Template
             return;
         }
 
-        $admin = (new AdminModel())->findActiveByCpf($cpf);
+        $admin = $this->authenticationModel()->findActiveByCpf($cpf);
 
         if ($admin === null || !password_verify($senha, (string) $admin->senha_hash)) {
             echo $this->render('admin/login.html', [
@@ -59,8 +65,7 @@ class AdminController extends Template
             'ultimo_login_em' => date('Y-m-d H:i:s'),
         ];
 
-        header('Location: ' . url('admin/painel'));
-        exit;
+        $this->redirect('admin/painel');
     }
 
     public function panel()
@@ -326,14 +331,23 @@ class AdminController extends Template
         adminEnsureSession();
 
         if (!validateFormToken('admin_logout')) {
-            header('Location: ' . url('admin/painel'));
-            exit;
+            $this->redirect('admin/painel');
         }
 
         unset($_SESSION['admin_auth']);
 
-        header('Location: ' . url('/'));
+        $this->redirect('/');
+    }
+
+    protected function redirect(string $path): never
+    {
+        header('Location: ' . url($path));
         exit;
+    }
+
+    private function authenticationModel(): AdminModel
+    {
+        return $this->authenticationModel ??= new AdminModel();
     }
 
     private function isAuthenticated(): bool
