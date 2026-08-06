@@ -61,14 +61,14 @@
             <div class="card-custom summary-card h-100 overflow-hidden" id="ppaCardPercentual">
                 <div class="row g-0 h-100">
                     <div class="col-6 p-3 text-center border-end">
-                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
-                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
-                        <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
-                    </div>
-                    <div class="col-6 p-3 text-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.period_label }}</small>
                         <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-primary' }}" id="ppaCardPeriodoValue">{{ dados.percentual_periodo|default(0)|number_format(2, ',', '.') }}%</h2>
                         <span class="summary-foot">{{ dashboard_ui.period_foot }}</span>
+                    </div>
+                    <div class="col-6 p-3 text-center">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                        <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
                     </div>
                 </div>
             </div>
