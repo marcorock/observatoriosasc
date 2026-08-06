@@ -21,6 +21,9 @@
   `Meta Pacto 10%`, ambas calculadas sobre a mesma base.
 - Mantido `% PERÍODO` no quarto card e dividido `% ALCANÇADO` em PPA e Pacto,
   com fonte reduzida, cores independentes e atualização pelos filtros atuais.
+- Adicionado cache-busting ao JavaScript interativo para garantir que filtros de
+  CRAS e mês atualizem os novos valores de meta e alcance no navegador.
+- Restaurado o texto explicativo comum abaixo das metas PPA e Pacto.
 - Ampliada a consulta RMA CRAS para retornar C1, C2 e C3. O payload calcula
   técnico como `C1 - (C2 + C3)` e nível médio como `C2 + C3`.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de

@@ -16,6 +16,9 @@ Atualizado em 2026-08-06. O contexto completo de retomada está em
 - [x] Centralizar o conteúdo dos cards divididos.
 - [x] Dividir as metas e os percentuais alcançados dos indicadores 147, 148 e
   149 entre PPA 7% e Pacto 10%.
+- [x] Invalidar o cache do script interativo e validar os payloads filtrados dos
+  indicadores 147, 148 e 149.
+- [x] Exibir o texto explicativo abaixo das duas metas.
 - [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
 - [x] Executar a suíte em ambiente com PHP: 30 testes e 336 assertions.
 - [ ] Homologar em desktop e mobile os indicadores 147, 148 e 149, incluindo os

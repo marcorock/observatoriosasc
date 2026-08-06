@@ -10,7 +10,7 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint funcional: `58e07a4`
+- Último checkpoint funcional: `89628a2`
 - Situação: seis correções de visualização isoladas em commits locais, ainda
   sem publicação
 - Pull request: #2 integrada com 116 commits; a branch
@@ -54,6 +54,12 @@ unidade e do detalhamento de atendimentos do indicador 158.
   sobre a mesma base: PPA 7% e Pacto 10%. O quarto card mantém `% PERÍODO` e
   apresenta duas linhas de alcance, uma para cada meta, com avaliação de cor
   independente e atualização pelos filtros existentes.
+- O script interativo dos dashboards familiares usa versão explícita na URL para
+  invalidar cópias anteriores que não reconhecem os campos PPA/Pacto. Os
+  endpoints filtrados dos três indicadores foram validados com mudança de base,
+  metas e percentuais.
+- O card de metas duplas mantém abaixo das colunas o texto comum `Meta calculada
+  sobre a base de referência`.
 - Rótulos configuráveis, cores, classes e interações foram preservados.
 - A suíte completa passou no container com UID 1000: 30 arquivos e 325
   assertions. O teste de permissões também passou fora do contexto `root`.
