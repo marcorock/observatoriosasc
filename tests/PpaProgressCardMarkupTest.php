@@ -26,6 +26,9 @@ foreach (['ppaUnitCardTechnicalValue', 'ppaUnitCardMiddleLevelValue'] as $attend
 }
 
 $familyView = file_get_contents($viewsDirectory . '/detail_family_rma.html');
+if (!str_contains($familyView, 'ppa-dashboard-interactive.js?v=20260806-dual-targets')) {
+    $failures[] = 'detail_family_rma.html must invalidate the cached interactive dashboard script';
+}
 foreach ([
     'ppaCardMetaPpaValue',
     'ppaCardMetaPactoValue',
@@ -47,4 +50,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (8 assertions)\n");
+fwrite(STDOUT, "OK (9 assertions)\n");
