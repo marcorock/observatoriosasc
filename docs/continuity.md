@@ -10,9 +10,9 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint funcional: `2384e76`
-- Situação: três correções visuais isoladas em commits locais, ainda sem
-  publicação
+- Último checkpoint funcional: `ba98c3b`
+- Situação: quatro correções de visualização isoladas em commits locais, ainda
+  sem publicação
 - Pull request: #2 integrada com 116 commits; a branch
   `integration/update-repository` foi removida após o merge
 - Issues abertas: nenhuma na última verificação
@@ -30,8 +30,8 @@ for test_file in tests/*Test.php; do php "$test_file"; done
 ## Objetivo atual
 
 Homologar as correções de ordenação dos gráficos por unidade, da disposição dos
-percentuais de período e alcance e da identificação numérica dos painéis, sem
-alterar cálculos ou efeitos visuais.
+percentuais, da identificação numérica dos painéis e da meta proporcional por
+unidade, preservando a meta e os cálculos gerais quando não há filtro.
 
 ## Correções visuais de 2026-08-06
 
@@ -41,8 +41,11 @@ alterar cálculos ou efeitos visuais.
   `% ALCANÇADO` à direita.
 - O cabeçalho de cada painel individual inclui o número cadastrado no formato
   `PPA - {número} - {nome}`; indicadores sem número mantêm o formato anterior.
-- Os cálculos, rótulos configuráveis, cores, classes e interações foram
-  preservados.
+- Nos dashboards mensais por unidade, a meta geral permanece inalterada sem
+  filtro. Ao selecionar uma unidade, a meta é dividida igualmente pela
+  quantidade de unidades com leitura, contadas antes dos filtros de unidade e
+  mês; o percentual alcançado usa essa meta proporcional.
+- Rótulos configuráveis, cores, classes e interações foram preservados.
 - Foram atualizados quatro testes de payload e criado
   `PpaProgressCardMarkupTest.php`. O host atual não possui executável PHP, então
   a execução da suíte permanece pendente em ambiente com PHP.
@@ -250,9 +253,9 @@ A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 
-Homologar em desktop e mobile a ordem alfabética dos gráficos por unidade, a
-disposição `% PERÍODO | % ALCANÇADO` nos cards combinados e os títulos com a
-numeração cadastrada.
+Homologar em desktop e mobile as correções visuais, com atenção ao indicador 158:
+meta geral `90.000` sem filtro e meta proporcional por CRAS após selecionar uma
+unidade.
 
 ## Regra documental para cada incremento
 

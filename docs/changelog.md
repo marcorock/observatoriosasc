@@ -10,6 +10,9 @@
   `% ALCANÇADO`, preservando títulos configurados, cálculos, classes e efeitos.
 - Incluído o número cadastrado no título dos painéis individuais, no formato
   `PPA - {número} - {nome}`, com fallback para cadastros sem numeração.
+- Distribuída a meta anual dos dashboards mensais entre as unidades com leitura.
+  A meta global permanece no painel sem filtro; ao selecionar uma unidade, card,
+  tabela e percentual usam a parcela proporcional calculada antes dos filtros.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de
   marcação para a ordem dos percentuais.
 - A suíte não foi executada neste host porque não há PHP instalado; a checagem

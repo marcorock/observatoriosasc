@@ -49,6 +49,11 @@ direita como `% PERÍODO | % ALCANÇADO`.
 O título do painel individual identifica também o número cadastrado do
 indicador, por exemplo: `PPA - 149 - Acompanhar 10% das famílias beneficiárias
 do Programa Bolsa Família inscritas no CadÚnico`.
+
+Nos indicadores mensais por unidade, a meta exibida sem filtro corresponde à
+meta anual geral. Ao selecionar um CRAS, CREAS ou outra unidade, o painel exibe
+a parcela da meta anual distribuída igualmente entre as unidades com leitura e
+recalcula o percentual alcançado contra essa parcela.
 9. Para consultar todos os registros do BSC, entre por `/admin`, autentique-se e use o atalho `BSC - Registros` no painel administrativo.
 10. Na tela de registros, use a busca, a paginacao e as exportacoes para Excel ou PDF.
 11. Para cadastrar um novo item, clique em `Novo registro`, preencha os campos obrigatorios e salve.

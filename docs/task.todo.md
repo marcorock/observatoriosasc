@@ -9,9 +9,11 @@ Atualizado em 2026-08-06. O contexto completo de retomada está em
   unidades sem alterar os cálculos.
 - [x] Exibir `% PERÍODO` antes de `% ALCANÇADO` nos cards combinados.
 - [x] Exibir o número cadastrado junto ao título do painel individual.
+- [x] Distribuir a meta anual entre as unidades com leitura quando uma unidade
+  for selecionada, preservando a meta geral sem filtro.
 - [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
 - [ ] Executar a suíte em ambiente com PHP e homologar os dashboards em desktop
-  e mobile.
+  e mobile, incluindo a meta proporcional do indicador 158.
 
 ## Medição do progresso
 
