@@ -32,6 +32,7 @@ if (!str_contains($familyView, 'ppa-dashboard-interactive.js?v=20260806-dual-tar
 foreach ([
     'ppaCardMetaPpaValue',
     'ppaCardMetaPactoValue',
+    'ppaCardDualMetaFoot',
     'ppaCardPercentualPpaValue',
     'ppaCardPercentualPactoValue',
 ] as $dualTargetValueId) {
@@ -50,4 +51,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (9 assertions)\n");
+fwrite(STDOUT, "OK (10 assertions)\n");

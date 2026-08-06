@@ -50,7 +50,7 @@
     <div class="col">
         {% if show_dual_targets %}
             <div class="card-custom summary-card h-100 overflow-hidden" id="ppaCardMeta">
-                <div class="row g-0 h-100">
+                <div class="row g-0 flex-grow-1">
                     <div class="col-6 p-3 text-center border-end d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-warning summary-label">Meta PPA 7%</small>
                         <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaPpaValue">{{ dados.meta_ppa_familias|number_format(0, ',', '.') }}</h2>
@@ -60,6 +60,7 @@
                         <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaPactoValue">{{ dados.meta_pacto_familias|number_format(0, ',', '.') }}</h2>
                     </div>
                 </div>
+                <span class="summary-foot text-center px-3 pb-3" id="ppaCardDualMetaFoot">{{ dashboard_ui.meta_foot }}</span>
             </div>
         {% else %}
             <div class="card-custom p-3 text-center summary-card" id="ppaCardMeta">
