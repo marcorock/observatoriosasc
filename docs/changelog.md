@@ -13,10 +13,15 @@
 - Distribuída a meta anual dos dashboards mensais entre as unidades com leitura.
   A meta global permanece no painel sem filtro; ao selecionar uma unidade, card,
   tabela e percentual usam a parcela proporcional calculada antes dos filtros.
+- Dividido o card `ATENDIMENTOS REALIZADOS` do indicador 158 em `TÉCNICO` e
+  `NÍVEL MÉDIO`, preservando o layout, estilos e filtros interativos.
+- Ampliada a consulta RMA CRAS para retornar C1, C2 e C3. O payload calcula
+  técnico como `C1 - (C2 + C3)` e nível médio como `C2 + C3`.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de
   marcação para a ordem dos percentuais.
-- A suíte não foi executada neste host porque não há PHP instalado; a checagem
-  de whitespace com `git diff --check` passou.
+- A suíte completa passou no container: 30 arquivos e 325 assertions.
+- O cache do indicador 158 foi renovado com 54 linhas e os três campos foram
+  confirmados no payload real.
 
 ## 2026-07-28
 

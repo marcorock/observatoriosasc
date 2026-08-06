@@ -75,6 +75,17 @@ participação, meta e filtros do dashboard `monthly_unit_progress`. A
 implementação duplicada e o filtro exclusivo desse payload foram removidos do
 controller após a validação de equivalência.
 
+Para `PPA-CRAS-ATENDIMENTOS-C1` (indicador 158), a consulta mensal entrega
+`total_inseridos` (C1), `total_c2` e `total_c3`. O builder mantém C1 como total
+do indicador e acrescenta:
+
+- `total_atendimentos_tecnicos`: `C1 - (C2 + C3)`;
+- `total_atendimentos_nivel_medio`: `C2 + C3`.
+
+Os dois totais são calculados depois dos filtros de unidade e mês. A view usa
+uma configuração exclusiva do indicador 158 para dividir o card de atendimentos;
+os demais dashboards mensais mantêm o card simples.
+
 ## Payload de progresso familiar
 
 `PpaFamilyRmaPayloadBuilder` consolida base territorial, meta, acompanhamento

@@ -10,8 +10,8 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint funcional: `ba98c3b`
-- Situação: quatro correções de visualização isoladas em commits locais, ainda
+- Último checkpoint funcional: `a75644b`
+- Situação: cinco correções de visualização isoladas em commits locais, ainda
   sem publicação
 - Pull request: #2 integrada com 116 commits; a branch
   `integration/update-repository` foi removida após o merge
@@ -30,8 +30,8 @@ for test_file in tests/*Test.php; do php "$test_file"; done
 ## Objetivo atual
 
 Homologar as correções de ordenação dos gráficos por unidade, da disposição dos
-percentuais, da identificação numérica dos painéis e da meta proporcional por
-unidade, preservando a meta e os cálculos gerais quando não há filtro.
+percentuais, da identificação numérica dos painéis, da meta proporcional por
+unidade e do detalhamento de atendimentos do indicador 158.
 
 ## Correções visuais de 2026-08-06
 
@@ -45,10 +45,15 @@ unidade, preservando a meta e os cálculos gerais quando não há filtro.
   filtro. Ao selecionar uma unidade, a meta é dividida igualmente pela
   quantidade de unidades com leitura, contadas antes dos filtros de unidade e
   mês; o percentual alcançado usa essa meta proporcional.
+- O card `ATENDIMENTOS REALIZADOS` do indicador 158 separa `TÉCNICO`, calculado
+  como `C1 - (C2 + C3)`, e `NÍVEL MÉDIO`, calculado como `C2 + C3`. Ambos usam
+  as mesmas linhas filtradas por unidade e mês.
 - Rótulos configuráveis, cores, classes e interações foram preservados.
-- Foram atualizados quatro testes de payload e criado
-  `PpaProgressCardMarkupTest.php`. O host atual não possui executável PHP, então
-  a execução da suíte permanece pendente em ambiente com PHP.
+- A suíte completa passou no container com UID 1000: 30 arquivos e 325
+  assertions. O teste de permissões também passou fora do contexto `root`.
+- A consulta local do indicador 158 foi atualizada, seu cache foi renovado com
+  54 linhas e os campos `total_inseridos`, `total_c2` e `total_c3` foram
+  confirmados. No consolidado validado, `C1 = TÉCNICO + NÍVEL MÉDIO`.
 
 ## Estado funcional do PPA
 
@@ -253,9 +258,8 @@ A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 
-Homologar em desktop e mobile as correções visuais, com atenção ao indicador 158:
-meta geral `90.000` sem filtro e meta proporcional por CRAS após selecionar uma
-unidade.
+Homologar visualmente o novo card do indicador 158 em desktop e mobile,
+incluindo filtros de mês e CRAS.
 
 ## Regra documental para cada incremento
 

@@ -54,6 +54,13 @@ Nos indicadores mensais por unidade, a meta exibida sem filtro corresponde à
 meta anual geral. Ao selecionar um CRAS, CREAS ou outra unidade, o painel exibe
 a parcela da meta anual distribuída igualmente entre as unidades com leitura e
 recalcula o percentual alcançado contra essa parcela.
+
+No indicador 158, o card `ATENDIMENTOS REALIZADOS` apresenta dois acumulados:
+
+- `TÉCNICO`: C1 menos os atendimentos C2 e C3;
+- `NÍVEL MÉDIO`: soma dos atendimentos C2 e C3 do CadÚnico.
+
+Ao selecionar mês ou CRAS, as duas colunas são atualizadas pelo mesmo filtro.
 9. Para consultar todos os registros do BSC, entre por `/admin`, autentique-se e use o atalho `BSC - Registros` no painel administrativo.
 10. Na tela de registros, use a busca, a paginacao e as exportacoes para Excel ou PDF.
 11. Para cadastrar um novo item, clique em `Novo registro`, preencha os campos obrigatorios e salve.

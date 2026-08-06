@@ -11,9 +11,12 @@ Atualizado em 2026-08-06. O contexto completo de retomada está em
 - [x] Exibir o número cadastrado junto ao título do painel individual.
 - [x] Distribuir a meta anual entre as unidades com leitura quando uma unidade
   for selecionada, preservando a meta geral sem filtro.
+- [x] Dividir o card de atendimentos do indicador 158 entre técnico e nível
+  médio, usando C1, C2 e C3 com os filtros existentes.
 - [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
-- [ ] Executar a suíte em ambiente com PHP e homologar os dashboards em desktop
-  e mobile, incluindo a meta proporcional do indicador 158.
+- [x] Executar a suíte em ambiente com PHP: 30 testes e 325 assertions.
+- [ ] Homologar o indicador 158 em desktop e mobile, incluindo a meta
+  proporcional e o novo card com filtros de mês e CRAS.
 
 ## Medição do progresso
 
