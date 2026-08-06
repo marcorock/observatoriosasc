@@ -1160,13 +1160,18 @@ class PpaController extends BaseController
      * Extrai o nome e objetivo do indicador para personalizar o título e descrição
      * da página no navegador e cabeçalho.
      * 
-     * @param object $indicator Indicador com propriedades 'nome' e 'objetivo'
+     * @param object $indicator Indicador com propriedades 'nome', 'numero_programa' e 'objetivo'
      * @return array Array com 'name' (título da página) e 'description' (subtítulo)
      */
     private function pageConfigForIndicator(object $indicator): array
     {
         $indicatorName = trim((string) ($indicator->nome ?? ''));
-        $pageName = $indicatorName !== '' ? 'PPA - ' . $indicatorName : 'PPA';
+        $indicatorNumber = trim((string) ($indicator->numero_programa ?? ''));
+        $pageNameParts = array_values(array_filter(
+            ['PPA', $indicatorNumber, $indicatorName],
+            static fn (string $part): bool => $part !== ''
+        ));
+        $pageName = implode(' - ', $pageNameParts);
         $subtitle = trim((string) ($indicator->objetivo ?? 'Plano Plurianual'));
 
         return [

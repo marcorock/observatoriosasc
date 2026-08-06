@@ -90,6 +90,7 @@ $indicator = (object) [
     'id' => 42,
     'slug' => 'indicador-sem-vinculos',
     'codigo_indicador' => 'PPA-TESTE-SEM-VINCULOS',
+    'numero_programa' => 149,
     'nome' => 'Indicador sem vínculos',
     'objetivo' => 'Validar o estado inicial do dashboard.',
     'unidade_medida' => 'familias',
@@ -101,7 +102,11 @@ $preparationController = new PpaController(
 );
 $preparationHtml = $preparationController->show($indicator->slug);
 
-$assertContains('Indicador sem vínculos', $preparationHtml, 'renders the selected indicator');
+$assertContains(
+    'PPA - 149 - Indicador sem vínculos',
+    $preparationHtml,
+    'renders the program number with the selected indicator title'
+);
 $assertContains('Em Preparacao', $preparationHtml, 'renders the preparation status');
 $assertContains(
     'Nenhum vinculo ativo foi encontrado para este indicador do PPA.',
