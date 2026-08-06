@@ -116,6 +116,11 @@ $assertSame(25.0, $payload['percentual_periodo'], 'calculates period progress ov
 $assertSame('2026-06', $payload['referencia'], 'keeps the first base reference');
 $assertSame('2026', $payload['ano_apuracao'], 'extracts the RMA assessment year');
 $assertSame([], $payload['grafico_meta'], 'keeps the legacy empty target chart');
+$assertSame(
+    ['CRAS MARIANA', 'CRAS PARQUE SANTA RITA', 'CRAS SOMENTE ATUALIZADAS', 'CRAS ZERO'],
+    array_column($payload['grafico_cras'], 'cras'),
+    'sorts the CRAS chart alphabetically'
+);
 $assertSame(5, $payload['tabela_mensal'][0]['familias_acompanhadas'], 'uses total_inseridos in the monthly series');
 $assertSame(10, $payload['tabela_mensal'][1]['familias_acompanhadas'], 'uses the monthly fallback and aggregates rows');
 $assertSame(17, $payload['tabela_mensal'][2]['acumulado'], 'builds the monthly accumulated value');

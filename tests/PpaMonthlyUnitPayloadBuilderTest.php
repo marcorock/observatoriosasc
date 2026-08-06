@@ -34,9 +34,9 @@ $assertSame(2, $payload['meses_periodo'], 'counts distinct months');
 $assertSame((2 / 12) * 100, $payload['percentual_periodo'], 'calculates elapsed period percentage');
 $assertSame('2026', $payload['ano_apuracao'], 'extracts assessment year');
 $assertSame(
-    ['unidade' => 'CRAS PARQUE SANTA RITA', 'total' => 20],
+    ['unidade' => 'CRAS MARIANA', 'total' => 15],
     $payload['grafico_unidades'][0],
-    'sorts unit chart by total'
+    'sorts unit chart alphabetically'
 );
 
 $filtered = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, [

@@ -98,7 +98,7 @@ class PpaFamilyRmaPayloadBuilder
             'cras' => $row['cras'],
             'total' => (int) $row['familias_acompanhadas'],
         ], $tabelaCras);
-        usort($graficoCras, static fn ($a, $b) => ($b['total'] <=> $a['total']) ?: strcasecmp($a['cras'], $b['cras']));
+        usort($graficoCras, static fn ($a, $b) => strcasecmp($a['cras'], $b['cras']));
         $percentualAlcancado = $baseTotal > 0 ? ($acumulado / $metaFamilias) * 100 : 0;
 
         return [

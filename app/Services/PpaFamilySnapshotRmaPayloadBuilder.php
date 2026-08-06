@@ -137,6 +137,7 @@ class PpaFamilySnapshotRmaPayloadBuilder
             'cras' => $row['cras'],
             'total' => (int) $row['familias_acompanhadas'],
         ], $tabelaCras);
+        usort($graficoCras, static fn ($a, $b) => strcasecmp($a['cras'], $b['cras']));
 
         return [
             'total_geral' => $baseTotal,

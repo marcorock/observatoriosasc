@@ -30,6 +30,11 @@ $assertSame(100.0, $payload['percentual_alcancado_total'], 'calculates total pro
 $assertSame(2, $payload['meses_periodo'], 'counts monthly periods');
 $assertSame('2026-06', $payload['referencia'], 'keeps first base reference');
 $assertSame(2, count($payload['tabela_cras']), 'merges CRAS aliases');
+$assertSame(
+    ['CRAS MARIANA', 'CRAS PARQUE SANTA RITA'],
+    array_column($payload['grafico_cras'], 'cras'),
+    'sorts the CRAS chart alphabetically'
+);
 
 $filtered = PpaFamilyRmaPayloadBuilder::build($baseRows, $rmaRows, $indicator, [
     'cras' => 'CRAS MARIANA',

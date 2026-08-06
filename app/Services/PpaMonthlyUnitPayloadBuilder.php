@@ -81,6 +81,7 @@ class PpaMonthlyUnitPayloadBuilder
             'unidade' => $row['unidade'],
             'total' => $row['total_inseridos'],
         ], $tabelaUnidades);
+        usort($graficoUnidades, static fn ($a, $b) => strcasecmp($a['unidade'], $b['unidade']));
 
         return [
             'total_unidades' => count($tabelaUnidades),
