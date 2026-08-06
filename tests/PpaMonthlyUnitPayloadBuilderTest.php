@@ -33,6 +33,8 @@ $assertSame(35.0, $payload['percentual_alcancado_total'], 'calculates annual tar
 $assertSame(2, $payload['meses_periodo'], 'counts distinct months');
 $assertSame((2 / 12) * 100, $payload['percentual_periodo'], 'calculates elapsed period percentage');
 $assertSame('2026', $payload['ano_apuracao'], 'extracts assessment year');
+$assertSame(100.0, $payload['meta_anual'], 'keeps the annual target without a unit filter');
+$assertSame(50.0, $payload['tabela_unidades'][0]['meta_anual'], 'distributes the target among units with readings');
 $assertSame(
     ['unidade' => 'CRAS MARIANA', 'total' => 15],
     $payload['grafico_unidades'][0],
@@ -44,6 +46,8 @@ $filtered = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, [
     'mes_referencia' => '2026-01-01',
 ]);
 $assertSame(15, $filtered['total_inseridos'], 'applies unit and month filters');
+$assertSame(50.0, $filtered['meta_anual'], 'uses the proportional target for the selected unit');
+$assertSame(30.0, $filtered['percentual_alcancado_total'], 'calculates unit progress against its proportional target');
 $assertSame(
     ['unidade' => 'CRAS MARIANA', 'mes_referencia' => '2026-01-01'],
     $filtered['filtros_ativos'],
@@ -63,4 +67,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (11 assertions)\n");
+fwrite(STDOUT, "OK (15 assertions)\n");

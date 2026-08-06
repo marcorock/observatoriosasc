@@ -9,6 +9,11 @@ class PpaMonthlyUnitPayloadBuilder
         $metaAnual = (float) ($indicator->indice_futuro ?? 0);
         $filterUnidade = self::normalizeNullableFilter($filters['unidade'] ?? null);
         $filterMes = self::normalizeDateFilter($filters['mes_referencia'] ?? null);
+        $totalUnidadesComLeitura = self::countUnitsWithReading($rows, $indicator);
+        $metaPorUnidade = $totalUnidadesComLeitura > 0
+            ? $metaAnual / $totalUnidadesComLeitura
+            : $metaAnual;
+        $metaAplicada = $filterUnidade !== null ? $metaPorUnidade : $metaAnual;
         $rows = self::filterRows($rows, $indicator, $filterUnidade, $filterMes);
         $anoApuracao = null;
         $mensal = [];
@@ -50,8 +55,8 @@ class PpaMonthlyUnitPayloadBuilder
                 'mes_label' => $row['mes_label'],
                 'total_inseridos' => $mesTotal,
                 'acumulado' => $totalInseridos,
-                'percentual_mes' => $metaAnual > 0 ? ($mesTotal / $metaAnual) * 100 : 0,
-                'percentual_acumulado' => $metaAnual > 0 ? ($totalInseridos / $metaAnual) * 100 : 0,
+                'percentual_mes' => $metaAplicada > 0 ? ($mesTotal / $metaAplicada) * 100 : 0,
+                'percentual_acumulado' => $metaAplicada > 0 ? ($totalInseridos / $metaAplicada) * 100 : 0,
             ];
             $graficoMensal[] = [
                 'mes_referencia' => $row['mes_referencia'],
@@ -61,13 +66,13 @@ class PpaMonthlyUnitPayloadBuilder
         }
 
         $tabelaUnidades = array_values(array_map(
-            static function ($row) use ($totalInseridos, $metaAnual): array {
+            static function ($row) use ($totalInseridos, $metaPorUnidade): array {
                 return [
                     'unidade' => $row['unidade'],
                     'total_inseridos' => (int) $row['total_inseridos'],
                     'participacao' => $totalInseridos > 0 ? ($row['total_inseridos'] / $totalInseridos) * 100 : 0,
-                    'meta_anual' => $metaAnual,
-                    'percentual_meta' => $metaAnual > 0 ? ($row['total_inseridos'] / $metaAnual) * 100 : 0,
+                    'meta_anual' => $metaPorUnidade,
+                    'percentual_meta' => $metaPorUnidade > 0 ? ($row['total_inseridos'] / $metaPorUnidade) * 100 : 0,
                 ];
             },
             $unidades
@@ -85,9 +90,9 @@ class PpaMonthlyUnitPayloadBuilder
 
         return [
             'total_unidades' => count($tabelaUnidades),
-            'meta_anual' => $metaAnual,
+            'meta_anual' => $metaAplicada,
             'total_inseridos' => $totalInseridos,
-            'percentual_alcancado_total' => $metaAnual > 0 ? ($totalInseridos / $metaAnual) * 100 : 0,
+            'percentual_alcancado_total' => $metaAplicada > 0 ? ($totalInseridos / $metaAplicada) * 100 : 0,
             'percentual_periodo' => (min(12, count($graficoMensal)) / 12) * 100,
             'meses_periodo' => count($graficoMensal),
             'ano_apuracao' => $anoApuracao,
@@ -137,6 +142,31 @@ class PpaMonthlyUnitPayloadBuilder
                     && !($filterMes !== null && $mes !== $filterMes);
             }
         ));
+    }
+
+    private static function countUnitsWithReading(array $rows, object $indicator): int
+    {
+        $units = [];
+
+        foreach ($rows as $row) {
+            $month = trim((string) ($row['mes_referencia'] ?? ''));
+            $rawUnit = trim((string) (
+                $row['unidade']
+                ?? $row['nome_unidade']
+                ?? $row['id_creas']
+                ?? $row['id_cras']
+                ?? ''
+            ));
+
+            if ($month === '' || $rawUnit === '') {
+                continue;
+            }
+
+            $unit = self::normalizeIndicatorUnitLabel($indicator, $rawUnit);
+            $units[mb_strtolower($unit)] = true;
+        }
+
+        return count($units);
     }
 
     private static function normalizeIndicatorUnitLabel(object $indicator, string $value): string
