@@ -20,9 +20,13 @@
         baseValue: 'ppaCardBaseFamiliasValue',
         baseFoot: 'ppaCardBaseFamiliasFoot',
         metaValue: 'ppaCardMetaValue',
+        metaPpaValue: 'ppaCardMetaPpaValue',
+        metaPactoValue: 'ppaCardMetaPactoValue',
         acompanhadasValue: 'ppaCardAcompanhadasValue',
         acompanhadasFoot: 'ppaCardAcompanhadasFoot',
         percentualValue: 'ppaCardPercentualValue',
+        percentualPpaValue: 'ppaCardPercentualPpaValue',
+        percentualPactoValue: 'ppaCardPercentualPactoValue',
         periodoValue: 'ppaCardPeriodoValue',
         activeFilters: 'ppaActiveFilters',
         clearFiltersBtn: 'ppaClearFiltersBtn',
@@ -148,9 +152,13 @@
         const baseValue = document.getElementById(ids.baseValue);
         const baseFoot = document.getElementById(ids.baseFoot);
         const metaValue = document.getElementById(ids.metaValue);
+        const metaPpaValue = document.getElementById(ids.metaPpaValue);
+        const metaPactoValue = document.getElementById(ids.metaPactoValue);
         const acompanhadasValue = document.getElementById(ids.acompanhadasValue);
         const acompanhadasFoot = document.getElementById(ids.acompanhadasFoot);
         const percentualValue = document.getElementById(ids.percentualValue);
+        const percentualPpaValue = document.getElementById(ids.percentualPpaValue);
+        const percentualPactoValue = document.getElementById(ids.percentualPactoValue);
         const periodoValue = document.getElementById(ids.periodoValue);
         const percentualOk = Number(dados.percentual_alcancado_total || 0) >= Number(dados.percentual_periodo || 0);
 
@@ -164,6 +172,14 @@
 
         if (metaValue) {
             metaValue.textContent = formatNumber(dados.meta_familias || 0);
+        }
+
+        if (metaPpaValue) {
+            metaPpaValue.textContent = formatNumber(dados.meta_ppa_familias || 0);
+        }
+
+        if (metaPactoValue) {
+            metaPactoValue.textContent = formatNumber(dados.meta_pacto_familias || 0);
         }
 
         if (acompanhadasValue) {
@@ -183,10 +199,28 @@
             percentualValue.classList.toggle('text-info', !periodoValue);
         }
 
+        const updateDualProgress = function (node, value) {
+            if (!node) {
+                return;
+            }
+
+            const isOnTrack = Number(value || 0) >= Number(dados.percentual_periodo || 0);
+            node.textContent = formatPercent(value || 0);
+            const container = node.parentElement;
+            container?.classList.toggle('text-success', isOnTrack);
+            container?.classList.toggle('text-danger', !isOnTrack);
+        };
+
+        updateDualProgress(percentualPpaValue, dados.percentual_alcancado_ppa);
+        updateDualProgress(percentualPactoValue, dados.percentual_alcancado_pacto);
+
         if (periodoValue) {
             periodoValue.textContent = formatPercent(dados.percentual_periodo || 0);
-            periodoValue.classList.toggle('text-success', percentualOk);
-            periodoValue.classList.toggle('text-primary', !percentualOk);
+            const periodComparison = percentualPactoValue
+                ? Number(dados.percentual_alcancado_pacto || 0) >= Number(dados.percentual_periodo || 0)
+                : percentualOk;
+            periodoValue.classList.toggle('text-success', periodComparison);
+            periodoValue.classList.toggle('text-primary', !periodComparison);
         }
     };
 

@@ -56,6 +56,8 @@ class PpaFamilyRmaPayloadBuilder
 
         ksort($rmaPorMes);
         $metaFamilias = $baseTotal * $metaPercentual;
+        $metaPpaFamilias = round($baseTotal * 0.07, 2);
+        $metaPactoFamilias = round($baseTotal * 0.10, 2);
         $acumulado = 0;
         $tabelaMensal = [];
         $graficoMensal = [];
@@ -104,8 +106,12 @@ class PpaFamilyRmaPayloadBuilder
         return [
             'total_geral' => $baseTotal,
             'meta_familias' => $metaFamilias,
+            'meta_ppa_familias' => $metaPpaFamilias,
+            'meta_pacto_familias' => $metaPactoFamilias,
             'familias_acompanhadas_total' => $acumulado,
             'percentual_alcancado_total' => $percentualAlcancado,
+            'percentual_alcancado_ppa' => $metaPpaFamilias > 0 ? ($acumulado / $metaPpaFamilias) * 100 : 0,
+            'percentual_alcancado_pacto' => $metaPactoFamilias > 0 ? ($acumulado / $metaPactoFamilias) * 100 : 0,
             'percentual_periodo' => (min(12, count($graficoMensal)) / 12) * 100,
             'meses_periodo' => count($graficoMensal),
             'referencia' => $referenciaBase,
@@ -127,8 +133,12 @@ class PpaFamilyRmaPayloadBuilder
         return [
             'total_geral' => 0,
             'meta_familias' => 0,
+            'meta_ppa_familias' => 0,
+            'meta_pacto_familias' => 0,
             'familias_acompanhadas_total' => 0,
             'percentual_alcancado_total' => 0,
+            'percentual_alcancado_ppa' => 0,
+            'percentual_alcancado_pacto' => 0,
             'referencia' => null,
             'ano_apuracao' => null,
             'grafico_mensal' => [],

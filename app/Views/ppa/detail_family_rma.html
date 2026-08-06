@@ -34,6 +34,12 @@
 {% endblock header %}
 
 {% block cards %}
+    {% set dual_target_codes = [
+        'PPA-ACOMPANHAR-BPC-PAIF',
+        'PPA-ACOMPANHAR-FAMILIAS-MEIO-SM-PAIF',
+        'PPA-ACOMPANHAR-FAMILIAS-PBF'
+    ] %}
+    {% set show_dual_targets = indicator.codigo_indicador in dual_target_codes %}
     <div class="col">
         <div class="card-custom p-3 text-center summary-card" id="ppaCardBaseFamilias">
             <small class="text-uppercase text-secondary summary-label">{{ dashboard_ui.base_label }}</small>
@@ -42,11 +48,26 @@
         </div>
     </div>
     <div class="col">
-        <div class="card-custom p-3 text-center summary-card" id="ppaCardMeta">
-            <small class="text-uppercase text-warning summary-label">{{ dashboard_ui.meta_label }}</small>
-            <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaValue">{{ dados.meta_familias|number_format(0, ',', '.') }}</h2>
-            <span class="summary-foot">{{ dashboard_ui.meta_foot }}</span>
-        </div>
+        {% if show_dual_targets %}
+            <div class="card-custom summary-card h-100 overflow-hidden" id="ppaCardMeta">
+                <div class="row g-0 h-100">
+                    <div class="col-6 p-3 text-center border-end d-flex flex-column align-items-center justify-content-center">
+                        <small class="text-uppercase text-warning summary-label">Meta PPA 7%</small>
+                        <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaPpaValue">{{ dados.meta_ppa_familias|number_format(0, ',', '.') }}</h2>
+                    </div>
+                    <div class="col-6 p-3 text-center d-flex flex-column align-items-center justify-content-center">
+                        <small class="text-uppercase text-warning summary-label">Meta Pacto 10%</small>
+                        <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaPactoValue">{{ dados.meta_pacto_familias|number_format(0, ',', '.') }}</h2>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card-custom p-3 text-center summary-card" id="ppaCardMeta">
+                <small class="text-uppercase text-warning summary-label">{{ dashboard_ui.meta_label }}</small>
+                <h2 class="fw-bold mb-0 summary-value text-warning" id="ppaCardMetaValue">{{ dados.meta_familias|number_format(0, ',', '.') }}</h2>
+                <span class="summary-foot">{{ dashboard_ui.meta_foot }}</span>
+            </div>
+        {% endif %}
     </div>
     <div class="col">
         <div class="card-custom p-3 text-center summary-card" id="ppaCardAcompanhadas">
@@ -58,6 +79,8 @@
     <div class="col">
         {% if dashboard_ui.show_period_progress %}
             {% set percentual_ok = (dados.percentual_alcancado_total|default(0)) >= (dados.percentual_periodo|default(0)) %}
+            {% set percentual_ppa_ok = (dados.percentual_alcancado_ppa|default(0)) >= (dados.percentual_periodo|default(0)) %}
+            {% set percentual_pacto_ok = (dados.percentual_alcancado_pacto|default(0)) >= (dados.percentual_periodo|default(0)) %}
             <div class="card-custom summary-card h-100 overflow-hidden" id="ppaCardPercentual">
                 <div class="row g-0 h-100">
                     <div class="col-6 p-3 text-center border-end d-flex flex-column align-items-center justify-content-center">
@@ -67,7 +90,16 @@
                     </div>
                     <div class="col-6 p-3 text-center d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
-                        <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                        {% if show_dual_targets %}
+                            <div class="fw-bold ppa-dual-progress-value {{ percentual_ppa_ok ? 'text-success' : 'text-danger' }}">
+                                PPA: <span id="ppaCardPercentualPpaValue">{{ dados.percentual_alcancado_ppa|number_format(2, ',', '.') }}%</span>
+                            </div>
+                            <div class="fw-bold ppa-dual-progress-value {{ percentual_pacto_ok ? 'text-success' : 'text-danger' }}">
+                                Pacto: <span id="ppaCardPercentualPactoValue">{{ dados.percentual_alcancado_pacto|number_format(2, ',', '.') }}%</span>
+                            </div>
+                        {% else %}
+                            <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
+                        {% endif %}
                         <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
                     </div>
                 </div>
@@ -93,6 +125,11 @@
             flex: none !important;
             height: auto;
             min-height: auto !important;
+        }
+
+        .ppa-dual-progress-value {
+            font-size: 1.35rem;
+            line-height: 1.15;
         }
 
         #ppaClearFiltersBtn {

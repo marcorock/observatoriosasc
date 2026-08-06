@@ -24,6 +24,18 @@ foreach (['ppaUnitCardTechnicalValue', 'ppaUnitCardMiddleLevelValue'] as $attend
         $failures[] = 'detail_unit_rma.html must render ' . $attendanceValueId;
     }
 }
+
+$familyView = file_get_contents($viewsDirectory . '/detail_family_rma.html');
+foreach ([
+    'ppaCardMetaPpaValue',
+    'ppaCardMetaPactoValue',
+    'ppaCardPercentualPpaValue',
+    'ppaCardPercentualPactoValue',
+] as $dualTargetValueId) {
+    if (!str_contains($familyView, $dualTargetValueId)) {
+        $failures[] = 'detail_family_rma.html must render ' . $dualTargetValueId;
+    }
+}
 $assertPeriodBeforeReached(
     $viewsDirectory . '/detail_unit_rma.html',
     'ppaUnitCardPeriodoValue',
@@ -35,4 +47,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (4 assertions)\n");
+fwrite(STDOUT, "OK (8 assertions)\n");

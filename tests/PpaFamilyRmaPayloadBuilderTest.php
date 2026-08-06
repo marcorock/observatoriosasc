@@ -25,8 +25,12 @@ $rmaRows = [
 $payload = PpaFamilyRmaPayloadBuilder::build($baseRows, $rmaRows, $indicator, []);
 $assertSame(200, $payload['total_geral'], 'sums base families');
 $assertSame(20.0, $payload['meta_familias'], 'calculates target families');
+$assertSame(14.0, $payload['meta_ppa_familias'], 'calculates the seven percent PPA target');
+$assertSame(20.0, $payload['meta_pacto_familias'], 'calculates the ten percent Pact target');
 $assertSame(20, $payload['familias_acompanhadas_total'], 'sums accompanied families');
 $assertSame(100.0, $payload['percentual_alcancado_total'], 'calculates total progress');
+$assertSame((20 / 14) * 100, $payload['percentual_alcancado_ppa'], 'calculates progress against the PPA target');
+$assertSame(100.0, $payload['percentual_alcancado_pacto'], 'calculates progress against the Pact target');
 $assertSame(2, $payload['meses_periodo'], 'counts monthly periods');
 $assertSame('2026-06', $payload['referencia'], 'keeps first base reference');
 $assertSame(2, count($payload['tabela_cras']), 'merges CRAS aliases');
@@ -42,6 +46,8 @@ $filtered = PpaFamilyRmaPayloadBuilder::build($baseRows, $rmaRows, $indicator, [
 ]);
 $assertSame(150, $filtered['total_geral'], 'filters base by CRAS');
 $assertSame(10, $filtered['familias_acompanhadas_total'], 'filters RMA by CRAS and month');
+$assertSame(10.5, $filtered['meta_ppa_familias'], 'filters the PPA target over the same base');
+$assertSame(15.0, $filtered['meta_pacto_familias'], 'filters the Pact target over the same base');
 $assertSame(
     ['cras' => 'CRAS MARIANA', 'mes_referencia' => '2026-02-01'],
     $filtered['filtros_ativos'],
@@ -56,4 +62,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (11 assertions)\n");
+fwrite(STDOUT, "OK (18 assertions)\n");
