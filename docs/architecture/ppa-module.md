@@ -93,6 +93,18 @@ mensal e progresso por CRAS para os indicadores familiares regulares. O builder
 regular duplicado foi removido; os builders especializados de atualização
 cadastral permanecem no controller nesta etapa.
 
+Para os indicadores 147, 148 e 149, o payload acrescenta comparativos sem mudar
+os campos legados usados por tabelas, catálogo e sincronização:
+
+- `meta_ppa_familias`: 7% da base após os filtros;
+- `meta_pacto_familias`: 10% da mesma base;
+- `percentual_alcancado_ppa`: realizado dividido pela meta PPA;
+- `percentual_alcancado_pacto`: realizado dividido pela meta Pacto.
+
+O template identifica esses três códigos e apresenta os campos somente nos
+cards. Cada percentual conserva a regra de cor do dashboard e é atualizado pelo
+JavaScript interativo após filtros de CRAS ou mês.
+
 ## Payloads especializados
 
 O payload de fotografia familiar já foi extraído para

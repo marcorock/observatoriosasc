@@ -17,11 +17,15 @@
   `NÍVEL MÉDIO`, preservando o layout, estilos e filtros interativos.
 - Centralizado vertical e horizontalmente o conteúdo dos cards divididos de
   atendimentos e percentuais.
+- Dividido o card de meta dos indicadores 147, 148 e 149 entre `Meta PPA 7%` e
+  `Meta Pacto 10%`, ambas calculadas sobre a mesma base.
+- Mantido `% PERÍODO` no quarto card e dividido `% ALCANÇADO` em PPA e Pacto,
+  com fonte reduzida, cores independentes e atualização pelos filtros atuais.
 - Ampliada a consulta RMA CRAS para retornar C1, C2 e C3. O payload calcula
   técnico como `C1 - (C2 + C3)` e nível médio como `C2 + C3`.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de
   marcação para a ordem dos percentuais.
-- A suíte completa passou no container: 30 arquivos e 325 assertions.
+- A suíte completa passou no container: 30 arquivos e 336 assertions.
 - O cache do indicador 158 foi renovado com 54 linhas e os três campos foram
   confirmados no payload real.
 

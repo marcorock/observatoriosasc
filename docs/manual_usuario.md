@@ -61,6 +61,11 @@ No indicador 158, o card `ATENDIMENTOS REALIZADOS` apresenta dois acumulados:
 - `NÍVEL MÉDIO`: soma dos atendimentos C2 e C3 do CadÚnico.
 
 Ao selecionar mês ou CRAS, as duas colunas são atualizadas pelo mesmo filtro.
+
+Nos indicadores 147, 148 e 149, o segundo card compara `Meta PPA 7%` e
+`Meta Pacto 10%`. O quarto card mantém `% PERÍODO` e mostra o alcance de PPA e
+Pacto em linhas separadas. As duas metas usam a mesma base e respondem aos
+filtros de mês e CRAS.
 9. Para consultar todos os registros do BSC, entre por `/admin`, autentique-se e use o atalho `BSC - Registros` no painel administrativo.
 10. Na tela de registros, use a busca, a paginacao e as exportacoes para Excel ou PDF.
 11. Para cadastrar um novo item, clique em `Novo registro`, preencha os campos obrigatorios e salve.

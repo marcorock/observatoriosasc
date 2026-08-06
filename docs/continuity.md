@@ -10,8 +10,8 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint funcional: `2ef840c`
-- Situação: cinco correções de visualização isoladas em commits locais, ainda
+- Último checkpoint funcional: `58e07a4`
+- Situação: seis correções de visualização isoladas em commits locais, ainda
   sem publicação
 - Pull request: #2 integrada com 116 commits; a branch
   `integration/update-repository` foi removida após o merge
@@ -50,6 +50,10 @@ unidade e do detalhamento de atendimentos do indicador 158.
   as mesmas linhas filtradas por unidade e mês.
 - O conteúdo dos cards divididos é centralizado nos eixos vertical e horizontal,
   mantendo divisores, tipografia e estilos existentes.
+- Nos indicadores 147, 148 e 149, o segundo card apresenta metas calculadas
+  sobre a mesma base: PPA 7% e Pacto 10%. O quarto card mantém `% PERÍODO` e
+  apresenta duas linhas de alcance, uma para cada meta, com avaliação de cor
+  independente e atualização pelos filtros existentes.
 - Rótulos configuráveis, cores, classes e interações foram preservados.
 - A suíte completa passou no container com UID 1000: 30 arquivos e 325
   assertions. O teste de permissões também passou fora do contexto `root`.
@@ -260,8 +264,8 @@ A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 
-Homologar visualmente o novo card do indicador 158 em desktop e mobile,
-incluindo filtros de mês e CRAS.
+Homologar em desktop e mobile os cards de meta e alcance dos indicadores 147,
+148 e 149, incluindo filtros de mês e CRAS.
 
 ## Regra documental para cada incremento
 
