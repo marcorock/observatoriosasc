@@ -684,14 +684,16 @@ INSERT INTO external_data_queries (
 SELECT
     s.id,
     'PPA 158 - RMA CRAS C1 mensal por unidade',
-    'Serie mensal do RMA CRAS para o campo C.1, consolidando atendimentos individualizados realizados no ano mais recente disponivel.',
+    'Serie mensal do RMA CRAS para os campos C.1, C.2 e C.3, consolidando atendimentos individualizados no ano mais recente disponivel.',
     'SELECT
     DATE_FORMAT(r.mes_referencia, ''%Y-%m-01'') AS mes_referencia,
     COALESCE(
         NULLIF(TRIM(r.nome_unidade), ''''),
         COALESCE(NULLIF(TRIM(r.id_cras), ''''), ''CRAS NAO INFORMADO'')
     ) AS unidade,
-    SUM(COALESCE(r.c1, 0)) AS total_inseridos
+    SUM(COALESCE(r.c1, 0)) AS total_inseridos,
+    SUM(COALESCE(r.c2, 0)) AS total_c2,
+    SUM(COALESCE(r.c3, 0)) AS total_c3
 FROM rma_cras r
 WHERE YEAR(r.mes_referencia) = (
         SELECT MAX(YEAR(r2.mes_referencia))
@@ -717,14 +719,16 @@ WHERE s.nome = 'Cadastro único'
 
 UPDATE external_data_queries q
 INNER JOIN external_data_sources s ON s.id = q.source_id
-SET q.descricao = 'Serie mensal do RMA CRAS para o campo C.1, consolidando atendimentos individualizados realizados no ano mais recente disponivel.',
+SET q.descricao = 'Serie mensal do RMA CRAS para os campos C.1, C.2 e C.3, consolidando atendimentos individualizados no ano mais recente disponivel.',
     q.sql_query = 'SELECT
     DATE_FORMAT(r.mes_referencia, ''%Y-%m-01'') AS mes_referencia,
     COALESCE(
         NULLIF(TRIM(r.nome_unidade), ''''),
         COALESCE(NULLIF(TRIM(r.id_cras), ''''), ''CRAS NAO INFORMADO'')
     ) AS unidade,
-    SUM(COALESCE(r.c1, 0)) AS total_inseridos
+    SUM(COALESCE(r.c1, 0)) AS total_inseridos,
+    SUM(COALESCE(r.c2, 0)) AS total_c2,
+    SUM(COALESCE(r.c3, 0)) AS total_c3
 FROM rma_cras r
 WHERE YEAR(r.mes_referencia) = (
         SELECT MAX(YEAR(r2.mes_referencia))

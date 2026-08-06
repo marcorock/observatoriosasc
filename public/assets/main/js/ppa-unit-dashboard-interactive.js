@@ -22,6 +22,8 @@
         metaValue: 'ppaUnitCardMetaValue',
         acompanhadasValue: 'ppaUnitCardAcompanhadasValue',
         acompanhadasFoot: 'ppaUnitCardAcompanhadasFoot',
+        technicalValue: 'ppaUnitCardTechnicalValue',
+        middleLevelValue: 'ppaUnitCardMiddleLevelValue',
         percentualValue: 'ppaUnitCardPercentualValue',
         periodoValue: 'ppaUnitCardPeriodoValue',
         activeFilters: 'ppaUnitActiveFilters',
@@ -150,6 +152,8 @@
         const metaValue = document.getElementById(ids.metaValue);
         const acompanhadasValue = document.getElementById(ids.acompanhadasValue);
         const acompanhadasFoot = document.getElementById(ids.acompanhadasFoot);
+        const technicalValue = document.getElementById(ids.technicalValue);
+        const middleLevelValue = document.getElementById(ids.middleLevelValue);
         const percentualValue = document.getElementById(ids.percentualValue);
         const periodoValue = document.getElementById(ids.periodoValue);
         const percentualOk = Number(dados.percentual_alcancado_total || 0) >= Number(dados.percentual_periodo || 0);
@@ -174,6 +178,14 @@
             acompanhadasFoot.textContent = state.filters.mes_referencia
                 ? 'Total de registros no mês filtrado.'
                 : (state.ui.acompanhadas_foot || 'Total acumulado do indicador no periodo.');
+        }
+
+        if (technicalValue) {
+            technicalValue.textContent = formatNumber(dados.total_atendimentos_tecnicos || 0);
+        }
+
+        if (middleLevelValue) {
+            middleLevelValue.textContent = formatNumber(dados.total_atendimentos_nivel_medio || 0);
         }
 
         if (percentualValue) {

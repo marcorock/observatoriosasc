@@ -21,14 +21,16 @@ $indicator = (object) [
     'indice_futuro' => 100,
 ];
 $rows = [
-    ['mes_referencia' => '2026-01-01', 'unidade' => 'CRAS MARIANA 2', 'total_inseridos' => 10],
-    ['mes_referencia' => '2026-01-01', 'nome_unidade' => 'CRAS MARIANA', 'total_casos' => 5],
-    ['mes_referencia' => '2026-02-01', 'id_cras' => 'UNIDADE PERNAMBUCANO', 'total_inseridos' => 20],
+    ['mes_referencia' => '2026-01-01', 'unidade' => 'CRAS MARIANA 2', 'total_inseridos' => 10, 'total_c2' => 2, 'total_c3' => 1],
+    ['mes_referencia' => '2026-01-01', 'nome_unidade' => 'CRAS MARIANA', 'total_casos' => 5, 'total_c2' => 1, 'total_c3' => 1],
+    ['mes_referencia' => '2026-02-01', 'id_cras' => 'UNIDADE PERNAMBUCANO', 'total_inseridos' => 20, 'total_c2' => 3, 'total_c3' => 2],
     ['mes_referencia' => '', 'unidade' => 'CRAS IGNORADO', 'total_inseridos' => 99],
 ];
 $payload = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, []);
 $assertSame(2, $payload['total_unidades'], 'merges CRAS aliases');
 $assertSame(35, $payload['total_inseridos'], 'sums all valid monthly values');
+$assertSame(25, $payload['total_atendimentos_tecnicos'], 'subtracts C2 and C3 from C1');
+$assertSame(10, $payload['total_atendimentos_nivel_medio'], 'sums C2 and C3');
 $assertSame(35.0, $payload['percentual_alcancado_total'], 'calculates annual target progress');
 $assertSame(2, $payload['meses_periodo'], 'counts distinct months');
 $assertSame((2 / 12) * 100, $payload['percentual_periodo'], 'calculates elapsed period percentage');
@@ -46,6 +48,8 @@ $filtered = PpaMonthlyUnitPayloadBuilder::build($rows, $indicator, [
     'mes_referencia' => '2026-01-01',
 ]);
 $assertSame(15, $filtered['total_inseridos'], 'applies unit and month filters');
+$assertSame(10, $filtered['total_atendimentos_tecnicos'], 'filters technical attendance totals');
+$assertSame(5, $filtered['total_atendimentos_nivel_medio'], 'filters middle-level attendance totals');
 $assertSame(50.0, $filtered['meta_anual'], 'uses the proportional target for the selected unit');
 $assertSame(30.0, $filtered['percentual_alcancado_total'], 'calculates unit progress against its proportional target');
 $assertSame(
@@ -67,4 +71,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (15 assertions)\n");
+fwrite(STDOUT, "OK (19 assertions)\n");

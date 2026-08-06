@@ -49,11 +49,29 @@
         </div>
     </div>
     <div class="col">
-        <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardAcompanhadas">
-            <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.acompanhadas_label }}</small>
-            <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardAcompanhadasValue">{{ dados.total_inseridos|number_format(0, ',', '.') }}</h2>
-            <span class="summary-foot" id="ppaUnitCardAcompanhadasFoot">{{ dashboard_ui.acompanhadas_foot }}</span>
-        </div>
+        {% if dashboard_ui.show_attendance_breakdown %}
+            <div class="card-custom summary-card h-100 overflow-hidden" id="ppaUnitCardAcompanhadas">
+                <small class="text-uppercase text-primary text-center summary-label pt-3 px-3">{{ dashboard_ui.acompanhadas_label }}</small>
+                <div class="row g-0 flex-grow-1">
+                    <div class="col-6 p-3 text-center border-end">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.technical_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardTechnicalValue">{{ dados.total_atendimentos_tecnicos|number_format(0, ',', '.') }}</h2>
+                        <span class="summary-foot">{{ dashboard_ui.technical_foot }}</span>
+                    </div>
+                    <div class="col-6 p-3 text-center">
+                        <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.middle_level_label }}</small>
+                        <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardMiddleLevelValue">{{ dados.total_atendimentos_nivel_medio|number_format(0, ',', '.') }}</h2>
+                        <span class="summary-foot">{{ dashboard_ui.middle_level_foot }}</span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card-custom p-3 text-center summary-card" id="ppaUnitCardAcompanhadas">
+                <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.acompanhadas_label }}</small>
+                <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardAcompanhadasValue">{{ dados.total_inseridos|number_format(0, ',', '.') }}</h2>
+                <span class="summary-foot" id="ppaUnitCardAcompanhadasFoot">{{ dashboard_ui.acompanhadas_foot }}</span>
+            </div>
+        {% endif %}
     </div>
     <div class="col">
         {% if dashboard_ui.show_period_progress %}

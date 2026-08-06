@@ -18,6 +18,8 @@ class PpaMonthlyUnitPayloadBuilder
         $anoApuracao = null;
         $mensal = [];
         $unidades = [];
+        $totalAtendimentosTecnicos = 0;
+        $totalAtendimentosNivelMedio = 0;
 
         foreach ($rows as $row) {
             $mesReferencia = trim((string) ($row['mes_referencia'] ?? ''));
@@ -26,6 +28,7 @@ class PpaMonthlyUnitPayloadBuilder
                 (string) ($row['unidade'] ?? $row['nome_unidade'] ?? $row['id_creas'] ?? $row['id_cras'] ?? 'Nao informado')
             );
             $totalInseridos = (int) ($row['total_inseridos'] ?? $row['total_casos'] ?? 0);
+            $totalNivelMedio = (int) ($row['total_c2'] ?? 0) + (int) ($row['total_c3'] ?? 0);
 
             if ($mesReferencia === '') {
                 continue;
@@ -40,6 +43,8 @@ class PpaMonthlyUnitPayloadBuilder
             $mensal[$mesReferencia]['total_inseridos'] += $totalInseridos;
             $unidades[$unidade] ??= ['unidade' => $unidade, 'total_inseridos' => 0];
             $unidades[$unidade]['total_inseridos'] += $totalInseridos;
+            $totalAtendimentosNivelMedio += $totalNivelMedio;
+            $totalAtendimentosTecnicos += $totalInseridos - $totalNivelMedio;
         }
 
         ksort($mensal);
@@ -92,6 +97,8 @@ class PpaMonthlyUnitPayloadBuilder
             'total_unidades' => count($tabelaUnidades),
             'meta_anual' => $metaAplicada,
             'total_inseridos' => $totalInseridos,
+            'total_atendimentos_tecnicos' => $totalAtendimentosTecnicos,
+            'total_atendimentos_nivel_medio' => $totalAtendimentosNivelMedio,
             'percentual_alcancado_total' => $metaAplicada > 0 ? ($totalInseridos / $metaAplicada) * 100 : 0,
             'percentual_periodo' => (min(12, count($graficoMensal)) / 12) * 100,
             'meses_periodo' => count($graficoMensal),
@@ -113,6 +120,8 @@ class PpaMonthlyUnitPayloadBuilder
             'total_unidades' => 0,
             'meta_anual' => 0,
             'total_inseridos' => 0,
+            'total_atendimentos_tecnicos' => 0,
+            'total_atendimentos_nivel_medio' => 0,
             'percentual_alcancado_total' => 0,
             'ano_apuracao' => null,
             'grafico_mensal' => [],

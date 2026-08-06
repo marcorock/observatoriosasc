@@ -17,6 +17,13 @@ $assertPeriodBeforeReached(
     'ppaCardPeriodoValue',
     'ppaCardPercentualValue'
 );
+
+$unitView = file_get_contents($viewsDirectory . '/detail_unit_rma.html');
+foreach (['ppaUnitCardTechnicalValue', 'ppaUnitCardMiddleLevelValue'] as $attendanceValueId) {
+    if (!str_contains($unitView, $attendanceValueId)) {
+        $failures[] = 'detail_unit_rma.html must render ' . $attendanceValueId;
+    }
+}
 $assertPeriodBeforeReached(
     $viewsDirectory . '/detail_unit_rma.html',
     'ppaUnitCardPeriodoValue',
@@ -28,4 +35,4 @@ if ($failures !== []) {
     exit(1);
 }
 
-fwrite(STDOUT, "OK (2 assertions)\n");
+fwrite(STDOUT, "OK (4 assertions)\n");
