@@ -8,6 +8,7 @@ Atualizado em 2026-08-06. O contexto completo de retomada está em
 - [x] Ordenar alfabeticamente os gráficos de barras por CRAS, CREAS e demais
   unidades sem alterar os cálculos.
 - [x] Exibir `% PERÍODO` antes de `% ALCANÇADO` nos cards combinados.
+- [x] Exibir o número cadastrado junto ao título do painel individual.
 - [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
 - [ ] Executar a suíte em ambiente com PHP e homologar os dashboards em desktop
   e mobile.

@@ -8,6 +8,8 @@
   demais unidades, sem alterar valores ou a ordenação das tabelas.
 - Reordenado o card combinado para apresentar `% PERÍODO` antes de
   `% ALCANÇADO`, preservando títulos configurados, cálculos, classes e efeitos.
+- Incluído o número cadastrado no título dos painéis individuais, no formato
+  `PPA - {número} - {nome}`, com fallback para cadastros sem numeração.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de
   marcação para a ordem dos percentuais.
 - A suíte não foi executada neste host porque não há PHP instalado; a checagem

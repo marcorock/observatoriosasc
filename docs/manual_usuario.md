@@ -45,6 +45,10 @@ Nos dashboards PPA, os gráficos de barras que representam CRAS, CREAS ou outras
 unidades são apresentados em ordem alfabética. Quando o mesmo card compara o
 avanço do período com o alcance da meta, a leitura ocorre da esquerda para a
 direita como `% PERÍODO | % ALCANÇADO`.
+
+O título do painel individual identifica também o número cadastrado do
+indicador, por exemplo: `PPA - 149 - Acompanhar 10% das famílias beneficiárias
+do Programa Bolsa Família inscritas no CadÚnico`.
 9. Para consultar todos os registros do BSC, entre por `/admin`, autentique-se e use o atalho `BSC - Registros` no painel administrativo.
 10. Na tela de registros, use a busca, a paginacao e as exportacoes para Excel ou PDF.
 11. Para cadastrar um novo item, clique em `Novo registro`, preencha os campos obrigatorios e salve.

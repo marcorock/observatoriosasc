@@ -10,8 +10,8 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint local: `bc0c854`
-- Situação: duas correções visuais isoladas em commits locais, ainda sem
+- Último checkpoint funcional: `2384e76`
+- Situação: três correções visuais isoladas em commits locais, ainda sem
   publicação
 - Pull request: #2 integrada com 116 commits; a branch
   `integration/update-repository` foi removida após o merge
@@ -29,9 +29,9 @@ for test_file in tests/*Test.php; do php "$test_file"; done
 
 ## Objetivo atual
 
-Homologar as correções de ordenação dos gráficos por unidade e da disposição dos
-percentuais de período e alcance, sem alterar cálculos, títulos ou efeitos
-visuais.
+Homologar as correções de ordenação dos gráficos por unidade, da disposição dos
+percentuais de período e alcance e da identificação numérica dos painéis, sem
+alterar cálculos ou efeitos visuais.
 
 ## Correções visuais de 2026-08-06
 
@@ -39,6 +39,8 @@ visuais.
   ordem alfabética; as tabelas mantêm sua ordenação anterior.
 - Cards que exibem os dois percentuais apresentam `% PERÍODO` à esquerda e
   `% ALCANÇADO` à direita.
+- O cabeçalho de cada painel individual inclui o número cadastrado no formato
+  `PPA - {número} - {nome}`; indicadores sem número mantêm o formato anterior.
 - Os cálculos, rótulos configuráveis, cores, classes e interações foram
   preservados.
 - Foram atualizados quatro testes de payload e criado
@@ -248,8 +250,9 @@ A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 
-Homologar em desktop e mobile a ordem alfabética dos gráficos por unidade e a
-disposição `% PERÍODO | % ALCANÇADO` nos cards combinados.
+Homologar em desktop e mobile a ordem alfabética dos gráficos por unidade, a
+disposição `% PERÍODO | % ALCANÇADO` nos cards combinados e os títulos com a
+numeração cadastrada.
 
 ## Regra documental para cada incremento
 
