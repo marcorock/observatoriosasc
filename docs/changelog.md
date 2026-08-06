@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-08-06
+
+### Ajustes de visualização dos dashboards PPA
+
+- Ordenados alfabeticamente os dados dos gráficos de barras por CRAS, CREAS e
+  demais unidades, sem alterar valores ou a ordenação das tabelas.
+- Reordenado o card combinado para apresentar `% PERÍODO` antes de
+  `% ALCANÇADO`, preservando títulos configurados, cálculos, classes e efeitos.
+- Atualizados os testes dos quatro builders envolvidos e adicionado teste de
+  marcação para a ordem dos percentuais.
+- A suíte não foi executada neste host porque não há PHP instalado; a checagem
+  de whitespace com `git diff --check` passou.
+
 ## 2026-07-28
 
 ### Consolidação documental

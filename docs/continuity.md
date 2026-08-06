@@ -1,6 +1,6 @@
 # Continuidade do Projeto
 
-Atualizado em 2026-07-28.
+Atualizado em 2026-08-06.
 
 Este é o ponto de entrada obrigatório para retomar o desenvolvimento. O estado
 executável deve ser confirmado pelo código e pelo Git; os demais documentos
@@ -9,10 +9,10 @@ detalham arquitetura, operação e histórico.
 ## Contexto de trabalho
 
 - Repositório: `marcorock/observatoriosasc`
-- Branch ativa: `main`
-- Último checkpoint publicado: `1cde072`
-- Situação: `main` local e `origin/main` sincronizadas na verificação de
-  2026-07-28
+- Branch ativa: `fix-ui-user`
+- Último checkpoint local: `bc0c854`
+- Situação: duas correções visuais isoladas em commits locais, ainda sem
+  publicação
 - Pull request: #2 integrada com 116 commits; a branch
   `integration/update-repository` foi removida após o merge
 - Issues abertas: nenhuma na última verificação
@@ -29,8 +29,21 @@ for test_file in tests/*Test.php; do php "$test_file"; done
 
 ## Objetivo atual
 
-Melhorar a performance e a manutenibilidade do módulo PPA de forma incremental,
-sem alterar rotas, payloads, templates, cálculos ou regras de negócio.
+Homologar as correções de ordenação dos gráficos por unidade e da disposição dos
+percentuais de período e alcance, sem alterar cálculos, títulos ou efeitos
+visuais.
+
+## Correções visuais de 2026-08-06
+
+- Os gráficos de barras por CRAS, CREAS ou outra unidade recebem seus dados em
+  ordem alfabética; as tabelas mantêm sua ordenação anterior.
+- Cards que exibem os dois percentuais apresentam `% PERÍODO` à esquerda e
+  `% ALCANÇADO` à direita.
+- Os cálculos, rótulos configuráveis, cores, classes e interações foram
+  preservados.
+- Foram atualizados quatro testes de payload e criado
+  `PpaProgressCardMarkupTest.php`. O host atual não possui executável PHP, então
+  a execução da suíte permanece pendente em ambiente com PHP.
 
 ## Estado funcional do PPA
 
@@ -235,11 +248,8 @@ A PR #2 foi integrada em `main` com 116 commits em 2026-07-28.
 
 ## Próximo incremento
 
-Instalar `deploy/cron/observatoriosasc-ppa` no agendador do servidor real e
-acompanhar a primeira execução automática das 04:15 no horário de São Paulo.
-O processo deve usar `www-data` ou outro usuário com acesso de escrita aos
-caches existentes; uma execução local como `developer` foi corretamente
-rejeitada na gravação e preservou todos os arquivos atuais.
+Homologar em desktop e mobile a ordem alfabética dos gráficos por unidade e a
+disposição `% PERÍODO | % ALCANÇADO` nos cards combinados.
 
 ## Regra documental para cada incremento
 

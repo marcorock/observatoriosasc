@@ -40,6 +40,11 @@ Observacao: apenas perfil configurado como `admin` pode salvar o filtro global d
 6. Se desejar apenas uma consulta temporaria, aplique o filtro local.
 7. Se voce for administrador e quiser manter o periodo para o dashboard, use a opcao de salvar periodo global.
 8. Para alternar entre visualizacao em tabela e grafico no dashboard, use o item correspondente no menu da tela.
+
+Nos dashboards PPA, os gráficos de barras que representam CRAS, CREAS ou outras
+unidades são apresentados em ordem alfabética. Quando o mesmo card compara o
+avanço do período com o alcance da meta, a leitura ocorre da esquerda para a
+direita como `% PERÍODO | % ALCANÇADO`.
 9. Para consultar todos os registros do BSC, entre por `/admin`, autentique-se e use o atalho `BSC - Registros` no painel administrativo.
 10. Na tela de registros, use a busca, a paginacao e as exportacoes para Excel ou PDF.
 11. Para cadastrar um novo item, clique em `Novo registro`, preencha os campos obrigatorios e salve.

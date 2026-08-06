@@ -1,7 +1,16 @@
 # Task TODO
 
-Atualizado em 2026-07-28. O contexto completo de retomada está em
+Atualizado em 2026-08-06. O contexto completo de retomada está em
 `docs/continuity.md`.
+
+## Correções visuais em homologação
+
+- [x] Ordenar alfabeticamente os gráficos de barras por CRAS, CREAS e demais
+  unidades sem alterar os cálculos.
+- [x] Exibir `% PERÍODO` antes de `% ALCANÇADO` nos cards combinados.
+- [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
+- [ ] Executar a suíte em ambiente com PHP e homologar os dashboards em desktop
+  e mobile.
 
 ## Medição do progresso
 
