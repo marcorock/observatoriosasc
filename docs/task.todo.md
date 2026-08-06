@@ -13,6 +13,7 @@ Atualizado em 2026-08-06. O contexto completo de retomada está em
   for selecionada, preservando a meta geral sem filtro.
 - [x] Dividir o card de atendimentos do indicador 158 entre técnico e nível
   médio, usando C1, C2 e C3 com os filtros existentes.
+- [x] Centralizar o conteúdo dos cards divididos.
 - [x] Adicionar cobertura para a ordenação dos payloads e da marcação dos cards.
 - [x] Executar a suíte em ambiente com PHP: 30 testes e 325 assertions.
 - [ ] Homologar o indicador 158 em desktop e mobile, incluindo a meta

@@ -10,7 +10,7 @@ detalham arquitetura, operação e histórico.
 
 - Repositório: `marcorock/observatoriosasc`
 - Branch ativa: `fix-ui-user`
-- Último checkpoint funcional: `a75644b`
+- Último checkpoint funcional: `2ef840c`
 - Situação: cinco correções de visualização isoladas em commits locais, ainda
   sem publicação
 - Pull request: #2 integrada com 116 commits; a branch
@@ -48,6 +48,8 @@ unidade e do detalhamento de atendimentos do indicador 158.
 - O card `ATENDIMENTOS REALIZADOS` do indicador 158 separa `TÉCNICO`, calculado
   como `C1 - (C2 + C3)`, e `NÍVEL MÉDIO`, calculado como `C2 + C3`. Ambos usam
   as mesmas linhas filtradas por unidade e mês.
+- O conteúdo dos cards divididos é centralizado nos eixos vertical e horizontal,
+  mantendo divisores, tipografia e estilos existentes.
 - Rótulos configuráveis, cores, classes e interações foram preservados.
 - A suíte completa passou no container com UID 1000: 30 arquivos e 325
   assertions. O teste de permissões também passou fora do contexto `root`.

@@ -15,6 +15,8 @@
   tabela e percentual usam a parcela proporcional calculada antes dos filtros.
 - Dividido o card `ATENDIMENTOS REALIZADOS` do indicador 158 em `TÉCNICO` e
   `NÍVEL MÉDIO`, preservando o layout, estilos e filtros interativos.
+- Centralizado vertical e horizontalmente o conteúdo dos cards divididos de
+  atendimentos e percentuais.
 - Ampliada a consulta RMA CRAS para retornar C1, C2 e C3. O payload calcula
   técnico como `C1 - (C2 + C3)` e nível médio como `C2 + C3`.
 - Atualizados os testes dos quatro builders envolvidos e adicionado teste de
