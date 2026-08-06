@@ -53,12 +53,12 @@
             <div class="card-custom summary-card h-100 overflow-hidden" id="ppaUnitCardAcompanhadas">
                 <small class="text-uppercase text-primary text-center summary-label pt-3 px-3">{{ dashboard_ui.acompanhadas_label }}</small>
                 <div class="row g-0 flex-grow-1">
-                    <div class="col-6 p-3 text-center border-end">
+                    <div class="col-6 p-3 text-center border-end d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.technical_label }}</small>
                         <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardTechnicalValue">{{ dados.total_atendimentos_tecnicos|number_format(0, ',', '.') }}</h2>
                         <span class="summary-foot">{{ dashboard_ui.technical_foot }}</span>
                     </div>
-                    <div class="col-6 p-3 text-center">
+                    <div class="col-6 p-3 text-center d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.middle_level_label }}</small>
                         <h2 class="fw-bold mb-0 summary-value text-primary" id="ppaUnitCardMiddleLevelValue">{{ dados.total_atendimentos_nivel_medio|number_format(0, ',', '.') }}</h2>
                         <span class="summary-foot">{{ dashboard_ui.middle_level_foot }}</span>
@@ -78,12 +78,12 @@
             {% set percentual_ok = (dados.percentual_alcancado_total|default(0)) >= (dados.percentual_periodo|default(0)) %}
             <div class="card-custom summary-card h-100 overflow-hidden" id="ppaUnitCardPercentual">
                 <div class="row g-0 h-100">
-                    <div class="col-6 p-3 text-center border-end">
+                    <div class="col-6 p-3 text-center border-end d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.period_label }}</small>
                         <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-primary' }}" id="ppaUnitCardPeriodoValue">{{ dados.percentual_periodo|default(0)|number_format(2, ',', '.') }}%</h2>
                         <span class="summary-foot">{{ dashboard_ui.period_foot }}</span>
                     </div>
-                    <div class="col-6 p-3 text-center">
+                    <div class="col-6 p-3 text-center d-flex flex-column align-items-center justify-content-center">
                         <small class="text-uppercase text-primary summary-label">{{ dashboard_ui.percentual_label }}</small>
                         <h2 class="fw-bold mb-0 summary-value {{ percentual_ok ? 'text-success' : 'text-danger' }}" id="ppaUnitCardPercentualValue">{{ dados.percentual_alcancado_total|number_format(2, ',', '.') }}%</h2>
                         <span class="summary-foot">{{ dashboard_ui.percentual_foot }}</span>
